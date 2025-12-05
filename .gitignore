@@ -34,3 +34,12 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Property Files ###
+*.properties
+
+### Log Files ###
+*.log
+
+### Cache Files ###
+*.json
