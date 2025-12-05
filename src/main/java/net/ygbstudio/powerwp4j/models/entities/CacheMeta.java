@@ -3,6 +3,11 @@ package net.ygbstudio.powerwp4j.models.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * CacheMeta is a record that represents the metadata of the cache.
+ *
+ * @author Yoham Gabriel B. @ YGBStudio
+ */
 public record CacheMeta(long cachedPages, long cachedPosts, LocalDate lastUpdated) {
 
   @Override
