@@ -3,7 +3,6 @@ package net.ygbstudio.powerwp4j.engine;
 import static net.ygbstudio.powerwp4j.utils.Helpers.getPropertiesFromResources;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -30,7 +29,8 @@ class WPSiteEngineTest {
   private String appPass;
   private String fqdm;
 
-  private static final Logger wpSiteEngineTestLogger = LoggerFactory.getLogger(WPSiteEngineTest.class);
+  private static final Logger wpSiteEngineTestLogger =
+      LoggerFactory.getLogger(WPSiteEngineTest.class);
 
   @BeforeEach
   void setUp() {
@@ -90,7 +90,7 @@ class WPSiteEngineTest {
     } catch (IOException e) {
       wpSiteEngineTestLogger.error("Exception caught in fetchJsonCacheTest", e);
     } finally {
-        cache.deleteOnExit();
+      cache.deleteOnExit();
     }
   }
 }
