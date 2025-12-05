@@ -43,3 +43,6 @@ build/
 
 ### Cache Files ###
 *.json
+
+### Text Files ###
+*.txt
