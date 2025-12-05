@@ -120,8 +120,7 @@ public class WPSiteEngine {
         .toList();
   }
 
-  private void fetchCache(@NonNull Path cachePath, boolean overwriteCache)
-      throws IOException {
+  private void fetchCache(@NonNull Path cachePath, boolean overwriteCache) throws IOException {
 
     if (Objects.isNull(linkList) || linkList.isEmpty()) {
       try {
@@ -205,7 +204,7 @@ public class WPSiteEngine {
     fetchCache(cachePath, overwriteCache);
   }
 
-  public void fetchJsonCache(Path cachePath, boolean overwriteCache) throws IOException {
+  public void fetchJsonCache(@NonNull Path cachePath, boolean overwriteCache) throws IOException {
     fetchCache(cachePath, overwriteCache);
   }
 
