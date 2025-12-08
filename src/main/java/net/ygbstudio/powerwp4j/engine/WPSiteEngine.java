@@ -1,12 +1,34 @@
+/*
+ * PowerWP4j - Power WP for Java
+ * Copyright (C) 2025 Yoham Gabriel Barboza B.
+ *
+ * This file is part of PowerWP4j.
+ *
+ * PowerWP4j is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PowerWP4j is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package net.ygbstudio.powerwp4j.engine;
 
 import static net.ygbstudio.powerwp4j.services.ApiService.makeRequestURL;
-import static net.ygbstudio.powerwp4j.utils.JsonSupport.JSON_INDENT;
-import static net.ygbstudio.powerwp4j.utils.JsonSupport.JSON_INDENT_FACTOR;
 import static net.ygbstudio.powerwp4j.utils.JsonSupport.readJsonFs;
 import static net.ygbstudio.powerwp4j.utils.JsonSupport.writeJsonFs;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.http.HttpClient;
@@ -29,7 +51,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.LongStream;
 import net.ygbstudio.powerwp4j.exceptions.CacheConstructionException;
 import net.ygbstudio.powerwp4j.exceptions.CacheMetaDataException;
@@ -38,21 +62,25 @@ import net.ygbstudio.powerwp4j.models.entities.Post;
 import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.services.ApiService;
-import org.json.JSONArray;
+import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
 
 /**
  * WPSiteEngine is the main class for interacting with a WordPress site. It provides methods for
  * fetching data from the WordPress REST API and caching it locally using JSON.
  *
- * @author Yoham Gabriel @ YGBStudio
+ * @author Yoham Gabriel B.
  */
 public class WPSiteEngine {
-  private static Logger wpSiteEngineLogger = LoggerFactory.getLogger(WPSiteEngine.class);
-  private static final int DEFAULT_PER_PAGE = 10;
+  private static final Logger wpSiteEngineLogger = LoggerFactory.getLogger(WPSiteEngine.class);
+  protected static final int DEFAULT_PER_PAGE = 10;
+  protected static final int TASK_TERMINATION_TIMEOUT_MINS = 5;
 
   private String fullyQualifiedDomainName;
   private String apiBasePath;
@@ -62,8 +90,22 @@ public class WPSiteEngine {
   private CacheMeta wpCacheMeta;
   private Path cachePath;
   private Path cacheMetadataFilePath;
+  private File cacheFile;
   private List<String> linkList;
 
+  /**
+   * Initializes a new instance of the WPSiteEngine class. If a local WordPress cache is found, it
+   * is loaded into memory, otherwise a new cache must be created using the corresponding method.
+   *
+   * <p>A local cache is not created automatically since the client must handle any exceptions that
+   * result from the cache creation process to ensure maximum control of client-specific control,
+   * exception handling, and logging styles.
+   *
+   * @param fullyQualifiedDomainName the fully qualified domain name of the WordPress site
+   * @param username the username for the WordPress site
+   * @param applicationPassword the application password for the WordPress site
+   * @param cachePath the path to the cache file
+   */
   public WPSiteEngine(
       @NonNull String fullyQualifiedDomainName,
       @NonNull String username,
@@ -73,23 +115,58 @@ public class WPSiteEngine {
     this.username = username;
     this.applicationPassword = applicationPassword;
     this.cachePath = cachePath;
+    cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
     apiBasePath = String.format("https://%s/wp-json/wp/v2", this.fullyQualifiedDomainName);
     wpSiteEngineLogger.info("Initialized WPSiteEngine for site: {}", fullyQualifiedDomainName);
     wpSiteEngineLogger.info("API Base Path set to: {}", apiBasePath);
   }
 
+  /**
+   * Initializes a new instance of the WPSiteEngine class. If a local WordPress cache is not needed,
+   * the cache will be ignored and the cachePath parameter will be set to null.
+   *
+   * <p>In case you want to create a cache in the current instance of the WPSiteEngine, proceed to
+   * create the cache file using the {@link WPSiteEngine#fetchJsonCache(Path cachepath, boolean
+   * overwriteCache)} method.
+   *
+   * <p>
+   *
+   * @param fullyQualifiedDomainName the fully qualified domain name of the WordPress site
+   * @param username the username for the WordPress site
+   * @param applicationPassword the application password for the WordPress site
+   */
   public WPSiteEngine(
-      String fullyQualifiedDomainName, String username, String applicationPassword) {
+      @NonNull String fullyQualifiedDomainName,
+      @NonNull String username,
+      @NonNull String applicationPassword) {
     this(fullyQualifiedDomainName, username, applicationPassword, null);
   }
 
+  /**
+   * Connects to the WordPress REST API and returns the response.
+   *
+   * @param queryParams the query parameters to be used in the request
+   * @param pathParam the path parameter to be used in the request
+   * @return an Optional containing the response from the WordPress REST API
+   * @throws IOException if an I/O error occurs
+   * @throws InterruptedException if the thread is interrupted
+   */
+  @NonNull
   public Optional<HttpResponse<String>> connectWP(
-      Map<WPQueryParam, String> queryParams, WPRestPath pathParam)
+      @NonNull Map<WPQueryParam, String> queryParams, @NonNull WPRestPath pathParam)
       throws IOException, InterruptedException {
     String url = makeRequestURL(apiBasePath, queryParams, pathParam);
     return ApiService.connectWP(url, username, applicationPassword, wpSiteEngineLogger);
   }
 
+  /**
+   * Populates the link list with the links to the WordPress REST API after accesing the headers of
+   * the response to determine the total number of pages and posts in a WordPress site.
+   *
+   * @param perPage the number of posts per page
+   * @throws IOException if an I/O error occurs
+   * @throws InterruptedException if the thread is interrupted
+   */
   private void populateLinkList(int perPage) throws IOException, InterruptedException {
     // Minimal request to gather cache metadata
     Optional<HttpResponse<String>> headersRequest =
@@ -104,6 +181,13 @@ public class WPSiteEngine {
     }
   }
 
+  /**
+   * Creates a list of links to the WordPress REST API.
+   *
+   * @param totalPages the total number of pages
+   * @param perPage the number of posts per page
+   * @return a list of links to the WordPress REST API
+   */
   @NonNull
   private List<String> linkListCreator(long totalPages, int perPage) {
     return LongStream.range(1, totalPages + 1)
@@ -120,6 +204,13 @@ public class WPSiteEngine {
         .toList();
   }
 
+  /**
+   * Fetches the local cache file from the WordPress REST API.
+   *
+   * @param cachePath the path to the cache file
+   * @param overwriteCache whether to overwrite the cache file if it exists
+   * @throws IOException if an I/O error occurs
+   */
   private void fetchCache(@NonNull Path cachePath, boolean overwriteCache) throws IOException {
 
     if (Objects.isNull(linkList) || linkList.isEmpty()) {
@@ -143,15 +234,16 @@ public class WPSiteEngine {
 
     Function<String, HttpRequest> requestFunction =
         link -> {
-          wpSiteEngineLogger.info("Processing cache links for {}", apiBasePath);
           wpSiteEngineLogger.debug("Processing link -> {} ", link);
           Optional<HttpRequest> request =
               ApiService.buildWpGetRequest(link, username, applicationPassword, wpSiteEngineLogger);
           return request.orElseThrow();
         };
 
+    ObjectMapper mapper = JsonSupport.getMapper();
+    wpSiteEngineLogger.info("Processing cache links for {}", apiBasePath);
     ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-    JSONArray wpJsonArray;
+    ArrayNode wpJsonArray;
     try (HttpClient client =
         HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).executor(executor).build()) {
       wpJsonArray =
@@ -163,25 +255,45 @@ public class WPSiteEngine {
                               requestFunction.apply(link),
                               BodyHandlers.ofString(StandardCharsets.UTF_8))
                           .thenApply(HttpResponse::body)
-                          .thenApply(JSONArray::new)
-                          .thenApply(JSONArray::toList)
+                          .thenApply(
+                              body -> {
+                                try {
+                                  JsonNode node = mapper.readTree(body);
+                                  if (!node.isArray()) {
+                                    wpSiteEngineLogger.debug(
+                                        "Expected JSON array but got {} for link {}",
+                                        node.getNodeType(),
+                                        link);
+                                    return null;
+                                  }
+                                  return (ArrayNode) node;
+                                } catch (Exception ex) {
+                                  wpSiteEngineLogger.debug(
+                                      "Failed parsing JSON for link {}: {}", link, ex.getMessage());
+                                  return null;
+                                }
+                              })
                           .exceptionally(
                               ex -> {
                                 wpSiteEngineLogger.debug(
-                                    "Failed proceding of link {} due to {} cause: {}",
+                                    "Failed processing link {} due to {} cause: {}",
                                     link,
                                     ex.getClass().getSimpleName(),
-                                    ex.getCause().getMessage());
+                                    ex.getCause() != null ? ex.getCause().getMessage() : "unknown");
                                 return null;
                               }))
               .map(CompletableFuture::join)
               .filter(Objects::nonNull)
-              .flatMap(List::stream)
-              .collect(JSONArray::new, JSONArray::put, JSONArray::putAll);
+              .collect(
+                  Collector.of(
+                      mapper::createArrayNode,
+                      ArrayNode::addAll, // add items from each ArrayNode
+                      ArrayNode::addAll));
+
     } finally {
       executor.shutdown();
       try {
-        if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {
+        if (!executor.awaitTermination(TASK_TERMINATION_TIMEOUT_MINS, TimeUnit.MINUTES)) {
           executor.shutdownNow();
         }
       } catch (InterruptedException e) {
@@ -192,22 +304,46 @@ public class WPSiteEngine {
 
     createCacheFile(cachePath, overwriteCache);
     loadCacheMetaData(cachePath);
-    try (FileWriter writer = new FileWriter(cachePath.toFile())) {
-      wpJsonArray.write(writer, JSON_INDENT_FACTOR, JSON_INDENT);
+    try (FileWriter writer = new FileWriter(cachePath.toFile(), StandardCharsets.UTF_8)) {
+      mapper.writerWithDefaultPrettyPrinter().writeValue(writer, wpJsonArray);
     }
+    wpSiteEngineLogger.info("Cache created successfully at {}", cachePath);
+    cacheFile = cachePath.toFile();
   }
 
+  /**
+   * Fetches the local cache file from the WordPress REST API.
+   *
+   * @param overwriteCache whether to overwrite the cache file if it exists
+   * @throws IOException if an I/O error occurs
+   */
   public void fetchJsonCache(boolean overwriteCache) throws IOException {
     if (cachePath == null)
       throw new UnsupportedOperationException(
-          "Unable to fetch cache without a cache path. Cache creation requires instantiating this class with a cache path.");
+          "Unable to fetch cache without a cache path as local cache creation requires it in this class.");
     fetchCache(cachePath, overwriteCache);
   }
 
+  /**
+   * Fetches the local cache file from the WordPress REST API.
+   *
+   * @param cachePath the path to the cache file
+   * @param overwriteCache whether to overwrite the cache file if it exists
+   * @throws IOException if an I/O error occurs
+   */
   public void fetchJsonCache(@NonNull Path cachePath, boolean overwriteCache) throws IOException {
     fetchCache(cachePath, overwriteCache);
   }
 
+  /**
+   * Creates or overwrites a cache file in the local classpath/filesystem that will contain the
+   * local cache of a WordPress site. Overwrites must be specified by the user in any of the
+   * overloaded methods in this class.
+   *
+   * @param cachePath the path to the cache file
+   * @param overwriteCache whether to overwrite the cache file if it exists
+   * @throws IOException if an I/O error occurs
+   */
   private void createCacheFile(@NonNull Path cachePath, boolean overwriteCache) {
     File cacheFile = cachePath.toFile();
     if (cacheFile.exists() && overwriteCache) {
@@ -235,21 +371,40 @@ public class WPSiteEngine {
     }
   }
 
+  /**
+   * Loads the cache metadata from the local classpath/filesystem or creates a new cache metadata
+   * file in case it does not exist, or it is empty.
+   *
+   * @param cachePath the path to the cache file
+   */
   private void loadCacheMetaData(@NonNull Path cachePath) {
-    String cacheName = cachePath.getFileName().toString();
-    String cacheDir = cachePath.getParent().toString();
-    String cacheMetadataFileName = cacheName + "_metadata.json";
-    cacheMetadataFilePath = Path.of(cacheDir, cacheMetadataFileName);
+    String cacheName = cachePath.toFile().getName();
+    String cacheDir = cachePath.toFile().getParent();
+    String cacheMetadataFileName = cacheName.replaceAll("\\.json$", "") + "_metadata.json";
+    cacheMetadataFilePath =
+        Path.of(Objects.requireNonNullElse(cacheDir, ""), cacheMetadataFileName);
+
+    Consumer<Path> writeCacheMetaData =
+        path -> {
+          writeJsonFs(cacheMetadataFilePath.toFile(), wpCacheMeta);
+          wpCacheMeta = readJsonFs(cacheMetadataFilePath.toFile(), CacheMeta.class);
+          wpSiteEngineLogger.info("Successfully created cache metadata.");
+        };
+
+    Consumer<Path> loadCacheMetaData =
+        path -> {
+          wpCacheMeta = readJsonFs(path.toFile(), CacheMeta.class);
+          wpSiteEngineLogger.info("Loading cache metadata from file: {}", path);
+        };
 
     if (Files.exists(cacheMetadataFilePath)) {
-      wpCacheMeta = readJsonFs(cacheMetadataFilePath.toFile(), CacheMeta.class);
-      wpSiteEngineLogger.info("Loading cache metadata from file: {}", cacheMetadataFilePath);
+      loadCacheMetaData.accept(cacheMetadataFilePath);
     } else if (cacheMetadataFilePath.toFile().length() == 0) {
       wpSiteEngineLogger.warn("Cache metadata file is empty.");
       if (Files.exists(cachePath)) {
-        writeJsonFs(cacheMetadataFilePath.toFile(), wpCacheMeta);
-        wpCacheMeta = readJsonFs(cacheMetadataFilePath.toFile(), CacheMeta.class);
-        wpSiteEngineLogger.info("Successfully created cache metadata.");
+        writeCacheMetaData.accept(cachePath);
+      } else if (wpCacheMeta != null) {
+        writeCacheMetaData.accept(cacheMetadataFilePath);
       } else {
         wpSiteEngineLogger.warn(
             "Cache metadata can't be created since the associated cache file does not exist.");
@@ -259,8 +414,16 @@ public class WPSiteEngine {
     }
   }
 
-  public static void setWpSiteEngineLogger(Logger wpSiteEngineLogger) {
-    WPSiteEngine.wpSiteEngineLogger = wpSiteEngineLogger;
+  /**
+   * Returns a FileReader for the cache file after verifying its existence, in case it does not
+   * exist, returns null.
+   *
+   * @return a FileReader for the cache file, or null if the cache file does not exist
+   * @throws FileNotFoundException if the cache file does not exist
+   */
+  @Nullable
+  public FileReader getCacheReader() throws FileNotFoundException {
+    return cacheFile.exists() ? new FileReader(cacheFile) : null;
   }
 
   public String getFullyQualifiedDomainName() {
@@ -303,18 +466,6 @@ public class WPSiteEngine {
     this.createdPosts = createdPosts;
   }
 
-  public Path getCachePath() {
-    return cachePath;
-  }
-
-  public void setCachePath(Path cachePath) {
-    this.cachePath = cachePath;
-  }
-
-  public static Logger getWpSiteEngineLogger() {
-    return wpSiteEngineLogger;
-  }
-
   public CacheMeta getWpCacheMeta() {
     return wpCacheMeta;
   }
@@ -323,11 +474,62 @@ public class WPSiteEngine {
     this.wpCacheMeta = wpCacheMeta;
   }
 
+  public Path getCachePath() {
+    return cachePath;
+  }
+
+  public void setCachePath(Path cachePath) {
+    this.cachePath = cachePath;
+  }
+
+  public Path getCacheMetadataFilePath() {
+    return cacheMetadataFilePath;
+  }
+
+  public void setCacheMetadataFilePath(Path cacheMetadataFilePath) {
+    this.cacheMetadataFilePath = cacheMetadataFilePath;
+  }
+
+  public File getCacheFile() {
+    return cacheFile;
+  }
+
+  public void setCacheFile(File cacheFile) {
+    this.cacheFile = cacheFile;
+  }
+
   public List<String> getLinkList() {
     return linkList;
   }
 
   public void setLinkList(List<String> linkList) {
     this.linkList = linkList;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    WPSiteEngine that = (WPSiteEngine) o;
+    return Objects.equals(getFullyQualifiedDomainName(), that.getFullyQualifiedDomainName())
+        && Objects.equals(getApiBasePath(), that.getApiBasePath())
+        && Objects.equals(getUsername(), that.getUsername())
+        && Objects.equals(getApplicationPassword(), that.getApplicationPassword())
+        && Objects.equals(getWpCacheMeta(), that.getWpCacheMeta())
+        && Objects.equals(getCachePath(), that.getCachePath())
+        && Objects.equals(getCacheMetadataFilePath(), that.getCacheMetadataFilePath())
+        && Objects.equals(getCacheFile(), that.getCacheFile());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        getFullyQualifiedDomainName(),
+        getApiBasePath(),
+        getUsername(),
+        getApplicationPassword(),
+        getWpCacheMeta(),
+        getCachePath(),
+        getCacheMetadataFilePath(),
+        getCacheFile());
   }
 }
