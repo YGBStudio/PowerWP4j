@@ -89,7 +89,6 @@ import tools.jackson.databind.node.ArrayNode;
 public class WPSiteEngine {
   private static final Logger wpSiteEngineLogger = LoggerFactory.getLogger(WPSiteEngine.class);
   protected static final int DEFAULT_PER_PAGE = 10;
-  protected static final int TASK_TERMINATION_TIMEOUT_MINS = 5;
 
   private String fullyQualifiedDomainName;
   private String apiBasePath;
