@@ -92,9 +92,9 @@ public final class ApiService {
     }
   }
 
-  public static String makeRequestURL(
-      String apiBasePath, Map<WPQueryParam, String> queryParams, WPRestPath pathParam) {
-    return apiBasePath + pathParam + WPQueryParam.joinQueryParams(queryParams);
+  public static <E extends QueryParamEnum> String makeRequestURL(
+      String apiBasePath, Map<E, String> queryParams, WPRestPath pathParam) {
+    return apiBasePath + pathParam + QueryParamEnum.joinQueryParams(queryParams);
   }
 
   /**
