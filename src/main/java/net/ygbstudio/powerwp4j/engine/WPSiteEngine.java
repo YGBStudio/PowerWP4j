@@ -23,6 +23,7 @@
 package net.ygbstudio.powerwp4j.engine;
 
 import static net.ygbstudio.powerwp4j.services.ApiService.makeRequestURL;
+import static net.ygbstudio.powerwp4j.utils.JsonSupport.jsonReader;
 import static net.ygbstudio.powerwp4j.utils.JsonSupport.readJsonFs;
 import static net.ygbstudio.powerwp4j.utils.JsonSupport.writeJsonFs;
 
