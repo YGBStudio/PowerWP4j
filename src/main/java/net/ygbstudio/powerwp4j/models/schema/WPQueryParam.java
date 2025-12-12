@@ -22,9 +22,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import net.ygbstudio.powerwp4j.extension.QueryParamEnum;
 import org.jspecify.annotations.NullMarked;
 
 /**
