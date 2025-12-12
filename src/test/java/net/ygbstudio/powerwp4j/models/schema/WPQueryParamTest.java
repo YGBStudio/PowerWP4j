@@ -23,32 +23,32 @@ class WPQueryParamTest {
 
   @Test
   void joinQueryParamsTest() {
-    String resultingPath = WPQueryParam.joinQueryParams(queryParamMap);
+    String resultingPath = QueryParamEnum.joinQueryParams(queryParamMap);
     assertThat(resultingPath, StringRegularExpression.matchesRegex(expectedRegEx));
   }
 
   @Test
   void joinQueryParamsMapReversed() {
-    LinkedHashMap<WPQueryParam, String> reverseMap = new LinkedHashMap<>(queryParamMap);
+    LinkedHashMap<QueryParamEnum, String> reverseMap = new LinkedHashMap<>(queryParamMap);
     reverseMap.reversed();
-    String resultingPathReversedParams = WPQueryParam.joinQueryParams(reverseMap);
+    String resultingPathReversedParams = QueryParamEnum.joinQueryParams(reverseMap);
     assertThat(resultingPathReversedParams, StringRegularExpression.matchesRegex(expectedRegEx));
   }
 
   @Test
   void joinQueryParamsWithTimestamp() {
-    Map<WPQueryParam, String> queryParams =
+    Map<QueryParamEnum, String> queryParams =
         Map.of(
             WPQueryParam.PAGE, "3",
             WPQueryParam.PER_PAGE, "8",
             WPQueryParam.TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-    String resultingPath = WPQueryParam.joinQueryParams(queryParams);
+    String resultingPath = QueryParamEnum.joinQueryParams(queryParams);
     assertThat(resultingPath, StringRegularExpression.matchesRegex(expectedRegEx));
   }
 
   @Test
   void joinQueryParamEmptyMapTest() {
-    String resultingPath = WPQueryParam.joinQueryParams(Collections.emptyMap());
+    String resultingPath = QueryParamEnum.joinQueryParams(Collections.emptyMap());
     assertThat(resultingPath, is(""));
   }
 }
