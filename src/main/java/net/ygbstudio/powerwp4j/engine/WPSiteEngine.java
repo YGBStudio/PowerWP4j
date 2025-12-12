@@ -289,6 +289,50 @@ public class WPSiteEngine {
       }
     }
 
+    wpSiteEngineLogger.info("Processing cache links for {}", apiBasePath);
+    ArrayNode wpJsonArray = fetchJsonCache(linkList, null, 0, 0, null, null);
+
+    writeCacheFs(cachePath, wpJsonArray, overwriteCache, false);
+    cacheFile = cachePath.toFile();
+  }
+
+  /**
+   * Fetches the JSON cache from the WordPress REST API.
+   *
+   * @param listOfLinks the list of links to fetch
+   * @param retryPred the predicate to retry on in case a specific condition is expected
+   * @return the JSON cache as a single ArrayNode
+   */
+  private ArrayNode fetchJsonCache(
+      @NonNull List<String> listOfLinks,
+      @Nullable Predicate<ArrayNode> retryPred,
+      int retryAttempts,
+      int intervalTime,
+      TimeUnit intervalUnit,
+      Supplier<String> retryFailedMsg) {
+    ObjectMapper mapper = JsonSupport.getMapper();
+    BiFunction<HttpClient, String, CompletableFuture<ArrayNode>> procedureFunction =
+        getFetchProcedure();
+    return ApiService.linkProcessor(
+        listOfLinks,
+        procedureFunction,
+        Objects::nonNull,
+        Collector.of(mapper::createArrayNode, ArrayNode::addAll, ArrayNode::addAll),
+        Objects.isNull(retryPred) ? null : retryPred,
+        TimeUnit.SECONDS,
+        intervalTime,
+        retryAttempts,
+        retryFailedMsg);
+  }
+
+  /**
+   * Applies the fetch procedure to the link list.
+   *
+   * @return the fetch procedure BiFunction
+   */
+  @NonNull
+  @Contract(pure = true)
+  private BiFunction<HttpClient, String, CompletableFuture<ArrayNode>> getFetchProcedure() {
     Function<String, HttpRequest> requestFunction =
         link -> {
           wpSiteEngineLogger.debug("Processing link -> {} ", link);
