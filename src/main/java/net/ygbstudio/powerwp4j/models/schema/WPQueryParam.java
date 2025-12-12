@@ -31,7 +31,7 @@ import org.jspecify.annotations.NullMarked;
  * @author Yoham Gabriel B. @ YGBStudio
  */
 @NullMarked
-public enum WPQueryParam {
+public enum WPQueryParam implements QueryParamEnum {
   PER_PAGE("per_page="),
   PAGE("?page="),
   TIMESTAMP("_t=");
