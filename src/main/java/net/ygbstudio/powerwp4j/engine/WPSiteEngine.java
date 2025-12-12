@@ -163,7 +163,7 @@ public class WPSiteEngine {
    */
   @NonNull
   public Optional<HttpResponse<String>> connectWP(
-      @NonNull Map<WPQueryParam, String> queryParams, @NonNull WPRestPath pathParam)
+      @NonNull Map<QueryParamEnum, String> queryParams, @NonNull WPRestPath pathParam)
       throws IOException, InterruptedException {
     String url = makeRequestURL(apiBasePath, queryParams, pathParam);
     return ApiService.connectGetWP(url, username, applicationPassword, wpSiteEngineLogger);
