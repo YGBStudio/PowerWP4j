@@ -51,8 +51,8 @@ class CacheMetaTest {
     }
     CacheMeta writtenCacheMeta = readJsonFs(new File("sample_cache_meta.json"), CacheMeta.class);
     assertEquals(sampleCacheMeta, writtenCacheMeta);
-    assertEquals(writtenCacheMeta.cachedPages(), sampleCacheMeta.cachedPages());
-    assertEquals(writtenCacheMeta.cachedPosts(), sampleCacheMeta.cachedPosts());
+    assertEquals(writtenCacheMeta.totalPages(), sampleCacheMeta.totalPages());
+    assertEquals(writtenCacheMeta.totalPosts(), sampleCacheMeta.totalPosts());
     assertEquals(writtenCacheMeta.lastUpdated(), sampleCacheMeta.lastUpdated());
     sampleCacheMetaFile.deleteOnExit();
   }
