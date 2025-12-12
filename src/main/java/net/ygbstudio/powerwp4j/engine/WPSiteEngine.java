@@ -169,6 +169,13 @@ public class WPSiteEngine {
     return ApiService.connectGetWP(url, username, applicationPassword, wpSiteEngineLogger);
   }
 
+  /**
+   * Updates the cache metadata fields based on the WordPress response headers
+   * {@code x-wp-total} and {@code x-wp-totalpages}.
+   *
+   * @throws IOException if an I/O error occurs
+   * @throws InterruptedException if the thread is interrupted
+   */
   private void updateCacheMeta() throws IOException, InterruptedException {
     Optional<HttpResponse<String>> headersRequest =
         connectWP(
