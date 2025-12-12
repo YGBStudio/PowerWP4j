@@ -39,7 +39,7 @@ import org.jspecify.annotations.NullMarked;
  * @author Yoham Gabriel @ YGB Studio
  */
 @NullMarked
-public enum WPRestPath {
+public enum WPRestPath implements RestPathEnum {
   USERS("/users"),
   POSTS("/posts"),
   PHOTOS("/photos"),
