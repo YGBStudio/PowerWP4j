@@ -101,6 +101,14 @@ public final class ApiService {
     }
   }
 
+  /**
+   * Creates a request URL for the WordPress REST API.
+   *
+   * @param apiBasePath the base path for the WordPress REST API
+   * @param queryParams the query parameters to be used in the request
+   * @param pathParam the path parameter to be used in the request
+   * @return the request URL
+   */
   public static <E extends QueryParamEnum> String makeRequestURL(
       String apiBasePath, Map<E, String> queryParams, WPRestPath pathParam) {
     return apiBasePath + pathParam + QueryParamEnum.joinQueryParams(queryParams);
