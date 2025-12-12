@@ -44,7 +44,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import net.ygbstudio.powerwp4j.exceptions.InvalidApiUrlError;
-import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
+import net.ygbstudio.powerwp4j.extension.QueryParamEnum;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.utils.functional.TriggerCallable;
 import org.jspecify.annotations.NullMarked;
