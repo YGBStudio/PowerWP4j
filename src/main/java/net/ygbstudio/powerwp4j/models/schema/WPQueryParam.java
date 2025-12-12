@@ -34,10 +34,9 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 public enum WPQueryParam {
-  STATUS("?status="),
-  PER_PAGE("?per_page="),
+  PER_PAGE("per_page="),
   PAGE("?page="),
-  FIELDS_BASE("?_fields=");
+  TIMESTAMP("_t=");
 
   private final String value;
 
