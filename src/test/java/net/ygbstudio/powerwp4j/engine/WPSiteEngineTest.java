@@ -61,7 +61,7 @@ class WPSiteEngineTest {
     assertThat(user, not(emptyOrNullString()));
     assertThat(appPass, not(emptyOrNullString()));
     WPSiteEngine wpSiteEngine = new WPSiteEngine(fqdm, user, appPass);
-    Map<WPQueryParam, String> queryParams = Map.of(WPQueryParam.PER_PAGE, "10");
+    Map<QueryParamEnum, String> queryParams = Map.of(WPQueryParam.PER_PAGE, "10");
     try {
       Optional<HttpResponse<String>> wpSiteEngineResponse =
           wpSiteEngine.connectWP(queryParams, WPRestPath.POSTS);
