@@ -55,7 +55,7 @@ public interface QueryParamEnum {
    *     <p>String that can be used as a query string.
    */
   static <E extends QueryParamEnum> @NonNull String joinQueryParams(
-      Map<E, String> wpRestQueriesMap) {
+      @NonNull Map<E, String> wpRestQueriesMap) {
     if (wpRestQueriesMap.isEmpty()) return "";
     if (wpRestQueriesMap.keySet().stream().filter(param -> param.toString().startsWith("?")).count()
         != 1) {
