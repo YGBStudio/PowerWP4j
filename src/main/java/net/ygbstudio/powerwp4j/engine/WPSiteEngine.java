@@ -431,11 +431,21 @@ public class WPSiteEngine {
    *
    * @param cachePath the path to the cache file
    * @param overwriteCache whether to overwrite the cache file if it exists
-   * @throws IOException if an I/O error occurs
    */
   private void createCacheFile(@NonNull Path cachePath, boolean overwriteCache) {
-    File cacheFile = cachePath.toFile();
-    if (cacheFile.exists() && overwriteCache) {
+    TypedTrigger<Exception> exceptionLogging =
+        ex ->
+            wpSiteEngineLogger.debug(
+                "Rethrowing {} caused by: {} as {} while trying to create a new cache file",
+                ex.getClass().getSimpleName(),
+                ex.getCause().getMessage(),
+                CacheConstructionException.class);
+
+    Function<File, String> cacheExMsg =
+        file -> String.format("Unable to create a file at %s", file.getAbsolutePath());
+
+    File cachePathFile = cachePath.toFile();
+    if (cachePathFile.exists() && overwriteCache) {
       try {
         Files.delete(cachePath);
       } catch (IOException ioEx) {
