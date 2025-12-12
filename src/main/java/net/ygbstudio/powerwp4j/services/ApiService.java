@@ -179,6 +179,21 @@ public final class ApiService {
     return artifact;
   }
 
+  /**
+   * Processes a list of links using a client function and returns a result artifact.
+   *
+   * @param linkList the list of links to process
+   * @param clientProcedure the client function to use for link processing
+   * @param filterPred the predicate to use for filtering results
+   * @param collector the collector to use for collecting results
+   * @param retryPred the predicate to use for retrying results
+   * @param intervalUnit the time unit for the retry interval
+   * @param intervalTime the time for the retry interval
+   * @param retryAttempts the number of retry attempts
+   * @param retryFailedMessage the message to use for retry failure
+   * @param <R> the type of the result
+   * @return the result of the processing
+   */
   public static <R> R linkProcessor(
       List<String> linkList,
       BiFunction<HttpClient, String, CompletableFuture<R>> clientProcedure,
