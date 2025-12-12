@@ -7,12 +7,13 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.ygbstudio.powerwp4j.extension.QueryParamEnum;
 import org.hamcrest.core.StringRegularExpression;
 import org.junit.jupiter.api.Test;
 
 class WPQueryParamTest {
 
-  private final Map<WPQueryParam, String> queryParamMap =
+  private final Map<QueryParamEnum, String> queryParamMap =
       Map.of(
           WPQueryParam.PAGE, "3",
           WPQueryParam.PER_PAGE, "8");
