@@ -341,75 +341,63 @@ public class WPSiteEngine {
           return request.orElseThrow();
         };
 
-    ObjectMapper mapper = JsonSupport.getMapper();
-    wpSiteEngineLogger.info("Processing cache links for {}", apiBasePath);
-    ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-    ArrayNode wpJsonArray;
-    try (HttpClient client =
-        HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).executor(executor).build()) {
-      wpJsonArray =
-          linkList.parallelStream()
-              .map(
-                  link ->
-                      client
-                          .sendAsync(
-                              requestFunction.apply(link),
-                              BodyHandlers.ofString(StandardCharsets.UTF_8))
-                          .thenApply(HttpResponse::body)
-                          .thenApply(
-                              body -> {
-                                try {
-                                  JsonNode node = mapper.readTree(body);
-                                  if (!node.isArray()) {
-                                    wpSiteEngineLogger.debug(
-                                        "Expected JSON array but got {} for link {}",
-                                        node.getNodeType(),
-                                        link);
-                                    return null;
-                                  }
-                                  return (ArrayNode) node;
-                                } catch (Exception ex) {
-                                  wpSiteEngineLogger.debug(
-                                      "Failed parsing JSON for link {}: {}", link, ex.getMessage());
-                                  return null;
-                                }
-                              })
-                          .exceptionally(
-                              ex -> {
-                                wpSiteEngineLogger.debug(
-                                    "Failed processing link {} due to {} cause: {}",
-                                    link,
-                                    ex.getClass().getSimpleName(),
-                                    ex.getCause() != null ? ex.getCause().getMessage() : "unknown");
-                                return null;
-                              }))
-              .map(CompletableFuture::join)
-              .filter(Objects::nonNull)
-              .collect(
-                  Collector.of(
-                      mapper::createArrayNode,
-                      ArrayNode::addAll, // add items from each ArrayNode
-                      ArrayNode::addAll));
+    return (client, link) ->
+        client
+            .sendAsync(requestFunction.apply(link), BodyHandlers.ofString(StandardCharsets.UTF_8))
+            .thenApply(HttpResponse::body)
+            .thenApply(
+                body -> {
+                  try {
+                    JsonNode node = JsonSupport.getMapper().readTree(body);
+                    if (!node.isArray()) {
+                      wpSiteEngineLogger.debug(
+                          "Expected JSON array but got {} for link {}", node.getNodeType(), link);
+                      return null;
+                    }
+                    return (ArrayNode) node;
+                  } catch (Exception ex) {
+                    wpSiteEngineLogger.debug(
+                        "Failed parsing JSON for link {}: {}", link, ex.getMessage());
+                    return null;
+                  }
+                })
+            .exceptionally(
+                ex -> {
+                  wpSiteEngineLogger.debug(
+                      "Failed processing link {} due to {} cause: {}",
+                      link,
+                      ex.getClass().getSimpleName(),
+                      ex.getCause() != null ? ex.getCause().getMessage() : "unknown");
+                  return null;
+                });
+  }
 
-    } finally {
-      executor.shutdown();
-      try {
-        if (!executor.awaitTermination(TASK_TERMINATION_TIMEOUT_MINS, TimeUnit.MINUTES)) {
-          executor.shutdownNow();
-        }
-      } catch (InterruptedException e) {
-        executor.shutdownNow();
-        Thread.currentThread().interrupt();
-      }
-    }
-
+  /**
+   * Writes the local cache file from a JSON array to a file on the filesystem.
+   *
+   * @param cachePath the path to the cache file
+   * @param wpJsonArray the JSON array to write
+   * @param overwriteCache whether to overwrite the cache file if it exists
+   * @param isUpdate whether the cache is being updated
+   * @throws IOException if an I/O error occurs
+   */
+  private void writeCacheFs(
+      @NonNull Path cachePath,
+      @NonNull ArrayNode wpJsonArray,
+      boolean overwriteCache,
+      boolean isUpdate)
+      throws IOException {
     createCacheFile(cachePath, overwriteCache);
-    loadCacheMetaData(cachePath);
     try (FileWriter writer = new FileWriter(cachePath.toFile(), StandardCharsets.UTF_8)) {
-      mapper.writerWithDefaultPrettyPrinter().writeValue(writer, wpJsonArray);
+      JsonSupport.getMapper().writerWithDefaultPrettyPrinter().writeValue(writer, wpJsonArray);
     }
+
+    if (isUpdate) {
+      wpSiteEngineLogger.info("Cache has been updated at {}", cachePath);
+      return;
+    }
+
     wpSiteEngineLogger.info("Cache created successfully at {}", cachePath);
-    cacheFile = cachePath.toFile();
   }
 
   /**
