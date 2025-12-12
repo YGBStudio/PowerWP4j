@@ -165,28 +165,75 @@ public class WPSiteEngine {
       @NonNull Map<WPQueryParam, String> queryParams, @NonNull WPRestPath pathParam)
       throws IOException, InterruptedException {
     String url = makeRequestURL(apiBasePath, queryParams, pathParam);
-    return ApiService.connectWP(url, username, applicationPassword, wpSiteEngineLogger);
+    return ApiService.connectGetWP(url, username, applicationPassword, wpSiteEngineLogger);
   }
 
-  /**
-   * Populates the link list with the links to the WordPress REST API after accesing the headers of
-   * the response to determine the total number of pages and posts in a WordPress site.
-   *
-   * @param perPage the number of posts per page
-   * @throws IOException if an I/O error occurs
-   * @throws InterruptedException if the thread is interrupted
-   */
-  private void populateLinkList(int perPage) throws IOException, InterruptedException {
-    // Minimal request to gather cache metadata
+  private void updateCacheMeta() throws IOException, InterruptedException {
     Optional<HttpResponse<String>> headersRequest =
-        connectWP(Map.of(WPQueryParam.PER_PAGE, String.valueOf(perPage)), WPRestPath.POSTS);
+        connectWP(
+            Map.of(
+                WPQueryParam.PAGE,
+                String.valueOf(1),
+                WPQueryParam.PER_PAGE,
+                String.valueOf(DEFAULT_PER_PAGE)),
+            WPRestPath.POSTS);
     if (headersRequest.isPresent()) {
       Map<String, List<String>> headers = headersRequest.get().headers().map();
       long wpTotal = Long.parseLong(headers.get("x-wp-total").getFirst());
       long wpTotalPages = Long.parseLong(headers.get("x-wp-totalpages").getFirst());
       wpCacheMeta =
           new CacheMeta(wpTotalPages, wpTotal, LocalDate.ofInstant(Instant.now(), ZoneOffset.UTC));
-      linkList = linkListCreator(wpTotalPages, DEFAULT_PER_PAGE);
+    }
+  }
+
+  /**
+   * Loads the cache metadata from the local classpath/filesystem or creates a new cache metadata
+   * file in case it does not exist, or it is empty.
+   *
+   * @param cachePath the path to the cache file
+   * @param overwriteMetaFile whether to overwrite the cache metadata file if it exists
+   */
+  private void loadCacheMetaData(@NonNull Path cachePath, boolean overwriteMetaFile) {
+    String cacheName = cachePath.toFile().getName();
+    String cacheDir = cachePath.toFile().getParent();
+    String cacheMetadataFileName = cacheName.replaceFirst("\\.json$", "") + "_metadata.json";
+    cacheMetadataFilePath =
+        Path.of(Objects.requireNonNullElse(cacheDir, ""), cacheMetadataFileName);
+    File cacheMetadataFile = cacheMetadataFilePath.toFile();
+
+    BiConsumer<File, CacheMeta> writeCacheMetaData =
+        (file, cacheObj) -> {
+          writeJsonFs(file, cacheObj);
+          wpCacheMeta = readJsonFs(file, CacheMeta.class);
+          wpSiteEngineLogger.info(
+              overwriteMetaFile
+                  ? "Replaced cache metadata file"
+                  : "Successfully created cache metadata.");
+        };
+
+    Consumer<File> loadCacheMetaData =
+        file -> {
+          wpCacheMeta = readJsonFs(file, CacheMeta.class);
+          wpSiteEngineLogger.info("Loading cache metadata from: {}", file.getAbsolutePath());
+        };
+
+    if (cacheMetadataFile.exists() && cacheFile.exists()) {
+      if (overwriteMetaFile) {
+        writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
+        return;
+      }
+      loadCacheMetaData.accept(cacheMetadataFile);
+    } else if (cacheMetadataFile.length() == 0 && wpCacheMeta != null) {
+      writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
+    } else if (!cacheFile.exists()) {
+      wpSiteEngineLogger.warn(
+          "Cache metadata can't be created since the associated cache file does not exist.");
+      throw new CacheMetaDataException(
+          () -> "Cache file does not exist at : " + cacheMetadataFile.getAbsolutePath());
+    } else if (overwriteMetaFile && wpCacheMeta != null) {
+      writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
+    } else {
+      throw new CacheMetaDataException("Failed to create cache metadata");
     }
   }
 
