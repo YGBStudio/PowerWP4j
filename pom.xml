@@ -33,6 +33,12 @@
             <artifactId>jspecify</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+          <groupId>org.jetbrains</groupId>
+          <artifactId>annotations</artifactId>
+          <version>26.0.2-1</version>
+          <scope>provided</scope>
+        </dependency>
         <!-- Logging Dependencies -->
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
