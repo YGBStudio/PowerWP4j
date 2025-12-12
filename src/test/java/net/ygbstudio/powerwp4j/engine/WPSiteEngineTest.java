@@ -53,7 +53,7 @@ class WPSiteEngineTest {
     queryParams.put(WPQueryParam.PER_PAGE, "10");
     return engineInstance.getApiBasePath()
         + WPRestPath.POSTS
-        + WPQueryParam.joinQueryParams(queryParams);
+        + QueryParamEnum.joinQueryParams(queryParams);
   }
 
   @Test
