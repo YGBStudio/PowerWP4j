@@ -103,10 +103,13 @@ public class WPSiteEngine {
 
   /**
    * Initializes a new instance of the WPSiteEngine class. If a local WordPress cache is found, it
-   * is loaded into memory, otherwise a new cache must be created using the corresponding method.
+   * is loaded into memory, otherwise a new cache must be created using the {@link
+   * WPSiteEngine#fetchJsonCache(Path cachePath, boolean overwriteCache)} or {@link
+   * WPSiteEngine#fetchJsonCache(boolean overwriteCache)} if you already provided a path in the
+   * constructor.
    *
    * <p>A local cache is not created automatically since the client must handle any exceptions that
-   * result from the cache creation process to ensure maximum control of client-specific control,
+   * result from the cache creation process to ensure maximum control of client-specific flows,
    * exception handling, and logging styles.
    *
    * @param fullyQualifiedDomainName the fully qualified domain name of the WordPress site
