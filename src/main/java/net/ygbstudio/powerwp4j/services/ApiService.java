@@ -67,6 +67,15 @@ public final class ApiService {
 
   private ApiService() {}
 
+  /**
+   * Builds a GET request for the WordPress REST API.
+   *
+   * @param url the URL to connect to
+   * @param username the username for the WordPress site
+   * @param applicationPassword the application password for the WordPress site
+   * @param classLogger the logger to use for logging
+   * @return an Optional containing the request
+   */
   public static Optional<HttpRequest> buildWpGetRequest(
       String url, String username, String applicationPassword, @Nullable Logger classLogger) {
     BinaryOperator<String> encodeAuthStr =
