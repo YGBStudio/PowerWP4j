@@ -126,7 +126,7 @@ public class WPSiteEngine {
     this.username = username;
     this.applicationPassword = applicationPassword;
     this.cachePath = cachePath;
-    cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
+    if (cachePath != null) cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
     apiBasePath = String.format("https://%s/wp-json/wp/v2", this.fullyQualifiedDomainName);
     wpSiteEngineLogger.info("Initialized WPSiteEngine for site: {}", fullyQualifiedDomainName);
     wpSiteEngineLogger.info("API Base Path set to: {}", apiBasePath);
