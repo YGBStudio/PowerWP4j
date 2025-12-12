@@ -244,19 +244,18 @@ public class WPSiteEngine {
    * @param perPage the number of posts per page
    * @return a list of links to the WordPress REST API
    */
+  @Unmodifiable
   @NonNull
   private List<String> linkListCreator(long totalPages, int perPage) {
+    Map<WPQueryParam, String> queryParams = new EnumMap<>(WPQueryParam.class);
     return LongStream.range(1, totalPages + 1)
         .mapToObj(
-            i ->
-                makeRequestURL(
-                    apiBasePath,
-                    Map.of(
-                        WPQueryParam.PAGE,
-                        String.valueOf(i),
-                        WPQueryParam.PER_PAGE,
-                        String.valueOf(perPage)),
-                    WPRestPath.POSTS))
+            i -> {
+              if (!queryParams.isEmpty()) queryParams.clear();
+              queryParams.put(WPQueryParam.PAGE, String.valueOf(i));
+              if (perPage > 0) queryParams.put(WPQueryParam.PER_PAGE, String.valueOf(perPage));
+              return makeRequestURL(apiBasePath, queryParams, WPRestPath.POSTS);
+            })
         .toList();
   }
 
