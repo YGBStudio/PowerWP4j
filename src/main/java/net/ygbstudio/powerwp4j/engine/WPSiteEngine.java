@@ -140,8 +140,6 @@ public class WPSiteEngine {
    * create the cache file using the {@link WPSiteEngine#fetchJsonCache(Path cachepath, boolean
    * overwriteCache)} method.
    *
-   * <p>
-   *
    * @param fullyQualifiedDomainName the fully qualified domain name of the WordPress site
    * @param username the username for the WordPress site
    * @param applicationPassword the application password for the WordPress site
