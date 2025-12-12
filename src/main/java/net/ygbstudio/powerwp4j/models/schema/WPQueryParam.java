@@ -42,31 +42,6 @@ public enum WPQueryParam implements QueryParamEnum {
     this.value = value;
   }
 
-  public static String joinQueryParams(Map<WPQueryParam, String> wpRestQueriesMap) {
-    if (wpRestQueriesMap.isEmpty()) return "";
-    if (wpRestQueriesMap.keySet().stream().filter(param -> param.toString().startsWith("?")).count()
-        != 1) {
-      throw new IllegalArgumentException("You need to include only one leading query parameter");
-    }
-    Comparator<WPQueryParam> leadingParam =
-        Comparator.comparing(param -> param.toString().startsWith("?"));
-    List<WPQueryParam> sortedParams =
-        wpRestQueriesMap.keySet().stream().sorted(leadingParam).toList();
-
-    StringBuilder pathString = new StringBuilder();
-    sortedParams
-        .reversed()
-        .forEach(
-            param -> {
-              if (!pathString.isEmpty() && !param.toString().startsWith("?"))
-                pathString.append("&");
-              pathString.append(param);
-              pathString.append(wpRestQueriesMap.get(param));
-            });
-
-    return pathString.toString();
-  }
-
   @Override
   public String toString() {
     return value;
