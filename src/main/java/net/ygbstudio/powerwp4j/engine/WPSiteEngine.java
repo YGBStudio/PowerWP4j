@@ -63,6 +63,7 @@ import java.util.stream.LongStream;
 import net.ygbstudio.powerwp4j.exceptions.CacheConstructionException;
 import net.ygbstudio.powerwp4j.exceptions.CacheFileSystemException;
 import net.ygbstudio.powerwp4j.exceptions.CacheMetaDataException;
+import net.ygbstudio.powerwp4j.extension.QueryParamEnum;
 import net.ygbstudio.powerwp4j.models.entities.CacheMeta;
 import net.ygbstudio.powerwp4j.models.entities.Post;
 import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
