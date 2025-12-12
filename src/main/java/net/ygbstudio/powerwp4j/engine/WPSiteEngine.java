@@ -320,7 +320,7 @@ public class WPSiteEngine {
         Objects::nonNull,
         Collector.of(mapper::createArrayNode, ArrayNode::addAll, ArrayNode::addAll),
         Objects.isNull(retryPred) ? null : retryPred,
-        TimeUnit.SECONDS,
+        intervalUnit,
         intervalTime,
         retryAttempts,
         retryFailedMsg);
