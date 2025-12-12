@@ -182,7 +182,7 @@ public final class ApiService {
         && !retryPred.test(resultType)
         && retryAttempts >= retryCount
         && intervalUnit != null) {
-      retryCount++;
+      ++retryCount;
       apiServiceLogger.info(
           "Retrying the last batch of links. Attempt: {}/{}", retryCount, retryAttempts);
       resultType = processLinks.get();
