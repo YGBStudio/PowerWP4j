@@ -270,7 +270,9 @@ public class WPSiteEngine {
 
     if (Objects.isNull(linkList) || linkList.isEmpty()) {
       try {
-        populateLinkList(DEFAULT_PER_PAGE);
+        updateCacheMeta();
+        loadCacheMetaData(cachePath, true);
+        linkList = linkListCreator(wpCacheMeta.totalPages(), DEFAULT_PER_PAGE);
       } catch (IOException ioEx) {
         wpSiteEngineLogger.warn(
             "Failed to gather WordPress post metadata. Check your connection", ioEx);
