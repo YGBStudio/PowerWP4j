@@ -1,6 +1,7 @@
 package net.ygbstudio.powerwp4j.engine;
 
 import static net.ygbstudio.powerwp4j.utils.Helpers.getPropertiesFromResources;
+import static org.assertj.core.api.Assertions.assertThatException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
