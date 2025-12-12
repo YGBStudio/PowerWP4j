@@ -453,62 +453,19 @@ public class WPSiteEngine {
             "Rethrowing {} as {} while trying to overwrite a cache file",
             ioEx.getClass().getSimpleName(),
             CacheConstructionException.class);
-        throw new CacheConstructionException(
-            () -> String.format("Unable to create a file at %s", cacheFile.getAbsolutePath()));
+        throw new CacheConstructionException(cacheExMsg.apply(cachePathFile));
       }
-    } else if (!cacheFile.exists()) {
+    } else if (!cachePathFile.exists()) {
       try {
         Files.createFile(cachePath);
+        updateCacheMeta();
       } catch (IOException ioEx) {
-        wpSiteEngineLogger.debug(
-            "Rethrowing {} as {} while trying to create a new cache file",
-            ioEx.getClass().getSimpleName(),
-            CacheConstructionException.class);
-        throw new CacheConstructionException(
-            () -> String.format("Unable to create a file at %s", cacheFile.getAbsolutePath()));
-      }
-    }
-  }
-
-  /**
-   * Loads the cache metadata from the local classpath/filesystem or creates a new cache metadata
-   * file in case it does not exist, or it is empty.
-   *
-   * @param cachePath the path to the cache file
-   */
-  private void loadCacheMetaData(@NonNull Path cachePath) {
-    String cacheName = cachePath.toFile().getName();
-    String cacheDir = cachePath.toFile().getParent();
-    String cacheMetadataFileName = cacheName.replaceAll("\\.json$", "") + "_metadata.json";
-    cacheMetadataFilePath =
-        Path.of(Objects.requireNonNullElse(cacheDir, ""), cacheMetadataFileName);
-
-    Consumer<Path> writeCacheMetaData =
-        path -> {
-          writeJsonFs(cacheMetadataFilePath.toFile(), wpCacheMeta);
-          wpCacheMeta = readJsonFs(cacheMetadataFilePath.toFile(), CacheMeta.class);
-          wpSiteEngineLogger.info("Successfully created cache metadata.");
-        };
-
-    Consumer<Path> loadCacheMetaData =
-        path -> {
-          wpCacheMeta = readJsonFs(path.toFile(), CacheMeta.class);
-          wpSiteEngineLogger.info("Loading cache metadata from file: {}", path);
-        };
-
-    if (Files.exists(cacheMetadataFilePath)) {
-      loadCacheMetaData.accept(cacheMetadataFilePath);
-    } else if (cacheMetadataFilePath.toFile().length() == 0) {
-      wpSiteEngineLogger.warn("Cache metadata file is empty.");
-      if (Files.exists(cachePath)) {
-        writeCacheMetaData.accept(cachePath);
-      } else if (wpCacheMeta != null) {
-        writeCacheMetaData.accept(cacheMetadataFilePath);
-      } else {
-        wpSiteEngineLogger.warn(
-            "Cache metadata can't be created since the associated cache file does not exist.");
-        throw new CacheMetaDataException(
-            () -> "Cache file does not exist at : " + cacheMetadataFilePath);
+        exceptionLogging.activate(ioEx);
+        throw new CacheConstructionException(cacheExMsg.apply(cachePathFile));
+      } catch (InterruptedException intEx) {
+        Thread.currentThread().interrupt();
+        exceptionLogging.activate(intEx);
+        throw new CacheConstructionException(cacheExMsg.apply(cachePathFile));
       }
     }
   }
@@ -518,11 +475,129 @@ public class WPSiteEngine {
    * exist, returns null.
    *
    * @return a FileReader for the cache file, or null if the cache file does not exist
-   * @throws FileNotFoundException if the cache file does not exist
+   * @throws IOException if an I/O error occurs
    */
   @Nullable
-  public FileReader getCacheReader() throws FileNotFoundException {
-    return cacheFile.exists() ? new FileReader(cacheFile) : null;
+  public FileReader getCacheReader() throws IOException {
+    return cacheFile.exists() ? new FileReader(cacheFile, StandardCharsets.UTF_8) : null;
+  }
+
+  /**
+   * Returns a FileWriter for the cache file after verifying its existence, in case it does not
+   * exist, returns null.
+   *
+   * @return a FileWriter for the cache file, or null if the cache file does not exist
+   * @throws IOException if an I/O error occurs
+   */
+  @Nullable
+  private FileWriter getCacheWriter() throws IOException {
+    return cacheFile.exists() ? new FileWriter(cacheFile, StandardCharsets.UTF_8) : null;
+  }
+
+  /**
+   * Synchronizes the cache file with the WordPress site.
+   *
+   * @return true if the cache was successfully synchronized, false if the cache is up-to-date.
+   * @throws InterruptedException if the thread is interrupted
+   */
+  public boolean cacheSync() throws InterruptedException {
+    Supplier<String> notFoundMsg = () -> "Cache file does not exist at + " + cachePath;
+    TypedTrigger<Exception> ioExceptionLogging =
+        ex ->
+            wpSiteEngineLogger.debug(
+                "Failed to read cache file: {} caused by: {}",
+                ex.getMessage(),
+                ex.getCause().getMessage());
+
+    TypedTrigger<String> throwCacheException =
+        exMsg -> {
+          throw new CacheFileSystemException(() -> "Failed to read cache file: " + exMsg);
+        };
+
+    if (wpCacheMeta == null) loadCacheMetaData(cachePath, false);
+
+    CacheMeta cacheMetaOld =
+        new CacheMeta(
+            wpCacheMeta.totalPages(),
+            wpCacheMeta.totalPosts(),
+            LocalDate.ofInstant(Instant.now(), ZoneOffset.UTC));
+
+    try {
+      updateCacheMeta();
+      loadCacheMetaData(cachePath, true);
+    } catch (IOException ioEx) {
+      ioExceptionLogging.activate(ioEx);
+      throwCacheException.activate(ioEx.getMessage());
+    }
+
+    ArrayNode fromCache = null;
+    try (FileReader cacheReader = getCacheReader()) {
+      if (cacheReader == null) {
+        wpSiteEngineLogger.debug(notFoundMsg.get());
+        throw new FileNotFoundException(notFoundMsg.get());
+      }
+      fromCache = jsonReader(cacheReader, ArrayNode.class);
+    } catch (IOException ieEx) {
+      ioExceptionLogging.activate(ieEx);
+      throwCacheException.activate(ieEx.getMessage());
+    }
+
+    long nodeDiff = wpCacheMeta.totalPosts() - cacheMetaOld.totalPosts();
+    long pageDiff = wpCacheMeta.totalPages() - cacheMetaOld.totalPages();
+    wpSiteEngineLogger.info("Node diff: {}", nodeDiff);
+    wpSiteEngineLogger.info("Page diff: {}", pageDiff);
+
+    if (nodeDiff == 0 && pageDiff == 0) {
+      wpSiteEngineLogger.info("{} Cache is up-to-date", fullyQualifiedDomainName);
+      return false;
+    }
+
+    linkList =
+        linkListCreator(wpCacheMeta.totalPages(), DEFAULT_PER_PAGE).stream()
+            // Each page has a default number of items and,
+            // if the number of pages is less than the default number of items,
+            // those may be contained in the last page
+            .limit(nodeDiff < DEFAULT_PER_PAGE && pageDiff == 0 ? pageDiff + 1 : pageDiff)
+            .toList();
+
+    Comparator<JsonNode> jsonNodeComparator =
+        (jsonNode1, jsonNode2) -> {
+          long id1 = jsonNode1.get("id").asLong();
+          long id2 = jsonNode2.get("id").asLong();
+          return Long.compare(id1, id2);
+        };
+
+    long lastId =
+        fromCache.valueStream().sorted(jsonNodeComparator).toList().getLast().get("id").asLong();
+
+    Predicate<ArrayNode> testForLastElem =
+        elem ->
+            elem.valueStream().sorted(jsonNodeComparator).toList().getLast().get("id").asLong()
+                > lastId;
+
+    List<JsonNode> updatedPosts =
+        fetchJsonCache(
+                linkList,
+                testForLastElem,
+                3,
+                2,
+                TimeUnit.SECONDS,
+                () -> "Failed to fetch new cache pages. Reached maximum retry attempts")
+            .valueStream()
+            .sorted(jsonNodeComparator.reversed())
+            .limit(nodeDiff)
+            .toList();
+
+    fromCache.addAll(updatedPosts);
+
+    try {
+      writeCacheFs(cacheFile.toPath(), fromCache, true, true);
+    } catch (IOException ioEx) {
+      wpSiteEngineLogger.debug(
+          "Caught {} caused by {}", ioEx.getClass().getSimpleName(), ioEx.getCause().getMessage());
+      throw new CacheFileSystemException(() -> "Failed to write cache file: " + ioEx.getMessage());
+    }
+    return true;
   }
 
   public String getFullyQualifiedDomainName() {
