@@ -20,26 +20,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package net.ygbstudio.powerwp4j.extension;
+package net.ygbstudio.powerwp4j.base.extension;
+
+import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 
 /**
  * RestPathEnum is an interface that promotes unified type for rest paths and a {@code toString}
  * method to ensure consistency with the design practices of the project. It can be used as a means
  * to provide your own rest paths to the WPSiteEngine safely.
  *
+ * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface RestPathEnum {
-
-  /**
-   * Returns the string representation of the rest path. This is a common override of the {@link
-   * Object#toString()} method.
-   *
-   * <p>The design recommendation of this project is to return the {@code Enum} value as the string
-   * representation of the rest path to make sure the methods and helper utilities work as expected
-   * in this project.
-   *
-   * @return the string value of the rest path as provided in its constructor
-   */
-  String toString();
-}
+public interface RestPathEnum extends FriendlyEnum {}
