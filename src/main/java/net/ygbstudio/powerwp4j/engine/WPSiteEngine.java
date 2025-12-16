@@ -239,10 +239,9 @@ public class WPSiteEngine {
     } else if (cacheMetadataFile.length() == 0 && wpCacheMeta != null) {
       writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
     } else if (!cacheFile.exists()) {
-      wpSiteEngineLogger.warn(
-          "Cache metadata can't be created since the associated cache file does not exist.");
-      throw new CacheMetaDataException(
-          () -> "Cache file does not exist at : " + cacheMetadataFile.getAbsolutePath());
+      if (wpCacheMeta == null && cacheMetadataFile.exists()) {
+        loadCacheMetaData.accept(cacheMetadataFile);
+      }
     } else if (overwriteMetaFile && wpCacheMeta != null) {
       writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
     } else {
