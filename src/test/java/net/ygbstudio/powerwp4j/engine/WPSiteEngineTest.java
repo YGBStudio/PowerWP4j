@@ -11,33 +11,44 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.io.File;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import net.ygbstudio.powerwp4j.extension.QueryParamEnum;
+import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
+import net.ygbstudio.powerwp4j.builders.WPBasicPayloadBuilder;
+import net.ygbstudio.powerwp4j.builders.WPMediaPayloadBuilder;
+import net.ygbstudio.powerwp4j.models.schema.WPPostType;
 import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
+import net.ygbstudio.powerwp4j.models.schema.WPStatus;
+import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import net.ygbstudio.powerwp4j.utils.functional.TypedTrigger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
 
 class WPSiteEngineTest {
 
   private String user;
   private String appPass;
   private String fqdm;
+  private WPSiteEngine wpSite;
+  private final File cacheFile = new File("wp-posts.json");
+  private final WPBasicPayloadBuilder payloadBuilder = WPBasicPayloadBuilder.builder();
 
   private static final Logger wpSiteEngineTestLogger =
       LoggerFactory.getLogger(WPSiteEngineTest.class);
 
   @BeforeEach
   void setUp() {
+    // Create this file in the resources folder
     Optional<Properties> props = getPropertiesFromResources("appConfig.properties");
     if (props.isPresent()) {
       Properties appProps = props.get();
@@ -45,6 +56,7 @@ class WPSiteEngineTest {
       this.appPass = appProps.getProperty("wp.applicationPass");
       this.fqdm = appProps.getProperty("wp.fullyQualifiedDomainName");
     }
+    wpSite = new WPSiteEngine(fqdm, user, appPass, cacheFile.toPath());
   }
 
   String makeSiteUrl(WPSiteEngine engineInstance, long pageNumber) {
