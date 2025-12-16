@@ -138,4 +138,85 @@ class WPSiteEngineTest {
       exceptionMessage.activate(e);
     }
   }
+
+  @Test
+  @Disabled
+  void wpSiteEngineCreatePostTest() {
+    // Create a post
+    payloadBuilder
+        .clear()
+        .title("Test Post")
+        .status(WPStatus.DRAFT)
+        .slug("test-posts-2025")
+        .content("This is a test post")
+        .featuredMedia(0)
+        .type(WPPostType.POST)
+        .categories(List.of(1, 2))
+        .tags(List.of(45, 89));
+    wpSiteEngineTestLogger.info(payloadBuilder.build().toString());
+    Optional<HttpResponse<String>> response = wpSite.createPost(payloadBuilder.build());
+    assertThat(response.isPresent(), is(true));
+    assertThat(response.get().statusCode(), is(201));
+    assertThat(response.get().body(), not(emptyOrNullString()));
+    wpSiteEngineTestLogger.info(response.get().body());
+
+    // Change post status
+    ObjectMapper mapper = JsonSupport.getMapper();
+    response = wpSite.createPost(payloadBuilder.build());
+    long createdId = 0;
+    if (response.isPresent()) {
+      System.out.println(response.get().body());
+      createdId =
+          response
+              .map(HttpResponse::body)
+              .map(mapper::readTree)
+              .map(item -> item.get("id").asLong())
+              .get();
+    }
+
+    response = wpSite.changePostStatus(createdId, WPStatus.TRASH);
+    wpSiteEngineTestLogger.info(response.get().body());
+
+    if (createdId > 0) {
+      // Delete post if created
+      response = wpSite.deletePost(createdId);
+      System.out.println(response.get().body());
+    } else {
+      wpSiteEngineTestLogger.error("Post not created");
+    }
+  }
+
+  @Test
+  @Disabled
+  void wpSiteEngineUploadMediaTest() {
+    WPMediaPayloadBuilder mediaPayloadBuilder = WPMediaPayloadBuilder.builder();
+    mediaPayloadBuilder
+        .altText("this is a sample image")
+        .caption("this is a sample image")
+        .description("screenshot");
+    wpSiteEngineTestLogger.info(mediaPayloadBuilder.build().toString());
+    // Make sure to change this to the file you'll be uploading
+    Optional<HttpResponse<String>> response =
+        wpSite.uploadMedia(Path.of("sample.png"), mediaPayloadBuilder.build());
+    assertThat(response.isPresent(), is(true));
+    wpSiteEngineTestLogger.info(response.get().body());
+  }
+
+  @Test
+  @Disabled
+  void wpEngineAddTagTest() {
+    payloadBuilder.clear().name("powerwp4j");
+    Optional<HttpResponse<String>> response = wpSite.addTag(payloadBuilder.build());
+    assertThat(response.isEmpty(), is(false));
+    wpSiteEngineTestLogger.info(response.get().body());
+  }
+
+  @Test
+  @Disabled
+  void wpEngineAddCategoryTest() {
+    payloadBuilder.clear().name("powerwp4j-category");
+    Optional<HttpResponse<String>> response = wpSite.addCategory(payloadBuilder.build());
+    assertThat(response.isEmpty(), is(false));
+    wpSiteEngineTestLogger.info(response.get().body());
+  }
 }
