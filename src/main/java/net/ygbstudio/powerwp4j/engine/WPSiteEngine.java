@@ -325,7 +325,7 @@ public class WPSiteEngine {
     ObjectMapper mapper = JsonSupport.getMapper();
     BiFunction<HttpClient, String, CompletableFuture<ArrayNode>> procedureFunction =
         getFetchProcedure();
-    return ApiService.linkProcessor(
+    return HttpRequestService.linkProcessor(
         listOfLinks,
         procedureFunction,
         Objects::nonNull,
