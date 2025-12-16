@@ -617,6 +617,93 @@ public class WPSiteEngine {
     return true;
   }
 
+  /**
+   * Creates a new post in the WordPress site using the REST API.
+   *
+   * @param payload The JSON payload representing the post to be created.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public Optional<HttpResponse<String>> createPost(JsonNode payload) {
+    return RestClientService.postCreate(apiBasePath, username, applicationPassword, payload);
+  }
+
+  /**
+   * Deletes a post from the WordPress site using the REST API.
+   *
+   * @param postId The ID of the post to be deleted.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public Optional<HttpResponse<String>> deletePost(long postId) {
+    return RestClientService.postDelete(apiBasePath, username, applicationPassword, postId);
+  }
+
+  /**
+   * Changes the status of a post on the WordPress site using the REST API.
+   *
+   * @param postId The ID of the post to have its status changed.
+   * @param status The new status of the post.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public Optional<HttpResponse<String>> changePostStatus(long postId, PostStatusEnum status) {
+    WPBasicPayloadBuilder builder = WPBasicPayloadBuilder.builder();
+    builder.status(status);
+    return RestClientService.changePostStatus(
+        apiBasePath, username, applicationPassword, postId, builder.build());
+  }
+
+  /**
+   * Adds a tag to the WordPress site using the REST API.
+   *
+   * @param payload The JSON payload representing the new tag.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public Optional<HttpResponse<String>> addTag(JsonNode payload) {
+    return RestClientService.addTag(apiBasePath, username, applicationPassword, payload);
+  }
+
+  /**
+   * Adds a category to the WordPress site using the REST API.
+   *
+   * @param payload The JSON payload representing the new category.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public Optional<HttpResponse<String>> addCategory(JsonNode payload) {
+    return RestClientService.addCategory(apiBasePath, username, applicationPassword, payload);
+  }
+
+  /**
+   * Uploads a media file to the WordPress site using the REST API.
+   *
+   * @param attachmentPath The file path of the media to be uploaded.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   * @throws MediaUploadError if the media upload request fails.
+   */
+  public Optional<HttpResponse<String>> uploadMedia(Path attachmentPath) {
+    return RestClientService.uploadMedia(
+        apiBasePath, username, applicationPassword, attachmentPath, null);
+  }
+
+  /**
+   * Uploads a media file to the WordPress site using the REST API and attaches a payload to the
+   * media file.
+   *
+   * @param attachmentPath The file path of the media to be uploaded.
+   * @param payload The JSON payload representing the media.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   * @throws MediaUploadError if the media upload request fails.
+   */
+  public Optional<HttpResponse<String>> uploadMedia(Path attachmentPath, JsonNode payload) {
+    return RestClientService.uploadMedia(
+        apiBasePath, username, applicationPassword, attachmentPath, payload);
+  }
+
   public String getFullyQualifiedDomainName() {
     return fullyQualifiedDomainName;
   }
