@@ -92,15 +92,14 @@ class WPSiteEngineTest {
 
   @Test
   void makeRequestNoLeadingParameterTest() {
-    WPSiteEngine wpSiteEngine = new WPSiteEngine("https://example.com", user, appPass);
     assertThatException()
-        .isThrownBy(() -> makeSiteUrl(wpSiteEngine, 0))
+        .isThrownBy(() -> makeSiteUrl(wpSite, 0))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
   void makeRequestTest() {
-    WPSiteEngine wpSiteEngine = new WPSiteEngine("https://example.com", user, appPass);
+    WPSiteEngine wpSiteEngine = new WPSiteEngine("example.com", "user", "pass");
     String url = makeSiteUrl(wpSiteEngine, 1);
     assertThat(url, is("https://example.com/wp-json/wp/v2/posts?page=1&per_page=10"));
   }
@@ -109,24 +108,28 @@ class WPSiteEngineTest {
    * Tests the fetchJsonCache method. This is a controlled test that requires the user to add a post
    * and then run the {@code cacheSync} method to make sure it updates the cache as expected. That
    * is the reason why this test is disabled by default due to manual intervention.
+   *
+   * <p>The following tests have also been disabled for a similar reason as every WordPress site is
+   * different.
    */
   @Test
   @Disabled
   void fetchJsonCacheTest() {
     TypedTrigger<Exception> exceptionMessage =
         ex -> wpSiteEngineTestLogger.error("Exception caught in fetchJsonCacheTest", ex);
-    File cache = new File("wp-posts.json");
-    WPSiteEngine wpSiteEngine = new WPSiteEngine(fqdm, user, appPass, cache.toPath());
     try {
-      wpSiteEngine.fetchJsonCache(true);
-      boolean updatePerformed = wpSiteEngine.cacheSync();
+      wpSite.fetchJsonCache(true);
+      boolean updatePerformed = wpSite.cacheSync();
       // No update took place
       assertThat(updatePerformed, is(false));
       System.out.println("Sleeping....");
+      // Add a post - Adjust the time as needed
       TimeUnit.SECONDS.sleep(45);
-      updatePerformed = wpSiteEngine.cacheSync();
+      updatePerformed = wpSite.cacheSync();
+      // Then the cacheSync algorithm must detect the change and update
       assertThat(updatePerformed, is(true));
-      updatePerformed = wpSiteEngine.cacheSync();
+      // No update will take place because the cache is up-to-date.
+      updatePerformed = wpSite.cacheSync();
       assertThat(updatePerformed, is(false));
     } catch (IOException e) {
       exceptionMessage.activate(e);
