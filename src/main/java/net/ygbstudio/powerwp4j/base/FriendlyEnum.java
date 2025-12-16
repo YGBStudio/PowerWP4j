@@ -25,33 +25,40 @@ package net.ygbstudio.powerwp4j.base;
 import org.jetbrains.annotations.Contract;
 
 /**
- * Interface for enums that provides a unified enforcement of the different constraints or methods
- * based on design decisions in this project. For instance, one of those constraints is the
- * enforcement of developer friendly {@link Object#toString()} overrides, and thus the name of this
- * interface is {@code FriendlyEnum}.
- *
- * <p>The enforcement of such constraints is a difficult task, but it is recommended to ensure
- * consistency with the design practices of the project, so that is why all {@link Enum} interfaces
- * extend this class and their JavaDocs point you here.
+ * This interface is designed to enforce a consistent approach to Java enums in the PowerWP4j
+ * project. It's called "FriendlyEnum" because it enforces a developer-friendly {@link
+ * Object#toString()} override, which is a common practice in the project. By requiring all enums to
+ * extend this interface, it helps ensure consistency and maintainability of the codebase.
  *
  * @author Yoham Gabriel @ YGB Studio
  */
 public interface FriendlyEnum {
 
   /**
-   * Returns the string representation of the query parameter. This is a common override of the
-   * {@link Object#toString()} method. The design recommendation of this project is to return the
-   * {@code Enum} value as the string representation of the query parameter to make sure the methods
-   * and helper utilities work as expected in this project.
+   * Returns the string representation of the enum constant. This is a common override of the {@link
+   * Object#toString()} method. The goal is to return the enum constant value as a string
+   * representation, not the enum constant name. This is to ensure that the string representation of
+   * the enum constant matches the actual value used in the API calls.
    *
-   * <p>For example, if you provide a {@link String} value to {@link Enum} {@code ENUM} like {@code
-   * ENUM("value")} then the {@link Object#toString()} method will return {@code "value"} not {@code
-   * "ENUM(value)"}.
+   * @return the string value of the enum constant, which is the value that was passed in the
+   *     constructor
+   * @example
+   *     <pre>
+   *          public enum MyEnum implements FriendlyEnum {
+   *            MY_VALUE("my_value");
    *
-   * <p>This has been done to ensure that {@link Enum} constant names are for the code, not for
-   * people. So, all implementations have taken this design principle into consideration.
+   *            private final String value;
    *
-   * @return the string value of the query parameter as provided in its constructor
+   *            MyEnum(String value) {
+   *              this.value = value;
+   *            }
+   *
+   *            {@code @Override}
+   *            public String toString() {
+   *              return value;
+   *            }
+   *          }
+   *          </pre>
    */
   @Contract(pure = true)
   String toString();
