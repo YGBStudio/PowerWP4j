@@ -158,20 +158,19 @@ public class WPSiteEngine {
   }
 
   /**
-   * Connects to the WordPress REST API and returns the response.
+   * Connects to the WordPress REST API and returns the response. This a convenience method for this
+   * class, however, other methods that can carry out more functionality are available in the {@link
+   * net.ygbstudio.powerwp4j.services.RestClientService} class.
    *
    * @param queryParams the query parameters to be used in the request
    * @param pathParam the path parameter to be used in the request
    * @return an Optional containing the response from the WordPress REST API
-   * @throws IOException if an I/O error occurs
-   * @throws InterruptedException if the thread is interrupted
    */
   @NonNull
   public Optional<HttpResponse<String>> connectWP(
-      @NonNull Map<QueryParamEnum, String> queryParams, @NonNull WPRestPath pathParam)
-      throws IOException, InterruptedException {
+      @NonNull Map<QueryParamEnum, String> queryParams, @NonNull WPRestPath pathParam) {
     String url = makeRequestURL(apiBasePath, queryParams, pathParam);
-    return ApiService.connectGetWP(url, username, applicationPassword, wpSiteEngineLogger);
+    return HttpRequestService.connectGetWP(url, username, applicationPassword, wpSiteEngineLogger);
   }
 
   /**
