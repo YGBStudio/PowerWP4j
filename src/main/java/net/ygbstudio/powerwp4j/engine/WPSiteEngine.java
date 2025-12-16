@@ -206,6 +206,7 @@ public class WPSiteEngine {
    * @param overwriteMetaFile whether to overwrite the cache metadata file if it exists
    */
   private void loadCacheMetaData(@NonNull Path cachePath, boolean overwriteMetaFile) {
+    cacheFile = cachePath.toFile();
     String cacheName = cachePath.toFile().getName();
     String cacheDir = cachePath.toFile().getParent();
     String cacheMetadataFileName = cacheName.replaceFirst("\\.json$", "") + "_metadata.json";
