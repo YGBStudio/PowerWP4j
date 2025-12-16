@@ -20,11 +20,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package net.ygbstudio.powerwp4j.extension;
+package net.ygbstudio.powerwp4j.base.extension;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -32,9 +33,10 @@ import org.jspecify.annotations.NonNull;
  * toString} method to ensure consistency with the design practices of the project. It can be used
  * as a means to provide your own query parameters to the WPSiteEngine safely.
  *
+ * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface QueryParamEnum {
+public interface QueryParamEnum extends FriendlyEnum {
 
   /**
    * This method helps you join a map of query parameters into a string that can be used as a query
@@ -78,14 +80,4 @@ public interface QueryParamEnum {
 
     return pathString.toString();
   }
-
-  /**
-   * Returns the string representation of the query parameter. This is a common override of the
-   * {@link Object#toString()} method. The design recommendation of this project is to return the
-   * {@code Enum} value as the string representation of the query parameter to make sure the methods
-   * and helper utilities work as expected in this project.
-   *
-   * @return the string value of the query parameter as provided in its constructor
-   */
-  String toString();
 }
