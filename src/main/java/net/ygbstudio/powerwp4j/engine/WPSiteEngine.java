@@ -512,20 +512,32 @@ public class WPSiteEngine {
    * @throws InterruptedException if the thread is interrupted
    */
   public boolean cacheSync() throws InterruptedException {
-    Supplier<String> notFoundMsg = () -> "Cache file does not exist at + " + cachePath;
+    Supplier<String> notFoundMsg = () -> "Cache file does not exist at " + cachePath;
     TypedTrigger<Exception> ioExceptionLogging =
         ex ->
             wpSiteEngineLogger.debug(
                 "Failed to read cache file: {} caused by: {}",
                 ex.getMessage(),
-                ex.getCause().getMessage());
+                ex.getCause() != null ? ex.getCause().getMessage() : "no cause");
 
     TypedTrigger<String> throwCacheException =
         exMsg -> {
           throw new CacheFileSystemException(() -> "Failed to read cache file: " + exMsg);
         };
 
-    if (wpCacheMeta == null) loadCacheMetaData(cachePath, false);
+    Trigger updateCache =
+        () -> {
+          try {
+            updateCacheMeta();
+            loadCacheMetaData(cachePath, true);
+          } catch (IOException | InterruptedException ioEx) {
+            if (ioEx instanceof InterruptedException) Thread.currentThread().interrupt();
+            ioExceptionLogging.activate(ioEx);
+            throwCacheException.activate(ioEx.getMessage());
+          }
+        };
+
+    if (wpCacheMeta == null) updateCache.activate();
 
     CacheMeta cacheMetaOld =
         new CacheMeta(
@@ -533,13 +545,7 @@ public class WPSiteEngine {
             wpCacheMeta.totalPosts(),
             LocalDate.ofInstant(Instant.now(), ZoneOffset.UTC));
 
-    try {
-      updateCacheMeta();
-      loadCacheMetaData(cachePath, true);
-    } catch (IOException ioEx) {
-      ioExceptionLogging.activate(ioEx);
-      throwCacheException.activate(ioEx.getMessage());
-    }
+    updateCache.activate();
 
     ArrayNode fromCache = null;
     try (FileReader cacheReader = getCacheReader()) {
