@@ -736,11 +736,11 @@ public class WPSiteEngine {
     this.applicationPassword = applicationPassword;
   }
 
-  public Set<Post> getCreatedPosts() {
+  public Set<PostInfo> getCreatedPosts() {
     return createdPosts;
   }
 
-  public void setCreatedPosts(Set<Post> createdPosts) {
+  public void setCreatedPosts(Set<PostInfo> createdPosts) {
     this.createdPosts = createdPosts;
   }
 
