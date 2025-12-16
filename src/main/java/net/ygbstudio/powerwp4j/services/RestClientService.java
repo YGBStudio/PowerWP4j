@@ -1,0 +1,212 @@
+/*
+ * PowerWP4j - Power WP for Java
+ * Copyright (C) 2025 Yoham Gabriel Barboza B.
+ *
+ * This file is part of PowerWP4j.
+ *
+ * PowerWP4j is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PowerWP4j is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package net.ygbstudio.powerwp4j.services;
+
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Path;
+import java.util.Optional;
+import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
+import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
+import net.ygbstudio.powerwp4j.utils.JsonSupport;
+import net.ygbstudio.powerwp4j.utils.functional.TypedTrigger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+
+/**
+ * The RestClientService class provides methods for interacting with the WordPress REST API for
+ * creating, reading, updating, and deleting posts, pages, and other entities.
+ *
+ * <p>This class is a utility service that provides convenience methods for common operations on the
+ * WordPress REST API. It is not intended to be instantiated, and its methods are static.
+ *
+ * @author Yoham Gabriel B.
+ */
+@NullMarked
+public final class RestClientService {
+  private static final Logger restClientServiceLogger =
+      LoggerFactory.getLogger(RestClientService.class);
+
+  private RestClientService() {}
+
+  /**
+   * Creates a new post in the WordPress site using the REST API.
+   *
+   * @param apiBasePath The base path of the WordPress REST API.
+   * @param username The username for authentication.
+   * @param applicationPassword The application password for authentication.
+   * @param postPayload The JSON payload representing the post to be created.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public static Optional<HttpResponse<String>> postCreate(
+      String apiBasePath, String username, String applicationPassword, JsonNode postPayload) {
+    String url = HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.POSTS);
+    HttpRequest request =
+        HttpRequestService.buildWpPostRequest(
+            postPayload, url, username, applicationPassword, restClientServiceLogger);
+    return HttpRequestService.clientSend(request, restClientServiceLogger);
+  }
+
+  /**
+   * Deletes a post from the WordPress site using the REST API.
+   *
+   * @param apiBasePath The base path of the WordPress REST API.
+   * @param username The username for authentication.
+   * @param applicationPassword The application password for authentication.
+   * @param postId The ID of the post to be deleted.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public static Optional<HttpResponse<String>> postDelete(
+      String apiBasePath, String username, String applicationPassword, long postId) {
+    String url =
+        HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.POSTS) + "/" + postId;
+    HttpRequest deleteRequest =
+        HttpRequestService.buildWpDeleteRequest(
+            url, username, applicationPassword, restClientServiceLogger);
+    return HttpRequestService.clientSend(deleteRequest, restClientServiceLogger);
+  }
+
+  /**
+   * Changes the status of a post on the WordPress site using the REST API.
+   *
+   * @param apiBasePath The base path of the WordPress REST API.
+   * @param username The username for authentication.
+   * @param applicationPassword The application password for authentication.
+   * @param postId The ID of the post to have its status changed.
+   * @param payload The JSON payload representing the new status of the post.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public static Optional<HttpResponse<String>> changePostStatus(
+      String apiBasePath,
+      String username,
+      String applicationPassword,
+      long postId,
+      JsonNode payload) {
+    String url =
+        HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.POSTS) + "/" + postId;
+    HttpRequest changeStatusRequest =
+        HttpRequestService.buildWpPostRequest(
+            payload, url, username, applicationPassword, restClientServiceLogger);
+    return HttpRequestService.clientSend(changeStatusRequest, restClientServiceLogger);
+  }
+
+  /**
+   * Adds a tag to the WordPress site using the REST API.
+   *
+   * @param apiBasePath The base path of the WordPress REST API.
+   * @param username The username for authentication.
+   * @param applicationPassword The application password for authentication.
+   * @param payload The JSON payload representing the new tag.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public static Optional<HttpResponse<String>> addTag(
+      String apiBasePath, String username, String applicationPassword, JsonNode payload) {
+    String url = HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.TAGS);
+    HttpRequest addTagRequest =
+        HttpRequestService.buildWpPostRequest(
+            payload, url, username, applicationPassword, restClientServiceLogger);
+    return HttpRequestService.clientSend(addTagRequest, restClientServiceLogger);
+  }
+
+  /**
+   * Adds a category to the WordPress site using the REST API.
+   *
+   * @param apiBasePath The base path of the WordPress REST API.
+   * @param username The username for authentication.
+   * @param applicationPassword The application password for authentication.
+   * @param payload The JSON payload representing the new category.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   */
+  public static Optional<HttpResponse<String>> addCategory(
+      String apiBasePath, String username, String applicationPassword, JsonNode payload) {
+    String url = HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.CATEGORIES);
+    HttpRequest addCategoryRequest =
+        HttpRequestService.buildWpPostRequest(
+            payload, url, username, applicationPassword, restClientServiceLogger);
+    return HttpRequestService.clientSend(addCategoryRequest, restClientServiceLogger);
+  }
+
+  /**
+   * Uploads a media file to the WordPress site using the REST API.
+   *
+   * <p>Adding a payload to a media file is supported, however, the method will process two requests
+   * to the WordPress REST API. The first request will upload the media file, and the second request
+   * will update the media file with the provided payload.
+   *
+   * <p>It is possible to set the payload to {@code null} and only upload the media file, in which
+   * case the method will do so in one request.
+   *
+   * @param apiBasePath The base path of the WordPress REST API.
+   * @param username The username for authentication.
+   * @param applicationPassword The application password for authentication.
+   * @param attachmentPath The file path of the media to be uploaded.
+   * @return An Optional containing the JSON response from the server if the request was successful,
+   *     or an empty Optional if the request failed.
+   * @throws MediaUploadError if the media upload request fails.
+   */
+  public static Optional<HttpResponse<String>> uploadMedia(
+      String apiBasePath,
+      String username,
+      String applicationPassword,
+      Path attachmentPath,
+      @Nullable JsonNode payload) {
+
+    TypedTrigger<String> mediaUploadError =
+        url -> {
+          throw new MediaUploadError(
+              () ->
+                  String.format(
+                      "Media Upload to %s failed. Check your connection or site options and try again",
+                      url));
+        };
+    String url = HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.MEDIA);
+    Optional<HttpRequest> mediaUpload =
+        HttpRequestService.buildWpPostRequest(
+            url, username, applicationPassword, attachmentPath, restClientServiceLogger);
+    if (mediaUpload.isEmpty()) mediaUploadError.activate(url);
+    if (payload == null) {
+      return HttpRequestService.clientSend(mediaUpload.get(), restClientServiceLogger);
+    }
+    ObjectMapper mapper = JsonSupport.getMapper();
+    Optional<Long> mediaId =
+        HttpRequestService.clientSend(mediaUpload.get(), restClientServiceLogger)
+            .map(HttpResponse::body)
+            .map(mapper::readTree)
+            .map(item -> item.get("id").asLong());
+    if (mediaId.isEmpty()) mediaUploadError.activate(url);
+    url = url + "/" + mediaId.get();
+    HttpRequest mediaUpdate =
+        HttpRequestService.buildWpPostRequest(
+            payload, url, username, applicationPassword, restClientServiceLogger);
+    return HttpRequestService.clientSend(mediaUpdate, restClientServiceLogger);
+  }
+}
