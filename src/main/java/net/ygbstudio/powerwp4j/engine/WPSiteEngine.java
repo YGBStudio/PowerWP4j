@@ -348,9 +348,8 @@ public class WPSiteEngine {
     Function<String, HttpRequest> requestFunction =
         link -> {
           wpSiteEngineLogger.debug("Processing link -> {} ", link);
-          Optional<HttpRequest> request =
-              ApiService.buildWpGetRequest(link, username, applicationPassword, wpSiteEngineLogger);
-          return request.orElseThrow();
+          return HttpRequestService.buildWpGetRequest(
+              link, username, applicationPassword, wpSiteEngineLogger);
         };
 
     return (client, link) ->
