@@ -219,8 +219,13 @@ public class WPSiteEngine {
 
     BiConsumer<File, CacheMeta> writeCacheMetaData =
         (file, cacheObj) -> {
-          writeJsonFs(file, cacheObj);
-          wpCacheMeta = readJsonFs(file, CacheMeta.class);
+            cacheLock.lock();
+            try {
+                writeJsonFs(file, cacheObj);
+            } finally {
+                cacheLock.unlock();
+            }
+            wpCacheMeta = readJsonFs(file, CacheMeta.class);
           wpSiteEngineLogger.info(
               overwriteMetaFile
                   ? "Replaced cache metadata file"
@@ -291,7 +296,7 @@ public class WPSiteEngine {
       } catch (IOException ioEx) {
         wpSiteEngineLogger.warn(
             "Failed to gather WordPress post metadata. Check your connection", ioEx);
-        wpSiteEngineLogger.warn("IOExeption caused by: ", ioEx.getCause());
+        wpSiteEngineLogger.warn("IOExeption caused by: {}", ioEx.getCause() != null ? ioEx.getCause() : "no cause");
         throw new CacheConstructionException(
             () -> "Failed to fetch site data for " + fullyQualifiedDomainName);
       } catch (InterruptedException intEx) {
@@ -307,8 +312,13 @@ public class WPSiteEngine {
     wpSiteEngineLogger.info("Processing cache links for {}", apiBasePath);
     ArrayNode wpJsonArray = fetchJsonCache(linkList, null, 0, 0, null, null);
 
-    writeCacheFs(cachePath, wpJsonArray, overwriteCache, false);
-    cacheFile = cachePath.toFile();
+      cacheLock.lock();
+      try {
+          writeCacheFs(cachePath, wpJsonArray, overwriteCache, false);
+      } finally {
+          cacheLock.unlock();
+      }
+      cacheFile = cachePath.toFile();
   }
 
   /**
@@ -452,7 +462,7 @@ public class WPSiteEngine {
             wpSiteEngineLogger.debug(
                 "Rethrowing {} caused by: {} as {} while trying to create a new cache file",
                 ex.getClass().getSimpleName(),
-                ex.getCause().getMessage(),
+                ex.getMessage(),
                 CacheConstructionException.class);
 
     Function<File, String> cacheExMsg =
@@ -610,12 +620,15 @@ public class WPSiteEngine {
 
     fromCache.addAll(updatedPosts);
 
+    cacheLock.lock();
     try {
       writeCacheFs(cacheFile.toPath(), fromCache, true, true);
     } catch (IOException ioEx) {
       wpSiteEngineLogger.debug(
-          "Caught {} caused by {}", ioEx.getClass().getSimpleName(), ioEx.getCause().getMessage());
+          "Caught {} caused by {}", ioEx.getClass().getSimpleName(), ioEx.getMessage());
       throw new CacheFileSystemException(() -> "Failed to write cache file: " + ioEx.getMessage());
+    } finally {
+      cacheLock.unlock();
     }
     return true;
   }
