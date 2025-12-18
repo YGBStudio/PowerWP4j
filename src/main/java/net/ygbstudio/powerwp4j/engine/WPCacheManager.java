@@ -333,7 +333,7 @@ public class WPCacheManager {
       }
     }
 
-    wpSiteEngineLogger.info("Processing cache links for {}", apiBasePath);
+    wpSiteEngineLogger.info("Processing cache links for {}", siteInfo.apiBaseUrl());
     ArrayNode wpJsonArray = fetchJsonCache(linkList, null, 0, 0, null, null);
 
     cacheLock.lock();
