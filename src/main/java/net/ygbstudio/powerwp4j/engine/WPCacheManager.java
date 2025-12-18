@@ -604,7 +604,7 @@ public class WPCacheManager {
     wpSiteEngineLogger.info("Page diff: {}", pageDiff);
 
     if (nodeDiff == 0 && pageDiff == 0) {
-      wpSiteEngineLogger.info("{} Cache is up-to-date", fullyQualifiedDomainName);
+      wpSiteEngineLogger.info("{} Cache is up-to-date", siteInfo.fullyQualifiedDomainName());
       return false;
     }
 
