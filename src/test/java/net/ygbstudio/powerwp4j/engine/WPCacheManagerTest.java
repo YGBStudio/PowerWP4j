@@ -34,17 +34,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.databind.ObjectMapper;
 
-class WPSiteEngineTest {
+class WPCacheManagerTest {
 
   private String user;
   private String appPass;
   private String fqdm;
-  private WPSiteEngine wpSite;
+  private WPCacheManager wpSite;
   private final File cacheFile = new File("wp-posts.json");
   private final WPBasicPayloadBuilder payloadBuilder = WPBasicPayloadBuilder.builder();
 
   private static final Logger wpSiteEngineTestLogger =
-      LoggerFactory.getLogger(WPSiteEngineTest.class);
+      LoggerFactory.getLogger(WPCacheManagerTest.class);
 
   @BeforeEach
   void setUp() {
@@ -56,10 +56,10 @@ class WPSiteEngineTest {
       this.appPass = appProps.getProperty("wp.applicationPass");
       this.fqdm = appProps.getProperty("wp.fullyQualifiedDomainName");
     }
-    wpSite = new WPSiteEngine(fqdm, user, appPass, cacheFile.toPath());
+    wpSite = new WPCacheManager(fqdm, user, appPass, cacheFile.toPath());
   }
 
-  String makeSiteUrl(WPSiteEngine engineInstance, long pageNumber) {
+  String makeSiteUrl(WPCacheManager engineInstance, long pageNumber) {
     Map<WPQueryParam, String> queryParams = new EnumMap<>(WPQueryParam.class);
     if (pageNumber > 0) queryParams.put(WPQueryParam.PAGE, String.valueOf(pageNumber));
     queryParams.put(WPQueryParam.PER_PAGE, "10");
@@ -73,11 +73,11 @@ class WPSiteEngineTest {
     assertThat(user, not(emptyOrNullString()));
     assertThat(appPass, not(emptyOrNullString()));
     // Constructor without cachePath
-    WPSiteEngine wpSiteEngine = new WPSiteEngine(fqdm, user, appPass);
+    WPCacheManager wpCacheManager = new WPCacheManager(fqdm, user, appPass);
     Map<QueryParamEnum, String> queryParams = Map.of(WPQueryParam.PER_PAGE, "10");
     try {
       Optional<HttpResponse<String>> wpSiteEngineResponse =
-          wpSiteEngine.connectWP(queryParams, WPRestPath.POSTS);
+          wpCacheManager.connectWP(queryParams, WPRestPath.POSTS);
       if (wpSiteEngineResponse.isPresent()) {
         Map<String, List<String>> headers = wpSiteEngineResponse.get().headers().map();
         Long wpTotal = Long.parseLong(headers.get("x-wp-total").getFirst());
@@ -99,8 +99,8 @@ class WPSiteEngineTest {
 
   @Test
   void makeRequestTest() {
-    WPSiteEngine wpSiteEngine = new WPSiteEngine("example.com", "user", "pass");
-    String url = makeSiteUrl(wpSiteEngine, 1);
+    WPCacheManager wpCacheManager = new WPCacheManager("example.com", "user", "pass");
+    String url = makeSiteUrl(wpCacheManager, 1);
     assertThat(url, is("https://example.com/wp-json/wp/v2/posts?page=1&per_page=10"));
   }
 
