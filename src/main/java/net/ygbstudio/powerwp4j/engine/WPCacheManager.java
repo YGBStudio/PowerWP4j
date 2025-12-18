@@ -322,7 +322,7 @@ public class WPCacheManager {
         wpSiteEngineLogger.warn(
             "IOExeption caused by: {}", ioEx.getCause() != null ? ioEx.getCause() : "no cause");
         throw new CacheConstructionException(
-            () -> "Failed to fetch site data for " + fullyQualifiedDomainName);
+            () -> "Failed to fetch site data for " + siteInfo.fullyQualifiedDomainName());
       } catch (InterruptedException intEx) {
         Thread currentThread = Thread.currentThread();
         wpSiteEngineLogger.debug(
