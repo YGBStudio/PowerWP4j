@@ -52,12 +52,11 @@ import tools.jackson.databind.node.ArrayNode;
  * in use be taken into account in the return values, and accuracy will depend on whether your cache
  * is up-to-date.
  *
- * @see WPSiteEngine
+ * @see WPCacheManager
  * @author Yoham Gabriel B.
  */
 public class WPCacheAnalyzer {
 
-  private File cacheFile;
   private ArrayNode inMemoryCache;
 
   public WPCacheAnalyzer() {}
