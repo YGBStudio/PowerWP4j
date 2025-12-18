@@ -526,7 +526,7 @@ public class WPCacheManager {
    * @throws IOException if an I/O error occurs
    */
   @Nullable
-  public FileReader getCacheReader() throws IOException {
+  private FileReader getCacheReader() throws IOException {
     return cacheFile.exists() ? new FileReader(cacheFile, StandardCharsets.UTF_8) : null;
   }
 
