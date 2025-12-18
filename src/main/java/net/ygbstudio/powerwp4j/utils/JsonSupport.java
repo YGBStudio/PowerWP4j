@@ -149,7 +149,7 @@ public final class JsonSupport {
    * @param jsonString the JSON string to parse
    * @return the parsed JsonNode
    */
-  public static JsonNode getNode(String jsonString) {
+  public static JsonNode getTreeNode(String jsonString) {
     return jsonMapper.readTree(jsonString);
   }
 
@@ -159,7 +159,7 @@ public final class JsonSupport {
    * @param jsonFile the JSON file to read
    * @return the parsed JsonNode
    */
-  public static JsonNode getNode(File jsonFile) {
+  public static JsonNode getTreeNode(File jsonFile) {
     return jsonMapper.readTree(jsonFile);
   }
 }
