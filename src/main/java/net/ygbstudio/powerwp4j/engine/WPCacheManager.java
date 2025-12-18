@@ -386,7 +386,7 @@ public class WPCacheManager {
         link -> {
           wpSiteEngineLogger.debug("Processing link -> {} ", link);
           return HttpRequestService.buildWpGetRequest(
-              link, username, applicationPassword, wpSiteEngineLogger);
+              link, siteInfo.wpUser(), siteInfo.wpAppPass(), wpSiteEngineLogger);
         };
 
     return (client, link) ->
