@@ -70,6 +70,7 @@ import net.ygbstudio.powerwp4j.exceptions.CacheMetaDataException;
 import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
 import net.ygbstudio.powerwp4j.models.entities.CacheMeta;
 import net.ygbstudio.powerwp4j.models.entities.PostInfo;
+import net.ygbstudio.powerwp4j.models.schema.WPCacheKey;
 import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.services.HttpRequestService;
