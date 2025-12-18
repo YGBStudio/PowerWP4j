@@ -194,8 +194,9 @@ public class WPCacheManager {
   @NonNull
   public Optional<HttpResponse<String>> connectWP(
       @NonNull Map<QueryParamEnum, String> queryParams, @NonNull WPRestPath pathParam) {
-    String url = makeRequestURL(apiBasePath, queryParams, pathParam);
-    return HttpRequestService.connectGetWP(url, username, applicationPassword, wpSiteEngineLogger);
+    String url = makeRequestURL(siteInfo.apiBaseUrl(), queryParams, pathParam);
+    return HttpRequestService.connectGetWP(
+        url, siteInfo.wpUser(), siteInfo.wpAppPass(), wpSiteEngineLogger);
   }
 
   /**
@@ -296,7 +297,7 @@ public class WPCacheManager {
               if (!queryParams.isEmpty()) queryParams.clear();
               queryParams.put(WPQueryParam.PAGE, String.valueOf(i));
               if (perPage > 0) queryParams.put(WPQueryParam.PER_PAGE, String.valueOf(perPage));
-              return makeRequestURL(apiBasePath, queryParams, WPRestPath.POSTS);
+              return makeRequestURL(siteInfo.apiBaseUrl(), queryParams, WPRestPath.POSTS);
             })
         .toList();
   }
