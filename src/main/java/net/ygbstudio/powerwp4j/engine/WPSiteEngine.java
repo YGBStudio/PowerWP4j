@@ -519,7 +519,9 @@ public class WPSiteEngine {
   }
 
   /**
-   * Synchronizes the cache file with the WordPress site.
+   * Synchronizes the cache file with the WordPress site. It assumes incremental cache changes
+   * will be taking place, and that is why this method relies heavily on sorting pipelines as
+   * the deltas are meant to be limited.
    *
    * @return true if the cache was successfully synchronized, false if the cache is up-to-date.
    * @throws InterruptedException if the thread is interrupted
