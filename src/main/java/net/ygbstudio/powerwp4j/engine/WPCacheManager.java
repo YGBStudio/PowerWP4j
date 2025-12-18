@@ -89,13 +89,13 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ArrayNode;
 
 /**
- * WPSiteEngine is the main class for interacting with a WordPress site. It provides methods for
+ * WPCacheManager is the main class for interacting with a WordPress site. It provides methods for
  * fetching data from the WordPress REST API and caching it locally using JSON.
  *
  * @author Yoham Gabriel B.
  */
-public class WPSiteEngine {
-  private static final Logger wpSiteEngineLogger = LoggerFactory.getLogger(WPSiteEngine.class);
+public class WPCacheManager {
+  private static final Logger wpSiteEngineLogger = LoggerFactory.getLogger(WPCacheManager.class);
   private static final int DEFAULT_PER_PAGE = 10;
   private final ReentrantLock cacheLock = new ReentrantLock();
 
@@ -111,10 +111,10 @@ public class WPSiteEngine {
   private List<String> linkList;
 
   /**
-   * Initializes a new instance of the WPSiteEngine class. If a local WordPress cache is found, it
+   * Initializes a new instance of the WPCacheManager class. If a local WordPress cache is found, it
    * is loaded into memory, otherwise a new cache must be created using the {@link
-   * WPSiteEngine#fetchJsonCache(Path cachePath, boolean overwriteCache)} or {@link
-   * WPSiteEngine#fetchJsonCache(boolean overwriteCache)} if you already provided a path in the
+   * WPCacheManager#fetchJsonCache(Path cachePath, boolean overwriteCache)} or {@link
+   * WPCacheManager#fetchJsonCache(boolean overwriteCache)} if you already provided a path in the
    * constructor.
    *
    * <p>A local cache is not created automatically since the client must handle any exceptions that
@@ -126,7 +126,7 @@ public class WPSiteEngine {
    * @param applicationPassword the application password for the WordPress site
    * @param cachePath the path to the cache file
    */
-  public WPSiteEngine(
+  public WPCacheManager(
       @NonNull String fullyQualifiedDomainName,
       @NonNull String username,
       @NonNull String applicationPassword,
@@ -137,23 +137,23 @@ public class WPSiteEngine {
     this.cachePath = cachePath;
     if (cachePath != null) cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
     apiBasePath = String.format("https://%s/wp-json/wp/v2", this.fullyQualifiedDomainName);
-    wpSiteEngineLogger.info("Initialized WPSiteEngine for site: {}", fullyQualifiedDomainName);
+    wpSiteEngineLogger.info("Initialized WPCacheManager for site: {}", fullyQualifiedDomainName);
     wpSiteEngineLogger.info("API Base Path set to: {}", apiBasePath);
   }
 
   /**
-   * Initializes a new instance of the WPSiteEngine class. If a local WordPress cache is not needed,
+   * Initializes a new instance of the WPCacheManager class. If a local WordPress cache is not needed,
    * the cache will be ignored and the cachePath parameter will be set to null.
    *
-   * <p>In case you want to create a cache in the current instance of the WPSiteEngine, proceed to
-   * create the cache file using the {@link WPSiteEngine#fetchJsonCache(Path cachepath, boolean
+   * <p>In case you want to create a cache in the current instance of the WPCacheManager, proceed to
+   * create the cache file using the {@link WPCacheManager#fetchJsonCache(Path cachepath, boolean
    * overwriteCache)} method.
    *
    * @param fullyQualifiedDomainName the fully qualified domain name of the WordPress site
    * @param username the username for the WordPress site
    * @param applicationPassword the application password for the WordPress site
    */
-  public WPSiteEngine(
+  public WPCacheManager(
       @NonNull String fullyQualifiedDomainName,
       @NonNull String username,
       @NonNull String applicationPassword) {
@@ -817,7 +817,7 @@ public class WPSiteEngine {
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
-    WPSiteEngine that = (WPSiteEngine) o;
+    WPCacheManager that = (WPCacheManager) o;
     return Objects.equals(getFullyQualifiedDomainName(), that.getFullyQualifiedDomainName())
         && Objects.equals(getApiBasePath(), that.getApiBasePath())
         && Objects.equals(getUsername(), that.getUsername())
