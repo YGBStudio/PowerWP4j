@@ -96,7 +96,8 @@ import tools.jackson.databind.node.ArrayNode;
  */
 public class WPSiteEngine {
   private static final Logger wpSiteEngineLogger = LoggerFactory.getLogger(WPSiteEngine.class);
-  protected static final int DEFAULT_PER_PAGE = 10;
+  private static final int DEFAULT_PER_PAGE = 10;
+  private final ReentrantLock cacheLock = new ReentrantLock();
 
   private String fullyQualifiedDomainName;
   private String apiBasePath;
