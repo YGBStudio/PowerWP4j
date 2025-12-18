@@ -72,6 +72,7 @@ public class WPCacheAnalyzer {
    * @throws CacheFileSystemException if the provided path does not point to an existing file
    */
   public void loadLocalCache(@NonNull Path cachePath) {
+    File cacheFile;
     cacheFile = cachePath.toFile();
     if (!cacheFile.exists())
       throw new CacheFileSystemException(
