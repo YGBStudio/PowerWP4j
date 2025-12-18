@@ -121,19 +121,21 @@ public class WPCacheManager {
       @NonNull String username,
       @NonNull String applicationPassword,
       @Nullable Path cachePath) {
-    this.fullyQualifiedDomainName = fullyQualifiedDomainName.replaceAll("^https?:+//\\b", "");
-    this.username = username;
-    this.applicationPassword = applicationPassword;
+    this.siteInfo =
+        new WPSiteInfo(
+            fullyQualifiedDomainName.replaceAll("^https?:+//\\b", ""),
+            username,
+            applicationPassword);
     this.cachePath = cachePath;
     if (cachePath != null) cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
-    apiBasePath = String.format("https://%s/wp-json/wp/v2", this.fullyQualifiedDomainName);
+    ;
     wpSiteEngineLogger.info("Initialized WPCacheManager for site: {}", fullyQualifiedDomainName);
-    wpSiteEngineLogger.info("API Base Path set to: {}", apiBasePath);
+    wpSiteEngineLogger.info("API Base Path set to: {}", siteInfo.apiBaseUrl());
   }
 
   /**
-   * Initializes a new instance of the WPCacheManager class. If a local WordPress cache is not needed,
-   * the cache will be ignored and the cachePath parameter will be set to null.
+   * Initializes a new instance of the WPCacheManager class. If a local WordPress cache is not
+   * needed, the cache will be ignored and the cachePath parameter will be set to null.
    *
    * <p>In case you want to create a cache in the current instance of the WPCacheManager, proceed to
    * create the cache file using the {@link WPCacheManager#fetchJsonCache(Path cachepath, boolean
