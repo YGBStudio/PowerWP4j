@@ -592,17 +592,28 @@ public class WPSiteEngine {
 
     Comparator<JsonNode> jsonNodeComparator =
         (jsonNode1, jsonNode2) -> {
-          long id1 = jsonNode1.get("id").asLong();
-          long id2 = jsonNode2.get("id").asLong();
+          long id1 = jsonNode1.get(WPCacheKey.ID.toString()).asLong();
+          long id2 = jsonNode2.get(WPCacheKey.ID.toString()).asLong();
           return Long.compare(id1, id2);
         };
 
     long lastId =
-        fromCache.valueStream().sorted(jsonNodeComparator).toList().getLast().get("id").asLong();
+        fromCache
+            .valueStream()
+            .sorted(jsonNodeComparator)
+            .toList()
+            .getLast()
+            .get(WPCacheKey.ID.toString())
+            .asLong();
 
     Predicate<ArrayNode> testForLastElem =
         elem ->
-            elem.valueStream().sorted(jsonNodeComparator).toList().getLast().get("id").asLong()
+            elem.valueStream()
+                    .sorted(jsonNodeComparator)
+                    .toList()
+                    .getLast()
+                    .get(WPCacheKey.ID.toString())
+                    .asLong()
                 > lastId;
 
     List<JsonNode> updatedPosts =
