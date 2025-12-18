@@ -372,7 +372,7 @@ public class WPSiteEngine {
             .thenApply(
                 body -> {
                   try {
-                    JsonNode node = JsonSupport.getMapper().readTree(body);
+                    JsonNode node = JsonSupport.getTreeNode(body);
                     if (!node.isArray()) {
                       wpSiteEngineLogger.debug(
                           "Expected JSON array but got {} for link {}", node.getNodeType(), link);
