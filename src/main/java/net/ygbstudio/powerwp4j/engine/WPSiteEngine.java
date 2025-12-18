@@ -296,7 +296,8 @@ public class WPSiteEngine {
       } catch (IOException ioEx) {
         wpSiteEngineLogger.warn(
             "Failed to gather WordPress post metadata. Check your connection", ioEx);
-        wpSiteEngineLogger.warn("IOExeption caused by: {}", ioEx.getCause() != null ? ioEx.getCause() : "no cause");
+        wpSiteEngineLogger.warn(
+            "IOExeption caused by: {}", ioEx.getCause() != null ? ioEx.getCause() : "no cause");
         throw new CacheConstructionException(
             () -> "Failed to fetch site data for " + fullyQualifiedDomainName);
       } catch (InterruptedException intEx) {
