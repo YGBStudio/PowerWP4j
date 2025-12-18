@@ -27,7 +27,7 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 /**
  * RestPathEnum is an interface that promotes unified type for rest paths and a {@code toString}
  * method to ensure consistency with the design practices of the project. It can be used as a means
- * to provide your own rest paths to the WPSiteEngine safely.
+ * to provide your own rest paths to the WPCacheManager safely.
  *
  * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
