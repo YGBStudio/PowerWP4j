@@ -93,11 +93,7 @@ public class WPCacheManager {
   private static final int DEFAULT_PER_PAGE = 10;
   private final ReentrantLock cacheLock = new ReentrantLock();
 
-  private String fullyQualifiedDomainName;
-  private String apiBasePath;
-  private String username;
-  private String applicationPassword;
-  private Set<PostInfo> createdPosts = new HashSet<>();
+  private final WPSiteInfo siteInfo;
   private CacheMeta wpCacheMeta;
   private Path cachePath;
   private Path cacheMetadataFilePath;
