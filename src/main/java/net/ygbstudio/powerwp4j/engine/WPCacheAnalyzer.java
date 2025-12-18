@@ -282,20 +282,4 @@ public class WPCacheAnalyzer {
         .map(tag -> tag.replaceFirst("^tag-", "").replaceAll("[^a-zA-Z0-9]", " ").trim())
         .collect(Collectors.toSet());
   }
-
-  public File getCacheFile() {
-    return cacheFile;
-  }
-
-  public void setCacheFile(File cacheFile) {
-    this.cacheFile = cacheFile;
-  }
-
-  public ArrayNode getInMemoryCache() {
-    return inMemoryCache;
-  }
-
-  public void setInMemoryCache(ArrayNode inMemoryCache) {
-    this.inMemoryCache = inMemoryCache;
-  }
 }
