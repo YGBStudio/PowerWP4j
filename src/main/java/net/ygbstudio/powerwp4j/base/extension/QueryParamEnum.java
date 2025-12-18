@@ -31,7 +31,7 @@ import org.jspecify.annotations.NonNull;
 /**
  * QueryParamEnum is an interface that promotes a unified type for query parameters and a {@code
  * toString} method to ensure consistency with the design practices of the project. It can be used
- * as a means to provide your own query parameters to the WPSiteEngine safely.
+ * as a means to provide your own query parameters to the WPCacheManager safely.
  *
  * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
