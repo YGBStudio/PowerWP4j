@@ -35,10 +35,12 @@ import org.jetbrains.annotations.Contract;
 public interface FriendlyEnum {
 
   /**
-   * Returns the string representation of the enum constant. This is a common override of the {@link
-   * Object#toString()} method. The goal is to return the enum constant value as a string
-   * representation, not the enum constant name. This is to ensure that the string representation of
-   * the enum constant matches the actual value used in the API calls.
+   * Returns the string representation of the enum constant.
+   *
+   * <p>This is a common override of the {@link Object#toString()} method. The goal is to return the
+   * enum constant value as a string representation, not the enum constant name. This is to ensure
+   * that the string representation of the enum constant matches the actual value used in the API
+   * calls.
    *
    * @return the string value of the enum constant, which is the value that was passed in the
    *     constructor
