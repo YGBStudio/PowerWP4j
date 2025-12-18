@@ -39,6 +39,7 @@ import net.ygbstudio.powerwp4j.exceptions.CacheFileSystemException;
 import net.ygbstudio.powerwp4j.models.schema.WPCacheKey;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyMarker;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyValues;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.NonNull;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ArrayNode;
@@ -88,6 +89,7 @@ public class WPCacheAnalyzer {
    * @param friendlyEnum the enum representing the class value to filter by
    * @return a stream of ArrayNodes containing the filtered class values
    */
+  @Internal
   private Stream<Object> getFriendlyEnumStream(FriendlyEnum friendlyEnum) {
     return inMemoryCache
         .valueStream()
