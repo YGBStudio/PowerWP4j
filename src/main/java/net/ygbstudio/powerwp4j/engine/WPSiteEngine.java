@@ -219,13 +219,13 @@ public class WPSiteEngine {
 
     BiConsumer<File, CacheMeta> writeCacheMetaData =
         (file, cacheObj) -> {
-            cacheLock.lock();
-            try {
-                writeJsonFs(file, cacheObj);
-            } finally {
-                cacheLock.unlock();
-            }
-            wpCacheMeta = readJsonFs(file, CacheMeta.class);
+          cacheLock.lock();
+          try {
+            writeJsonFs(file, cacheObj);
+          } finally {
+            cacheLock.unlock();
+          }
+          wpCacheMeta = readJsonFs(file, CacheMeta.class);
           wpSiteEngineLogger.info(
               overwriteMetaFile
                   ? "Replaced cache metadata file"
@@ -312,13 +312,13 @@ public class WPSiteEngine {
     wpSiteEngineLogger.info("Processing cache links for {}", apiBasePath);
     ArrayNode wpJsonArray = fetchJsonCache(linkList, null, 0, 0, null, null);
 
-      cacheLock.lock();
-      try {
-          writeCacheFs(cachePath, wpJsonArray, overwriteCache, false);
-      } finally {
-          cacheLock.unlock();
-      }
-      cacheFile = cachePath.toFile();
+    cacheLock.lock();
+    try {
+      writeCacheFs(cachePath, wpJsonArray, overwriteCache, false);
+    } finally {
+      cacheLock.unlock();
+    }
+    cacheFile = cachePath.toFile();
   }
 
   /**
