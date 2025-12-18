@@ -153,6 +153,36 @@ public class WPCacheManager {
   }
 
   /**
+   * Initializes a new instance of the WPCacheManager class using the provided {@link WPSiteInfo}
+   * object and an optional cache path. If a cache path is provided, the cache will be loaded from
+   * the file system. If a cache path is not provided, the cache will not be created and the
+   * cachePath parameter will be set to null.
+   *
+   * @param siteInfo the site information object containing the fully qualified domain name,
+   *     username, and application password.
+   * @param cachePath an optional path to the cache file.
+   */
+  public WPCacheManager(@NonNull WPSiteInfo siteInfo, Path cachePath) {
+    this(siteInfo.fullyQualifiedDomainName(), siteInfo.wpUser(), siteInfo.wpAppPass(), cachePath);
+  }
+
+  /**
+   * Initializes a new instance of the WPCacheManager class using the provided {@link WPSiteInfo}
+   * object. If a local WordPress cache is not needed, the cache will be ignored and the cachePath
+   * parameter will be set to null.
+   *
+   * <p>In case you want to create a cache in the current instance of the WPCacheManager, proceed to
+   * create the cache file using the {@link WPCacheManager#fetchJsonCache(Path cachepath, boolean
+   * overwriteCache)} method.
+   *
+   * @param siteInfo the site information object containing the fully qualified domain name,
+   *     username, and application password.
+   */
+  public WPCacheManager(@NonNull WPSiteInfo siteInfo) {
+    this(siteInfo.fullyQualifiedDomainName(), siteInfo.wpUser(), siteInfo.wpAppPass(), null);
+  }
+
+  /**
    * Connects to the WordPress REST API and returns the response. This a convenience method for this
    * class, however, other methods that can carry out more functionality are available in the {@link
    * net.ygbstudio.powerwp4j.services.RestClientService} class.
