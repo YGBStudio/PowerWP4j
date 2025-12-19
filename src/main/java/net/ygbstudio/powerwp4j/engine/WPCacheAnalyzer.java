@@ -22,21 +22,29 @@
 
 package net.ygbstudio.powerwp4j.engine;
 
+import static net.ygbstudio.powerwp4j.utils.Helpers.zip;
 import static net.ygbstudio.powerwp4j.utils.JsonSupport.readJsonFs;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 import net.ygbstudio.powerwp4j.base.extension.CacheKeyEnum;
+import net.ygbstudio.powerwp4j.base.extension.CacheSubKeyEnum;
 import net.ygbstudio.powerwp4j.base.extension.ClassMarkerEnum;
 import net.ygbstudio.powerwp4j.base.extension.ClassValueEnum;
 import net.ygbstudio.powerwp4j.exceptions.CacheFileSystemException;
+import net.ygbstudio.powerwp4j.models.entities.WPCacheKeySnapshot;
 import net.ygbstudio.powerwp4j.models.schema.WPCacheKey;
+import net.ygbstudio.powerwp4j.models.schema.WPCacheSubKey;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyMarker;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyValues;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -155,6 +163,42 @@ public class WPCacheAnalyzer {
   public <V> Set<V> getCacheKeyValueSet(
       CacheKeyEnum cacheKey, @NonNull Function<? super JsonNode, ? extends V> transformer) {
     return getCacheKeyValueStream(cacheKey).map(transformer).collect(Collectors.toSet());
+  }
+
+  /**
+   * Returns a stream of {@link WPCacheKeySnapshot} instances extracted from the in-memory local
+   * cache filtered by a specified cache key. Each {@link WPCacheKeySnapshot} instance contains a
+   * cache key and a map of cache subkeys and their corresponding values. The values are transformed
+   * by the specified function.
+   *
+   * @param subKeyTransformer the function used to transform the JsonNode to the desired type
+   * @param cacheKey the enum representing the cache key to filter by
+   * @param subKeys the cache subkeys to filter by
+   * @param <V> the type of the values in the cache subkey map
+   * @return a stream of {@link WPCacheKeySnapshot} instances extracted from the cache filtered by
+   *     the specified cache key
+   */
+  public <V> Stream<WPCacheKeySnapshot<V>> getCacheSubKeySnapshotStream(
+      @NonNull Function<? super JsonNode, ? extends V> subKeyTransformer,
+      CacheKeyEnum cacheKey,
+      CacheSubKeyEnum... subKeys) {
+    return getCacheKeyValueStream(cacheKey)
+        .filter(JsonNode::isObject)
+        .map(
+            jsonNode -> {
+              Map<CacheSubKeyEnum, V> subKeyMap = new HashMap<>();
+              jsonNode
+                  .propertyStream()
+                  .forEach(
+                      entry -> {
+                        for (CacheSubKeyEnum key : subKeys) {
+                          if (entry.getKey().equals(key.toString())) {
+                            subKeyMap.put(key, subKeyTransformer.apply(entry.getValue()));
+                          }
+                        }
+                      });
+              return new WPCacheKeySnapshot<>(cacheKey, subKeyMap);
+            });
   }
 
   /**
