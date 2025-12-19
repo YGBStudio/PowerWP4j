@@ -22,8 +22,14 @@
 
 package net.ygbstudio.powerwp4j.models.entities;
 
+import static net.ygbstudio.powerwp4j.utils.Helpers.getPropertiesFromResources;
+
+import java.util.Optional;
+import java.util.Properties;
+import net.ygbstudio.powerwp4j.base.EnvironmentScope;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A record that represents basic site information required to interact with a WordPress site.
@@ -42,5 +48,38 @@ public record WPSiteInfo(String fullyQualifiedDomainName, String wpUser, String 
   @Contract(pure = true)
   public @NonNull String apiBaseUrl() {
     return String.format("https://%s/wp-json/wp/v2", this.fullyQualifiedDomainName);
+  }
+
+  /**
+   * Returns an Optional of {@link WPSiteInfo} loaded from the specified configuration resource
+   * properties file.
+   *
+   * @param fileName the name of the resource file to load properties from
+   * @return an Optional of {@link WPSiteInfo} loaded from the specified configuration resource file
+   */
+  public static Optional<WPSiteInfo> fromConfigResource(String fileName) {
+    Optional<Properties> props = getPropertiesFromResources(fileName);
+    return props.map(
+        appProps ->
+            new WPSiteInfo(
+                appProps.getProperty(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME.toString()),
+                appProps.getProperty(EnvironmentScope.WP_USER.toString()),
+                appProps.getProperty(EnvironmentScope.WP_APPLICATION_PASS.toString())));
+  }
+
+  /**
+   * Returns a {@link WPSiteInfo} loaded from the environment variables outlined in {@link
+   * EnvironmentScope}.
+   *
+   * @return a {@link WPSiteInfo} loaded from the environment variables
+   */
+  public static @Nullable WPSiteInfo fromEnv() {
+    String fqdm = System.getenv(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME.toString());
+    String wpUser = System.getenv(EnvironmentScope.WP_USER.toString());
+    String wpAppPass = System.getenv(EnvironmentScope.WP_APPLICATION_PASS.toString());
+    if (fqdm == null || wpUser == null || wpAppPass == null) {
+      return null;
+    }
+    return new WPSiteInfo(fqdm, wpUser, wpAppPass);
   }
 }
