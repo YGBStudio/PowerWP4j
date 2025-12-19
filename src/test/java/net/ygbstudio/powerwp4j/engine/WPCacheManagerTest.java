@@ -1,6 +1,5 @@
 package net.ygbstudio.powerwp4j.engine;
 
-import static net.ygbstudio.powerwp4j.utils.Helpers.getPropertiesFromResources;
 import static org.assertj.core.api.Assertions.assertThatException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -15,7 +14,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
 import net.ygbstudio.powerwp4j.builders.WPBasicPayloadBuilder;
@@ -42,12 +40,7 @@ class WPCacheManagerTest {
   @BeforeEach
   void setUp() {
     // Create this file in the resources folder
-    Optional<Properties> props = getPropertiesFromResources("appConfig.properties");
-      props.ifPresent(appProps -> this.siteInfo =
-              new WPSiteInfo(
-                      appProps.getProperty("wp.fullyQualifiedDomainName"),
-                      appProps.getProperty("wp.user"),
-                      appProps.getProperty("wp.applicationPass")));
+    WPSiteInfo.fromConfigResource("appConfig.properties").ifPresent(site -> siteInfo = site);
     wpSite = new WPCacheManager(siteInfo, cacheFile.toPath());
   }
 
