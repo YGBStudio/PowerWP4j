@@ -35,7 +35,12 @@ public enum WPCacheKey implements CacheKeyEnum {
   SLUG("slug"),
   TITLE("title"),
   LINK("link"),
-  CLASS_LIST("class_list");
+  GUID("guid"),
+  DATE("date"),
+  DATE_GMT("date_gmt"),
+  CONTENT("content"),
+  CLASS_LIST("class_list"),
+  EXCERPT("excerpt");
 
   private final String value;
 
