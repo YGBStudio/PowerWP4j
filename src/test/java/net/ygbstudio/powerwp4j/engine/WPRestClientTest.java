@@ -22,7 +22,6 @@
 
 package net.ygbstudio.powerwp4j.engine;
 
-import static net.ygbstudio.powerwp4j.utils.Helpers.getPropertiesFromResources;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
@@ -32,7 +31,6 @@ import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import net.ygbstudio.powerwp4j.builders.WPBasicPayloadBuilder;
 import net.ygbstudio.powerwp4j.builders.WPMediaPayloadBuilder;
 import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;
@@ -57,14 +55,7 @@ public class WPRestClientTest {
   @BeforeEach
   void setUp() {
     // Create this file in the resources folder
-    Optional<Properties> props = getPropertiesFromResources("appConfig.properties");
-    props.ifPresent(
-        appProps ->
-            this.siteInfo =
-                new WPSiteInfo(
-                    appProps.getProperty("wp.fullyQualifiedDomainName"),
-                    appProps.getProperty("wp.user"),
-                    appProps.getProperty("wp.applicationPass")));
+    WPSiteInfo.fromConfigResource("appConfig.properties").ifPresent(site -> siteInfo = site);
   }
 
   @Test
