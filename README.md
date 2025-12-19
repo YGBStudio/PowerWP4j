@@ -1,28 +1,42 @@
-# PowerWP4j
+# PowerWP4j - Power WP for Java
 
 ![Java](https://img.shields.io/badge/java-21-blue)
 ![Code Style](https://img.shields.io/badge/code_style-Google%20Java-blueviolet)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 ![Status](https://img.shields.io/badge/status-alpha-orange)
 
-PowerWP4j (Power WP for Java) is a safe, modular, Java-native toolkit for WordPress automation.
-It provides a cohesive set of APIs for REST operations, local caching, and offline analysis,
-supporting reliable, testable, and maintainable content management automation and reporting workflows.
+Build, update, and analyze WordPress content efficiently with a type-safe REST client, incremental caching, 
+and offline analysis utilities — all designed with expressive Java idioms and testable, lightweight abstractions.
 
 ## Table of contents
-1. [At a glance](#at-a-glance)
-2. [Workflows](#workflows)
-3. [Requirements](#requirements)
-4. [Install / dependency usage](#install--dependency-usage)
-5. [Quickstart](#quickstart)
-6. [Cache design notes](#cache-design-notes)
-7. [Key modules](#key-modules)
-8. [Possible Use Cases](#possible-use-cases)
-9. [Non-Goals](#non-goals)
-10. [Project layout](#project-layout)
-11. [Development](#development)
-12. [Security](#security)
-13. [License](#license)
+1. [What is PowerWP4j?](#what-is-powerwp4j)
+2. [At a glance](#at-a-glance)
+3. [Workflows](#workflows)
+4. [Requirements](#requirements)
+5. [Install / dependency usage](#install--dependency-usage)
+6. [Quickstart](#quickstart)
+7. [Cache design notes](#cache-design-notes)
+8. [Key modules](#key-modules)
+9. [Possible Use Cases](#possible-use-cases)
+10. [Non-Goals](#non-goals)
+11. [Project layout](#project-layout)
+12. [Development](#development)
+13. [Security](#security)
+14. [License](#license)
+
+## What is PowerWP4j?
+
+A modern, modular Java toolkit designed to simplify WordPress automation and offline content analysis.  
+
+It provides:
+- A type-safe REST client for creating and updating content
+- An incremental local caching system for offline workflows
+- Powerful analysis utilities for taxonomy extraction, reporting, and data modeling
+- Developer-friendly abstractions that preserve WordPress concepts while making it easier to automate, test, analyze, and innovate by building new workflows or insights from WordPress content
+
+Built with expressive Java idioms and immutability, PowerWP4j streamlines content management automation in a safe and testable way.
+
+**See [Possible Use Cases](#possible-use-cases) & [Non-Goals](#non-goals)**
 
 ## At a glance
 - **Build**: Maven (`pom.xml`) · **Java**: `21` · **Packaging**: `jar` · **License**: GPL-3.0-or-later
@@ -280,10 +294,12 @@ The plugin automatically formats Java code according to the [Google Java Style G
 - Never commit credentials (application passwords, usernames, site info).
 - If you create `appConfig.properties`, ensure it is ignored by version control.
 
-## License
-PowerWP4j is licensed under the GNU General Public License v3.0 or later.
-See the LICENSE file for details.
+## License & Disclaimer
 
+> **Disclaimer:** This library is a third-party tool and is not affiliated with or endorsed by WordPress.org.
+
+> PowerWP4j is licensed under the GNU General Public License v3.0 or later.
+> 
 > Copyright © 2025-2026 YGBStudio
 > 
 > Original Author & Maintainer: Yoham Gabriel Barboza B.
