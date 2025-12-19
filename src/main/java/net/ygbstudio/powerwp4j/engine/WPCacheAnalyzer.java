@@ -326,4 +326,81 @@ public class WPCacheAnalyzer {
         .map(tag -> tag.replaceFirst("^tag-", "").replaceAll("[^a-zA-Z0-9]", " ").trim())
         .collect(Collectors.toSet());
   }
+
+  /**
+   * Returns a stream of {@link WPCacheKeySnapshot} instances extracted from the in-memory local
+   * cache filtered by the cache key {@link WPCacheKey}. Returns a stream of {@link
+   * WPCacheKeySnapshot} instances extracted from the in-memory local cache filtered by the cache
+   * key {@link WPCacheKey}.
+   *
+   * <p>Each {@link WPCacheKeySnapshot} instance contains the cache key and a map of {@link
+   * WPCacheSubKey} as strings (in this method) and their corresponding values.
+   *
+   * @return a stream of {@link WPCacheKeySnapshot} instances extracted from the cache filtered by
+   *     the specified cache key
+   */
+  public Set<WPCacheKeySnapshot<String>> getContents() {
+    return getCacheSubKeySnapshotStream(
+            JsonNode::asString, WPCacheKey.CONTENT, WPCacheSubKey.RENDERED, WPCacheSubKey.PROTECTED)
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Returns a set of {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache
+   * filtered by the cache key {@link WPCacheKey} enum and containing the {@code "rendered"} and
+   * {@code "protected"} represented by the {@link WPCacheSubKey} enum.
+   *
+   * <p>Each {@link WPCacheKeySnapshot} instances extracted from the in-memory local instance
+   * contains the cache key and a map of {@link WPCacheSubKey} as strings (in this method) and their
+   * corresponding values.
+   *
+   * @return a set of {@link WPCacheKeySnapshot} instances extracted from the cache filtered by the
+   *     specified cache key
+   */
+  public Set<WPCacheKeySnapshot<String>> getExcerpts() {
+    return getCacheSubKeySnapshotStream(
+            JsonNode::asString, WPCacheKey.EXCERPT, WPCacheSubKey.RENDERED, WPCacheSubKey.PROTECTED)
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Returns a set of {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache
+   * filtered by the cache key {@link WPCacheKey#GUID} enum and containing the {@code "rendered"}
+   * represented by the {@link WPCacheSubKey} enum.
+   *
+   * <p>Each {@link WPCacheKeySnapshot} instance contains the cache key and a map of the present
+   * {@link WPCacheSubKey} as strings (in this method) and their corresponding values.
+   *
+   * @return a set of {@link WPCacheKeySnapshot} instances extracted from the cache filtered by the
+   *     specified cache key
+   */
+  public Set<WPCacheKeySnapshot<String>> getGuids() {
+    return getCacheSubKeySnapshotStream(JsonNode::asString, WPCacheKey.GUID, WPCacheSubKey.RENDERED)
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Returns a set of {@link Map.Entry} instances extracted from the in-memory local cache filtered
+   * by the class marker {@link TaxonomyMarker#TAG} and the class value {@link TaxonomyValues#TAGS}.
+   * Each entry contains a tag name and the corresponding value assigned to the term by the WordPress
+   * backend.
+   *
+   * <p><em>Tip: If you do not wish to transform/clean your taxonomy (class) strings, you can pass
+   * the {@link UnaryOperator#identity()} to ignore the transformation step.
+   *
+   * @return a set of {@link Map.Entry} instances extracted from the cache filtered by the specified
+   *     cache key
+   */
+  public Set<Map.Entry<String, Long>> mapWPClassId(
+      UnaryOperator<String> transformClassText,
+      ClassMarkerEnum classMarker,
+      ClassValueEnum classValue) {
+    List<String> classListElems = getClassListStream(classMarker).map(transformClassText).toList();
+    List<Long> tagValues =
+        getClassValueStream(classValue)
+            .flatMap(ArrayNode::valueStream)
+            .map(JsonNode::asLong)
+            .toList();
+    return zip(classListElems, tagValues).collect(Collectors.toSet());
+  }
 }
