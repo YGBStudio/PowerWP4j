@@ -51,18 +51,6 @@ supporting reliable, testable, and maintainable content management automation an
 - Ideal for automation, reporting, or ML workflows.
 - See the [Quickstart](#quickstart) section for usage examples with `WPCacheAnalyzer`.
 
-
-```java
-import java.util.function.UnaryOperator;
-import net.ygbstudio.powerwp4j.engine.WPCacheAnalyzer;
-
-WPCacheAnalyzer analyzer = new WPCacheAnalyzer(Path.of("wp-posts.json"));
-    UnaryOperator<String> cleanOperator =
-        tag -> tag.replaceFirst("^tag-", "").replaceAll("[^a-zA-Z0-9]", " ").trim();
-    var mappedTags = analyzer.mapWPClassId(cleanOperator, TaxonomyMarker.TAG, TaxonomyValues.TAGS);
-```
-
-
 ## Requirements
 - **JDK 21**
 - A WordPress site with:
