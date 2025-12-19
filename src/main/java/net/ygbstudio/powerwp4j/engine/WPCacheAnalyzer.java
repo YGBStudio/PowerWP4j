@@ -93,8 +93,8 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Low-level method that returns a stream of ArrayNodes from the in-memory local cache filtered by
-   * a specified enum that follows the {@link FriendlyEnum} interface.
+   * Low-level method that returns ArrayNodes from the in-memory local cache filtered by a specified
+   * enum that follows the {@link FriendlyEnum} interface.
    *
    * @param friendlyEnum the enum representing the class value to filter by
    * @return a stream of ArrayNodes containing the filtered class values
@@ -108,8 +108,8 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a stream of ArrayNodes from the in-memory local cache filtered by a specified enum that
-   * follows the {@link CacheKeyEnum} interface.
+   * Returns the ArrayNodes from the in-memory local cache filtered by a specified enum that follows
+   * the {@link CacheKeyEnum} interface.
    *
    * @param cacheKey the enum representing the cache key to filter by
    * @return a stream of ArrayNodes containing the filtered cache keys
@@ -119,8 +119,8 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a stream of ArrayNodes from the in-memory local cache filtered by a specified enum that
-   * follows the {@link CacheKeyEnum} interface.
+   * Returns the ArrayNodes from the in-memory local cache filtered by a specified enum that follows
+   * the {@link CacheKeyEnum} interface.
    *
    * @param cacheKey the enum representing the cache key to filter by
    * @return a stream of ArrayNodes containing the filtered cache keys
@@ -130,8 +130,8 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a stream of ArrayNodes from the in-memory local cache filtered by a specified enum that
-   * follows the {@link ClassValueEnum} interface.
+   * Returns the ArrayNodes from the in-memory local cache filtered by a specified enum that follows
+   * the {@link ClassValueEnum} interface.
    *
    * @param classValues the enum representing the class value to filter by
    * @return a stream of ArrayNodes containing the filtered class values
@@ -154,8 +154,8 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of values extracted from the in-memory local cache filtered by a specified enum
-   * that follows the {@link CacheKeyEnum} interface.
+   * Returns values extracted from the in-memory local cache filtered by a specified enum that
+   * follows the {@link CacheKeyEnum} interface.
    *
    * @param cacheKey the enum representing the cache key to filter by
    * @param transformer the function used to transform the JsonNode to the desired type
@@ -168,10 +168,10 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a stream of {@link WPCacheKeySnapshot} instances extracted from the in-memory local
-   * cache filtered by a specified cache key. Each {@link WPCacheKeySnapshot} instance contains a
-   * cache key and a map of cache subkeys and their corresponding values. The values are transformed
-   * by the specified function.
+   * Returns {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache filtered
+   * by a specified cache key. Each {@link WPCacheKeySnapshot} instance contains a cache key and a
+   * map of cache subkeys and their corresponding values. The values are transformed by the
+   * specified function.
    *
    * @param subKeyTransformer the function used to transform the JsonNode to the desired type
    * @param cacheKey the enum representing the cache key to filter by
@@ -251,7 +251,7 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of unique slugs from the in-memory local cache.
+   * Returns unique slugs from the in-memory local cache.
    *
    * @return a set of unique slugs
    */
@@ -260,7 +260,7 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of unique links from the in-memory local cache.
+   * Returns unique links from the in-memory local cache.
    *
    * @return a set of unique links
    */
@@ -269,8 +269,7 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a stream of class list elements from the in-memory local cache that match the provided
-   * filter.
+   * Returns class list elements from the in-memory local cache that match the provided filter.
    *
    * @param filterClassListElems the predicate to filter the class list elements
    * @return a stream of class list elements that match the provided filter
@@ -282,8 +281,8 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a stream of class list elements from the in-memory local cache that match the provided
-   * class marker enum.
+   * Returns class list elements from the in-memory local cache that match the provided class marker
+   * enum.
    *
    * @param classMarker the class marker enum to filter the class list elements
    * @return a stream of class list elements that match the provided class marker enum
@@ -293,7 +292,7 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of unique categories from the in-memory local cache.
+   * Returns unique categories from the in-memory local cache.
    *
    * <p>The categories are filtered by the {@link TaxonomyMarker#CATEGORY} enum and their prefix is
    * removed. Additionally, any non-alphanumeric characters are replaced with spaces.
@@ -313,7 +312,7 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of unique tags from the in-memory local cache.
+   * Returns unique tags from the in-memory local cache.
    *
    * <p>The tags are filtered by the {@link TaxonomyMarker#TAG} enum and their prefix is removed.
    * Additionally, any non-alphanumeric characters are replaced with spaces.
@@ -331,10 +330,8 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a stream of {@link WPCacheKeySnapshot} instances extracted from the in-memory local
-   * cache filtered by the cache key {@link WPCacheKey}. Returns a stream of {@link
-   * WPCacheKeySnapshot} instances extracted from the in-memory local cache filtered by the cache
-   * key {@link WPCacheKey}.
+   * Returns {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache filtered
+   * by the cache key {@link WPCacheKey}.
    *
    * <p>Each {@link WPCacheKeySnapshot} instance contains the cache key and a map of {@link
    * WPCacheSubKey} as strings (in this method) and their corresponding values.
@@ -349,9 +346,9 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache
-   * filtered by the cache key {@link WPCacheKey} enum and containing the {@code "rendered"} and
-   * {@code "protected"} represented by the {@link WPCacheSubKey} enum.
+   * Returns {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache filtered
+   * by the cache key {@link WPCacheKey} enum and containing the {@code "rendered"} and {@code
+   * "protected"} represented by the {@link WPCacheSubKey} enum.
    *
    * <p>Each {@link WPCacheKeySnapshot} instances extracted from the in-memory local instance
    * contains the cache key and a map of {@link WPCacheSubKey} as strings (in this method) and their
@@ -367,9 +364,9 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache
-   * filtered by the cache key {@link WPCacheKey#GUID} enum and containing the {@code "rendered"}
-   * represented by the {@link WPCacheSubKey} enum.
+   * Returns {@link WPCacheKeySnapshot} instances extracted from the in-memory local cache filtered
+   * by the cache key {@link WPCacheKey#GUID} enum and containing the {@code "rendered"} represented
+   * by the {@link WPCacheSubKey} enum.
    *
    * <p>Each {@link WPCacheKeySnapshot} instance contains the cache key and a map of the present
    * {@link WPCacheSubKey} as strings (in this method) and their corresponding values.
@@ -383,9 +380,9 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns a set of {@link Map.Entry} instances extracted from the in-memory local cache filtered
-   * by the class marker {@link TaxonomyMarker#TAG} and the class value {@link TaxonomyValues#TAGS}.
-   * Each entry contains a tag name and the corresponding value assigned to the term by the WordPress
+   * Returns {@link Map.Entry} instances extracted from the in-memory local cache filtered by the
+   * class marker {@link TaxonomyMarker#TAG} and the class value {@link TaxonomyValues#TAGS}. Each
+   * entry contains a tag name and the corresponding value assigned to the term by the WordPress
    * backend.
    *
    * <p><em>Tip: If you do not wish to transform/clean your taxonomy (class) strings, you can pass
