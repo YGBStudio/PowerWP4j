@@ -62,9 +62,9 @@ public record WPSiteInfo(String fullyQualifiedDomainName, String wpUser, String 
     return props.map(
         appProps ->
             new WPSiteInfo(
-                appProps.getProperty(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME.toString()),
-                appProps.getProperty(EnvironmentScope.WP_USER.toString()),
-                appProps.getProperty(EnvironmentScope.WP_APPLICATION_PASS.toString())));
+                appProps.getProperty(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME_PROP.toString()),
+                appProps.getProperty(EnvironmentScope.WP_USER_PROP.toString()),
+                appProps.getProperty(EnvironmentScope.WP_APPLICATION_PASS_PROP.toString())));
   }
 
   /**
@@ -74,9 +74,9 @@ public record WPSiteInfo(String fullyQualifiedDomainName, String wpUser, String 
    * @return a {@link WPSiteInfo} loaded from the environment variables
    */
   public static @Nullable WPSiteInfo fromEnv() {
-    String fqdm = System.getenv(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME.toString());
-    String wpUser = System.getenv(EnvironmentScope.WP_USER.toString());
-    String wpAppPass = System.getenv(EnvironmentScope.WP_APPLICATION_PASS.toString());
+    String fqdm = System.getenv(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME_ENV.toString());
+    String wpUser = System.getenv(EnvironmentScope.WP_USER_ENV.toString());
+    String wpAppPass = System.getenv(EnvironmentScope.WP_APPLICATION_PASS_ENV.toString());
     if (fqdm == null || wpUser == null || wpAppPass == null) {
       return null;
     }
