@@ -27,7 +27,9 @@ import static net.ygbstudio.powerwp4j.utils.JsonSupport.readJsonFs;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -182,6 +184,7 @@ public class WPCacheAnalyzer {
       @NonNull Function<? super JsonNode, ? extends V> subKeyTransformer,
       CacheKeyEnum cacheKey,
       CacheSubKeyEnum... subKeys) {
+    Set<CacheSubKeyEnum> subKeySet = new HashSet<>(Arrays.asList(subKeys));
     return getCacheKeyValueStream(cacheKey)
         .filter(JsonNode::isObject)
         .map(
@@ -191,7 +194,7 @@ public class WPCacheAnalyzer {
                   .propertyStream()
                   .forEach(
                       entry -> {
-                        for (CacheSubKeyEnum key : subKeys) {
+                        for (CacheSubKeyEnum key : subKeySet) {
                           if (entry.getKey().equals(key.toString())) {
                             subKeyMap.put(key, subKeyTransformer.apply(entry.getValue()));
                           }
