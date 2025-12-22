@@ -41,7 +41,7 @@ public enum WPQueryParam implements QueryParamEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
