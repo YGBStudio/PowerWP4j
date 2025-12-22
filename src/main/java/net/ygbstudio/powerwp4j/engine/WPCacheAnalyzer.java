@@ -101,8 +101,8 @@ public class WPCacheAnalyzer {
   private Stream<Object> getFriendlyEnumStream(FriendlyEnum friendlyEnum) {
     return inMemoryCache
         .valueStream()
-        .filter(node -> node.has(friendlyEnum.toString()))
-        .map(item -> item.get(friendlyEnum.toString()));
+        .filter(node -> node.has(friendlyEnum.value()))
+        .map(item -> item.get(friendlyEnum.value()));
   }
 
   /**
@@ -193,7 +193,7 @@ public class WPCacheAnalyzer {
                   .forEach(
                       entry -> {
                         for (CacheSubKeyEnum key : subKeySet) {
-                          if (entry.getKey().equals(key.toString())) {
+                          if (entry.getKey().equals(key.value())) {
                             subKeyMap.put(key, subKeyTransformer.apply(entry.getValue()));
                           }
                         }
@@ -286,7 +286,7 @@ public class WPCacheAnalyzer {
    * @return a stream of class list elements that match the provided class marker enum
    */
   public Stream<String> getClassListStream(ClassMarkerEnum classMarker) {
-    return getClassListStream(classItem -> classItem.contains(classMarker.toString()));
+    return getClassListStream(classItem -> classItem.contains(classMarker.value()));
   }
 
   /**
