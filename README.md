@@ -208,6 +208,84 @@ UnaryOperator<String> cleanOperator = tag ->
 // You can pass the UnaryOperator.identity() to ignore the transformation step.
 var mappedTags = analyzer.mapWPClassId(cleanOperator, TaxonomyMarker.TAG, TaxonomyValues.TAGS);
 ```
+## FAQs
+
+### Why is PowerWP4j marked as alpha?
+PowerWP4j is currently in alpha because its public API may evolve as real-world usage
+increases. Core concepts (REST client, cache, analyzer) are stable, but method
+signatures and module boundaries may change before a 1.0 release.
+
+Additional features and refinements are expected as the project incorporates
+both internal experimentation and external feedback.
+
+### Why does PowerWP4j use a local JSON cache instead of a database?
+The local JSON cache is designed to:
+- Keep the library lightweight and dependency-free
+- Enable deterministic, offline analysis
+- Make cached content easy to inspect, move, and version-control
+
+If you require a database-backed workflow, the cache can be treated as an ingestion
+layer, with analyzed results persisted to a datastore of your choice.
+
+### Does PowerWP4j support custom post types?
+Yes. PowerWP4j supports custom post types exposed through the WordPress REST API,
+as long as they are registered with `'show_in_rest' => true`.
+
+Depending on your use case, additional modeling may be required. Custom post types
+can be introduced by implementing the
+`net.ygbstudio.base.extension.PostTypeEnum` interface.
+
+PowerWP4j also provides extension interfaces for custom taxonomies. If your theme or
+plugin defines additional taxonomies, you can implement:
+- `net.ygbstudio.base.extension.ClassMarkerEnum`
+- `net.ygbstudio.base.extension.ClassValueEnum`
+
+It is also possible to extract specific keys from the JSON cache by implementing:
+- `net.ygbstudio.base.extension.CacheKeyEnum`
+- `net.ygbstudio.base.extension.CacheSubKeyEnum` (for elements with nested JSON objects)
+
+Below is a minimal sample implementation illustrating the pattern used by all
+extension interfaces:
+
+```java
+import net.ygbstudio.base.extension.CacheKeyEnum;
+
+public enum MyCacheKeys implements CacheKeyEnum {
+    SEO_SCORE("seo_score");
+
+    private final String key;
+
+    MyCacheKeys(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public String value() {
+        return key;
+    }
+}
+```
+**Note:** Extension interfaces define an explicit `value()` method, which is used
+internally for serialization and REST mapping. Implementations may override
+`toString()` for convenience or debugging, but the library does not rely on it for
+correctness.
+
+All utilities in PowerWP4j operate on extension interface types rather than concrete
+implementations. As a result, any client-provided extension that follows this pattern
+is supported transparently by the library.
+
+
+### Does PowerWP4j provide default implementations of its extension interfaces?
+Yes. Default implementations are provided in the
+`net.ygbstudio.powerwp4j.models.schema` package.
+All built-in implementations are prefixed with `WP`.
+
+### Is this library safe for production use?
+PowerWP4j can be used in production automation workflows, provided that:
+- A specific version is pinned
+- API changes are expected until the 1.0 release
+- Cache synchronization is treated as an explicit, controlled operation
+
 
 ## Cache design notes
 - **Source of truth**: analysis is strictly against the local cache; keep it fresh with `cacheSync()`.
