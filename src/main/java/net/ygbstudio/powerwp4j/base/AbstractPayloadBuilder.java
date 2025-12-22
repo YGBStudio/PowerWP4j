@@ -85,7 +85,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @return the payload builder
    */
   public T status(@NonNull PostStatusEnum postStatus) {
-    this.status = postStatus.toString();
+    this.status = postStatus.value();
     return self();
   }
 
@@ -96,7 +96,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @return the payload builder
    */
   public T type(@NonNull PostTypeEnum postType) {
-    this.type = postType.toString();
+    this.type = postType.value();
     return self();
   }
 
@@ -107,7 +107,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @return the payload builder
    */
   public T format(@NonNull PostFormatEnum postFormat) {
-    this.format = postFormat.toString();
+    this.format = postFormat.value();
     return self();
   }
 
@@ -228,7 +228,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @return the payload builder
    */
   public T commentStatus(@NonNull CommentStatusEnum status) {
-    this.commentStatus = status.toString();
+    this.commentStatus = status.value();
     return self();
   }
 
