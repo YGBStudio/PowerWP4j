@@ -47,7 +47,7 @@ public enum WPCacheKey implements CacheKeyEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
