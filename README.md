@@ -15,14 +15,15 @@ and offline analysis utilities — all designed with expressive Java idioms and 
 4. [Requirements](#requirements)
 5. [Install / dependency usage](#install--dependency-usage)
 6. [Quickstart](#quickstart)
-7. [Cache design notes](#cache-design-notes)
-8. [Key modules](#key-modules)
-9. [Possible Use Cases](#possible-use-cases)
-10. [Non-Goals](#non-goals)
-11. [Project layout](#project-layout)
-12. [Development](#development)
-13. [Security](#security)
-14. [License](#license)
+7. [FAQs](#faqs)
+8. [Cache design notes](#cache-design-notes)
+9. [Key modules](#key-modules)
+10. [Possible Use Cases](#possible-use-cases)
+11. [Non-Goals](#non-goals)
+12. [Project layout](#project-layout)
+13. [Development](#development)
+14. [Security](#security)
+15. [License](#license)
 
 ## What is PowerWP4j?
 
