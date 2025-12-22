@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -187,14 +188,14 @@ public final class Helpers {
    * @param ignoreCase If true, the match is case-insensitive; otherwise, it is case-sensitive.
    * @return An Optional containing the matching enum constant, or empty if no match is found.
    */
-  public static <T extends Enum<T>> Optional<T> enumFromValue(
+  public static <T extends FriendlyEnum> Optional<T> enumFromValue(
       Class<T> enumType, @Nullable String strEnumKey, boolean ignoreCase) {
     if (strEnumKey == null || strEnumKey.isBlank()) return Optional.empty();
 
     Predicate<String> valuePattern =
         Pattern.compile(strEnumKey, ignoreCase ? Pattern.CASE_INSENSITIVE : 0).asPredicate();
     return Arrays.stream(enumType.getEnumConstants())
-        .filter(key -> valuePattern.test(key.toString()))
+        .filter(key -> valuePattern.test(key.value()))
         .findFirst();
   }
 
