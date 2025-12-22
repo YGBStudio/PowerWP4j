@@ -48,7 +48,9 @@ class WPCacheManagerTest {
     Map<WPQueryParam, String> queryParams = new EnumMap<>(WPQueryParam.class);
     if (pageNumber > 0) queryParams.put(WPQueryParam.PAGE, String.valueOf(pageNumber));
     queryParams.put(WPQueryParam.PER_PAGE, "10");
-    return siteInfo.apiBaseUrl() + WPRestPath.POSTS + QueryParamEnum.joinQueryParams(queryParams);
+    return engineInstance.apiBaseUrl()
+        + WPRestPath.POSTS.value()
+        + QueryParamEnum.joinQueryParams(queryParams);
   }
 
   @Test
