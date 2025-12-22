@@ -27,7 +27,7 @@ import java.util.Properties;
 import net.ygbstudio.powerwp4j.base.EnvironmentScope;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A record that represents basic site information required to interact with a WordPress site.
@@ -36,6 +36,7 @@ import org.jspecify.annotations.Nullable;
  * @param wpUser the user name for the WordPress site
  * @param wpAppPass the application password for the WordPress site
  */
+@NullMarked
 public record WPSiteInfo(String fullyQualifiedDomainName, String wpUser, String wpAppPass) {
 
   /**
@@ -60,10 +61,9 @@ public record WPSiteInfo(String fullyQualifiedDomainName, String wpUser, String 
     return props.map(
         appProps ->
             new WPSiteInfo(
-                appProps.getProperty(
-                    EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME_PROP.toString()),
-                appProps.getProperty(EnvironmentScope.WP_USER_PROP.toString()),
-                appProps.getProperty(EnvironmentScope.WP_APPLICATION_PASS_PROP.toString())));
+                appProps.getProperty(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME_PROP.value()),
+                appProps.getProperty(EnvironmentScope.WP_USER_PROP.value()),
+                appProps.getProperty(EnvironmentScope.WP_APPLICATION_PASS_PROP.value())));
   }
 
   /**
@@ -72,13 +72,13 @@ public record WPSiteInfo(String fullyQualifiedDomainName, String wpUser, String 
    *
    * @return a {@link WPSiteInfo} loaded from the environment variables
    */
-  public static @Nullable WPSiteInfo fromEnv() {
-    String fqdm = System.getenv(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME_ENV.toString());
-    String wpUser = System.getenv(EnvironmentScope.WP_USER_ENV.toString());
-    String wpAppPass = System.getenv(EnvironmentScope.WP_APPLICATION_PASS_ENV.toString());
+  public static Optional<WPSiteInfo> fromEnv() {
+    String fqdm = System.getenv(EnvironmentScope.WP_FULLY_QUALIFIED_DOMAIN_NAME_ENV.value());
+    String wpUser = System.getenv(EnvironmentScope.WP_USER_ENV.value());
+    String wpAppPass = System.getenv(EnvironmentScope.WP_APPLICATION_PASS_ENV.value());
     if (fqdm == null || wpUser == null || wpAppPass == null) {
-      return null;
+      return Optional.empty();
     }
-    return new WPSiteInfo(fqdm, wpUser, wpAppPass);
+    return Optional.of(new WPSiteInfo(fqdm, wpUser, wpAppPass));
   }
 }
