@@ -39,7 +39,7 @@ Built with expressive Java idioms and immutability, PowerWP4j streamlines conten
 **See [Possible Use Cases](#possible-use-cases) & [Non-Goals](#non-goals)**
 
 ## At a glance
-- **Build**: Maven (`pom.xml`) · **Java**: `21` · **Packaging**: `jar` · **License**: GPL-3.0-or-later
+- **Build**: Maven (`pom.xml`) · **Java**: `21` · **Packaging**: `jar` · **License**: Apache-2.0
 - **Style**: expressive, declarative modern Java (records, `Optional`, streams, immutability-first), using documented nullability only where necessary.
 - **REST client**: create/update/delete posts, categories, tags, and media (with metadata) using Application Password auth.
 - **Local cache**: fetch WordPress posts into a JSON file plus metadata; supports incremental sync.
@@ -283,7 +283,7 @@ These constraints are deliberate and help keep PowerWP4j predictable, testable, 
 ## Development
 - Build: `mvn clean package`
 - Tests: `mvn test`
-- Formatting: `mvn fmt:format` (uses `com.spotify.fmt:fmt-maven-plugin`)
+- Formatting: `mvn fmt:format`
 - JDK: 21
 
 PowerWP4j uses [fmt-maven-plugin](https://github.com/spotify/fmt-maven-plugin) to maintain consistent code style. 
