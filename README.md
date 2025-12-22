@@ -279,7 +279,11 @@ is supported transparently by the library.
 ### Does PowerWP4j provide default implementations of its extension interfaces?
 Yes. Default implementations are provided in the
 `net.ygbstudio.powerwp4j.models.schema` package.
-All built-in implementations are prefixed with `WP`.
+All built-in schema implementations are prefixed with `WP`. 
+
+Default taxonomy enums are provided in the `net.ygbstudio.powerwp4j.models.taxonomies` package.
+Taxonomies are separated from the schema models to improve clarity, maintain coherence, and simplify 
+usage.
 
 ### Is this library safe for production use?
 PowerWP4j can be used in production automation workflows, provided that:
