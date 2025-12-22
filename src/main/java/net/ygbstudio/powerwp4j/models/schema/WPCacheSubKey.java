@@ -33,7 +33,7 @@ public enum WPCacheSubKey implements CacheSubKeyEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
