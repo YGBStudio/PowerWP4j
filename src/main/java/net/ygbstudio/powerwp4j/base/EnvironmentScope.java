@@ -43,7 +43,7 @@ public enum EnvironmentScope implements FriendlyEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
