@@ -33,7 +33,7 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface URLFieldsEnum {
+public interface URLFieldsEnum extends FriendlyEnum {
   /**
    * Joins the given fields into a single string, separated by commas.
    *
@@ -42,6 +42,6 @@ public interface URLFieldsEnum {
    */
   default String joinFields(URLFieldsEnum baseField, URLFieldsEnum... fields) {
     return baseField
-        + Arrays.stream(fields).map(URLFieldsEnum::toString).collect(Collectors.joining(","));
+        + Arrays.stream(fields).map(URLFieldsEnum::value).collect(Collectors.joining(","));
   }
 }
