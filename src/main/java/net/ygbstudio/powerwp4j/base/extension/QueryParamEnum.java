@@ -28,8 +28,8 @@ import org.jspecify.annotations.NonNull;
 
 /**
  * QueryParamEnum is an interface that promotes a unified type for query parameters and a {@code
- * toString} method to ensure consistency with the design practices of the project. It can be used
- * as a means to provide your own query parameters to the WPCacheManager safely.
+ * value()} method to ensure consistency with the design practices of the project. It can be used as
+ * a means to provide your own query parameters to the WPCacheManager safely.
  *
  * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
@@ -57,12 +57,12 @@ public interface QueryParamEnum extends FriendlyEnum {
   static <E extends QueryParamEnum> @NonNull String joinQueryParams(
       @NonNull Map<E, String> wpRestQueriesMap) {
     if (wpRestQueriesMap.isEmpty()) return "";
-    if (wpRestQueriesMap.keySet().stream().filter(param -> param.toString().startsWith("?")).count()
+    if (wpRestQueriesMap.keySet().stream().filter(param -> param.value().startsWith("?")).count()
         != 1) {
       throw new IllegalArgumentException(
           "You need to include at least, and only one, leading query parameter or a query string start key.");
     }
-    Comparator<E> leadingParam = Comparator.comparing(param -> param.toString().startsWith("?"));
+    Comparator<E> leadingParam = Comparator.comparing(param -> param.value().startsWith("?"));
     List<E> sortedParams = wpRestQueriesMap.keySet().stream().sorted(leadingParam).toList();
 
     StringBuilder pathString = new StringBuilder();
@@ -70,9 +70,8 @@ public interface QueryParamEnum extends FriendlyEnum {
         .reversed()
         .forEach(
             param -> {
-              if (!pathString.isEmpty() && !param.toString().startsWith("?"))
-                pathString.append("&");
-              pathString.append(param);
+              if (!pathString.isEmpty() && !param.value().startsWith("?")) pathString.append("&");
+              pathString.append(param.value());
               pathString.append(wpRestQueriesMap.get(param));
             });
 
