@@ -49,7 +49,7 @@ public enum TaxonomyMarker implements ClassMarkerEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return this.value;
   }
 }
