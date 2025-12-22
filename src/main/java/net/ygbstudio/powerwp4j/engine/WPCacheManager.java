@@ -126,9 +126,9 @@ public class WPCacheManager {
             applicationPassword);
     this.cachePath = cachePath;
     if (cachePath != null) cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
-    ;
+    String apiBaseUrl = siteInfo.apiBaseUrl();
     wpSiteEngineLogger.info("Initialized WPCacheManager for site: {}", fullyQualifiedDomainName);
-    wpSiteEngineLogger.info("API Base Path set to: {}", siteInfo.apiBaseUrl());
+    wpSiteEngineLogger.info("API Base Path set to: {}", apiBaseUrl);
   }
 
   /**
@@ -666,6 +666,24 @@ public class WPCacheManager {
       cacheLock.unlock();
     }
     return true;
+  }
+
+  /**
+   * Returns the base URL of the WordPress REST API.
+   *
+   * @return the base URL of the WordPress REST API
+   */
+  public String apiBaseUrl() {
+    return siteInfo.apiBaseUrl();
+  }
+
+  /**
+   * Returns the user name for the WordPress site.
+   *
+   * @return the user name for the WordPress site
+   */
+  public String wpUser() {
+    return siteInfo.wpUser();
   }
 
   /**
