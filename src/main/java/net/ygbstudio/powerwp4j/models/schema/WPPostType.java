@@ -44,7 +44,7 @@ public enum WPPostType implements PostTypeEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
