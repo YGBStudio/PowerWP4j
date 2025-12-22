@@ -616,8 +616,8 @@ public class WPCacheManager {
 
     Comparator<JsonNode> jsonNodeComparator =
         (jsonNode1, jsonNode2) -> {
-          long id1 = jsonNode1.get(WPCacheKey.ID.toString()).asLong();
-          long id2 = jsonNode2.get(WPCacheKey.ID.toString()).asLong();
+          long id1 = jsonNode1.get(WPCacheKey.ID.value()).asLong();
+          long id2 = jsonNode2.get(WPCacheKey.ID.value()).asLong();
           return Long.compare(id1, id2);
         };
 
@@ -627,7 +627,7 @@ public class WPCacheManager {
             .sorted(jsonNodeComparator)
             .toList()
             .getLast()
-            .get(WPCacheKey.ID.toString())
+            .get(WPCacheKey.ID.value())
             .asLong();
 
     Predicate<ArrayNode> testForLastElem =
@@ -636,7 +636,7 @@ public class WPCacheManager {
                     .sorted(jsonNodeComparator)
                     .toList()
                     .getLast()
-                    .get(WPCacheKey.ID.toString())
+                    .get(WPCacheKey.ID.value())
                     .asLong()
                 > lastId;
 
