@@ -87,8 +87,6 @@ public final class Helpers {
               "Error while loading property file. "
                   + ioex.getMessage()
                   + " "
-                  + ioex.getCause()
-                  + " "
                   + Arrays.toString(ioex.getStackTrace()));
       return Optional.empty();
     }
