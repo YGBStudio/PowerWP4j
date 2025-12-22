@@ -43,7 +43,7 @@ public enum TaxonomyValues implements ClassValueEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return this.value;
   }
 }
