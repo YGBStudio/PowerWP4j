@@ -29,6 +29,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.cfg.EnumFeature;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
@@ -71,6 +72,7 @@ public final class JsonSupport {
         .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
         .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
         .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+        .configure(EnumFeature.WRITE_ENUMS_TO_LOWERCASE, true)
         .build();
   }
 
