@@ -33,7 +33,7 @@ public enum WPCommentStatus implements CommentStatusEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
