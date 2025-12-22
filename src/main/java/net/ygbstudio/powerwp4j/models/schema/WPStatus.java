@@ -41,7 +41,7 @@ public enum WPStatus implements PostStatusEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
