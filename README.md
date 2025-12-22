@@ -1,8 +1,8 @@
 # PowerWP4j - Power WP for Java
 
 ![Java](https://img.shields.io/badge/java-21-blue)
+[![License](https://img.shields.io/badge/license-Apache--2.0-orange)](https://www.apache.org/licenses/LICENSE-2.0)
 ![Code Style](https://img.shields.io/badge/code_style-Google%20Java-blueviolet)
-![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 ![Status](https://img.shields.io/badge/status-alpha-orange)
 
 Build, update, and analyze WordPress content efficiently with a type-safe REST client, incremental caching, 
@@ -294,15 +294,14 @@ The plugin automatically formats Java code according to the [Google Java Style G
 - Never commit credentials (application passwords, usernames, site info).
 - If you create `appConfig.properties`, ensure it is ignored by version control.
 
-## License & Disclaimer
+## License
 
-> **Disclaimer:** This library is a third-party tool and is not affiliated with or endorsed by WordPress.org.
+PowerWP4j is licensed under the Apache License, Version 2.0.
 
-> PowerWP4j is licensed under the GNU General Public License v3.0 or later.
-> 
-> Copyright © 2025-2026 YGBStudio
-> 
-> Original Author & Maintainer: Yoham Gabriel Barboza B.
-> 
-> SPDX-License-Identifier: GPL-3.0-or-later
+Copyright © 2025–2026 YGBStudio
+
+## Disclaimer
+
+This project is a third-party tool and is not affiliated with or endorsed by WordPress.org.
+
 
