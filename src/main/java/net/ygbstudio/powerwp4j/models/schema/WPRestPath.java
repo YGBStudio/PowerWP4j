@@ -57,7 +57,7 @@ public enum WPRestPath implements RestPathEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return this.value;
   }
 }
