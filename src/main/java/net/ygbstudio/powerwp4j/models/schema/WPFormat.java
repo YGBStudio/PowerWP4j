@@ -45,7 +45,7 @@ public enum WPFormat implements PostFormatEnum {
   }
 
   @Override
-  public String toString() {
+  public String value() {
     return value;
   }
 }
