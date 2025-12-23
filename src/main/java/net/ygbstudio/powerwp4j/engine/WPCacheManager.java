@@ -118,7 +118,10 @@ public class WPCacheManager {
             username,
             applicationPassword);
     this.cachePath = cachePath;
-    if (cachePath != null) cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
+    if (cachePath != null) {
+      cacheFile = cachePath.toFile().exists() ? cachePath.toFile() : null;
+      WPCacheMeta.from(cachePath).ifPresent(cacheMeta -> wpCacheMeta = cacheMeta);
+    }
     String apiBaseUrl = siteInfo.apiBaseUrl();
     wpSiteEngineLogger.info("Initialized WPCacheManager for site: {}", fullyQualifiedDomainName);
     wpSiteEngineLogger.info("API Base Path set to: {}", apiBaseUrl);
@@ -217,34 +220,35 @@ public class WPCacheManager {
    *
    * @param cachePath the path to the cache file
    * @param overwriteCache whether to overwrite the cache file if it exists
+   * @param ignoreSSLHandshakeException whether to ignore SSL Handshake Exception
    * @throws IOException if an I/O error occurs
    */
-  private void fetchCache(@NonNull Path cachePath, boolean overwriteCache) throws IOException {
+  private void fetchCacheInternal(
+      @NonNull Path cachePath, boolean overwriteCache, boolean ignoreSSLHandshakeException)
+      throws IOException {
 
     if (Objects.isNull(linkList) || linkList.isEmpty()) {
-      try {
-        updateCacheMeta();
-        loadCacheMetaData(cachePath, true);
-        linkList = linkListCreator(wpCacheMeta.totalPages(), DEFAULT_PER_PAGE);
-      } catch (IOException ioEx) {
-        wpSiteEngineLogger.warn(
-            "Failed to gather WordPress post metadata. Check your connection", ioEx);
-        wpSiteEngineLogger.warn(
-            "IOExeption caused by: {}", ioEx.getCause() != null ? ioEx.getCause() : "no cause");
-        throw new CacheConstructionException(
-            () -> "Failed to fetch site data for " + siteInfo.fullyQualifiedDomainName());
-      } catch (InterruptedException intEx) {
-        Thread currentThread = Thread.currentThread();
-        wpSiteEngineLogger.debug(
-            "Current Thread state: {} -> Interrupting after attempted cache creation",
-            currentThread.getState());
-        currentThread.interrupt();
-        return;
-      }
+      Runnable throwCacheException =
+          () -> {
+            throw new CacheConstructionException(
+                () ->
+                    "Failed to gather WordPress post metadata for "
+                        + siteInfo.fullyQualifiedDomainName()
+                        + " Check your connection and try again");
+          };
+      WPCacheMeta.updateCacheMeta(siteInfo, cachePath, ignoreSSLHandshakeException)
+          .ifPresentOrElse(
+              cacheMeta -> {
+                wpCacheMeta = cacheMeta;
+                linkList = linkListCreator(wpCacheMeta.totalPages(), DEFAULT_PER_PAGE);
+              },
+              throwCacheException);
     }
 
-    wpSiteEngineLogger.info("Processing cache links for {}", siteInfo.apiBaseUrl());
-    ArrayNode wpJsonArray = fetchJsonCache(linkList, null, 0, 0, null, null);
+    String apiBaseUrl = siteInfo.apiBaseUrl();
+    wpSiteEngineLogger.info("Processing cache links for {}", apiBaseUrl);
+    ArrayNode wpJsonArray =
+        fetchCacheFromInstancePath(linkList, null, 0, 0, null, null, ignoreSSLHandshakeException);
 
     cacheLock.lock();
     try {
@@ -416,13 +420,9 @@ public class WPCacheManager {
     } else if (!cachePathFile.exists()) {
       try {
         Files.createFile(cachePath);
-        updateCacheMeta();
+        WPCacheMeta.updateCacheMeta(siteInfo, cachePath, false);
       } catch (IOException ioEx) {
         exceptionLogging.activate(ioEx);
-        throw new CacheConstructionException(cacheExMsg.apply(cachePathFile));
-      } catch (InterruptedException intEx) {
-        Thread.currentThread().interrupt();
-        exceptionLogging.activate(intEx);
         throw new CacheConstructionException(cacheExMsg.apply(cachePathFile));
       }
     }
@@ -474,22 +474,12 @@ public class WPCacheManager {
           throw new CacheFileSystemException(() -> "Failed to read cache file: " + exMsg);
         };
 
-    Trigger updateCache =
-        () -> {
-          try {
-            updateCacheMeta();
-            loadCacheMetaData(cachePath, true);
-          } catch (IOException | InterruptedException ioEx) {
-            if (ioEx instanceof InterruptedException) Thread.currentThread().interrupt();
-            ioExceptionLogging.activate(ioEx);
-            throwCacheException.activate(ioEx.getMessage());
-          }
-        };
+    Trigger updateCache = () -> WPCacheMeta.updateCacheMeta(siteInfo, cachePath, ignoreSSL);
 
     if (wpCacheMeta == null) updateCache.activate();
 
-    CacheMeta cacheMetaOld =
-        new CacheMeta(
+    WPCacheMeta cacheMetaOld =
+        new WPCacheMeta(
             wpCacheMeta.totalPages(),
             wpCacheMeta.totalPosts(),
             LocalDate.ofInstant(Instant.now(), ZoneOffset.UTC));
