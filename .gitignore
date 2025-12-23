@@ -46,3 +46,7 @@ build/
 
 ### Text Files ###
 *.txt
+
+### Testing Resources ###
+!**/src/test/resources/wp-posts-test.json
+!**/src/test/resources/wp-posts-test_metadata.json
