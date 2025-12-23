@@ -417,27 +417,128 @@ public class WPCacheAnalyzer {
   }
 
   /**
-   * Returns {@link Map.Entry} instances extracted from the in-memory local cache filtered by the
-   * class marker {@link TaxonomyMarker#TAG} and the class value {@link TaxonomyValues#TAGS}. Each
-   * entry contains a tag name and the corresponding value assigned to the term by the WordPress
-   * backend.
+   * Returns {@link WPClassMapping} instances extracted from the in-memory local cache filtered by
+   * the class marker {@link TaxonomyMarker#TAG} and the class value {@link TaxonomyValues#TAGS}.
+   * Each entry contains a tag name and the corresponding value assigned to the term by the
+   * WordPress backend.
    *
    * <p><em>Tip: If you do not wish to transform/clean your taxonomy (class) strings, you can pass
    * the {@link UnaryOperator#identity()} to ignore the transformation step.
    *
-   * @return a set of {@link Map.Entry} instances extracted from the cache filtered by the specified
-   *     cache key
+   * @return a stream of instances extracted from the cache filtered by the specified cache key
    */
-  public Set<Map.Entry<String, Long>> mapWPClassId(
+  public Stream<WPClassMapping<String, Long>> mapWPClassId(
       UnaryOperator<String> transformClassText,
       ClassMarkerEnum classMarker,
-      ClassValueEnum classValue) {
+      ClassValueKeyEnum classValue) {
     List<String> classListElems = getClassListStream(classMarker).map(transformClassText).toList();
     List<Long> tagValues =
         getClassValueStream(classValue)
             .flatMap(ArrayNode::valueStream)
             .map(JsonNode::asLong)
             .toList();
-    return zip(classListElems, tagValues).collect(Collectors.toSet());
+    return zip(classListElems, tagValues)
+        .map(entry -> new WPClassMapping<>(entry.getKey(), entry.getValue()));
+  }
+
+  /**
+   * Groups class markers by post ID.
+   *
+   * <p>This method groups class markers by post IDs. It takes a {@link UnaryOperator} as a
+   * parameter to transform the class markers before grouping. The {@link UnaryOperator} receives a
+   * string representing the class marker and returns the transformed string.
+   *
+   * <p><b>Tip:</b> If you do not wish to transform/clean your taxonomy (class) strings, you can
+   * pass the {@link UnaryOperator#identity()} to ignore the transformation step.
+   *
+   * @param transformClassMarkers the unary operator to transform the class markers
+   * @return a stream of {@link WPClassGroup} elements, where each key is a post ID and each value
+   *     is a set of class markers grouped by the post ID
+   */
+  public Stream<WPClassGroup<Long, String>> groupClassMarkerByPostId(
+      UnaryOperator<String> transformClassMarkers) {
+    List<Long> postIdList = getCacheKeyValueStream(WPCacheKey.ID).map(JsonNode::asLong).toList();
+    List<Set<String>> classListSets =
+        getCacheKeyArrayStream(WPCacheKey.CLASS_LIST)
+            .map(
+                jsonArr ->
+                    jsonArr
+                        .valueStream()
+                        .map(JsonNode::asString)
+                        .map(transformClassMarkers)
+                        .collect(Collectors.toUnmodifiableSet()))
+            .toList();
+    return zip(postIdList, classListSets)
+        .map(entry -> new WPClassGroup<>(entry.getKey(), entry.getValue()));
+  }
+
+  /**
+   * Groups post IDs by class markers and maps them to their corresponding class values.
+   *
+   * <p>This method groups post IDs by class markers and maps each group to its corresponding class
+   * values. The grouping is defined by the {@code classMarker} parameter, and the mapping is
+   * defined by the {@code classValueKey} parameter.
+   *
+   * @param classMarker the class marker enum to group by
+   * @param classValueKey the class value key enum to map to
+   * @return a stream of {@link WPClassGroup} elements where each key is a post ID and each value is
+   *     a set of {@link WPClassMapping} elements which map a class marker to its corresponding
+   *     class value
+   */
+  public Stream<WPClassGroup<Long, WPClassMapping<String, Long>>> groupPostIdsByClassMarker(
+      ClassMarkerEnum classMarker, ClassValueKeyEnum classValueKey) {
+    Set<WPClassMapping<String, Long>> classValueMappings =
+        mapWPClassId(UnaryOperator.identity(), classMarker, classValueKey)
+            .collect(Collectors.toSet());
+    return groupClassMarkerByPostId(UnaryOperator.identity())
+        .map(
+            classGroup ->
+                new WPClassGroup<>(
+                    classGroup.groupByKey(),
+                    classGroup.groupedValues().stream()
+                        .flatMap(
+                            groupedVal ->
+                                classValueMappings.stream().filter(i -> i.key().equals(groupedVal)))
+                        .collect(Collectors.toSet())));
+  }
+
+  /**
+   * Calculates the term frequency of a given class mapping by class value key.
+   *
+   * <p>It utilizes the class numeric value, which is the most accurate way to calculate term
+   * frequency.
+   *
+   * @param classValueKey the class value key enum to calculate term frequency by
+   * @param classMapping the class mapping to calculate term frequency for
+   * @return the term frequency of the given class mapping by class value key
+   */
+  public Long calculateTermFrequencyByClassValue(
+      ClassValueKeyEnum classValueKey, WPClassMapping<String, Long> classMapping) {
+    return getClassValueStream(classValueKey)
+        .flatMap(JsonNode::valueStream)
+        .map(JsonNode::asLong)
+        .filter(item -> classMapping.value().equals(item))
+        .count();
+  }
+
+  /**
+   * Calculates the term frequency of a given class mapping by class marker.
+   *
+   * <p>It utilizes the string key of the mapping and matches it with other class markers to
+   * calculate the term frequency. If you need to match partial strings, you can set the {@code
+   * containsMatch} flag to {@code true}. Otherwise, it will match the entire string.
+   *
+   * @param classMarker the class marker enum to calculate term frequency by
+   * @param classMapping the class mapping to calculate term frequency for
+   * @return the term frequency of the given class mapping by class marker
+   */
+  public Long calculateTermFrequencyByClassMarker(
+      ClassMarkerEnum classMarker,
+      WPClassMapping<String, Long> classMapping,
+      boolean containsMatch) {
+    Predicate<? super String> containsString = item -> item.contains(classMapping.key());
+    return getClassListStream(classMarker)
+        .filter(item -> containsMatch ? containsString.test(item) : classMapping.key().equals(item))
+        .count();
   }
 }
