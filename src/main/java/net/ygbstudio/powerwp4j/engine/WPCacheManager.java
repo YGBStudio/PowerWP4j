@@ -132,8 +132,8 @@ public class WPCacheManager {
    * needed, the cache will be ignored and the cachePath parameter will be set to null.
    *
    * <p>In case you want to create a cache in the current instance of the WPCacheManager, proceed to
-   * create the cache file using the {@link WPCacheManager#fetchJsonCache(Path cachepath, boolean
-   * overwriteCache)} method.
+   * create the cache file using the {@link WPCacheManager#fetchCache(Path, boolean, boolean)}
+   * method.
    *
    * @param fullyQualifiedDomainName the fully qualified domain name of the WordPress site
    * @param username the username for the WordPress site
@@ -166,8 +166,8 @@ public class WPCacheManager {
    * parameter will be set to null.
    *
    * <p>In case you want to create a cache in the current instance of the WPCacheManager, proceed to
-   * create the cache file using the {@link WPCacheManager#fetchJsonCache(Path cachepath, boolean
-   * overwriteCache)} method.
+   * create the cache file using the {@link WPCacheManager#fetchCache(Path, boolean, boolean)}
+   * method.
    *
    * @param siteInfo the site information object containing the fully qualified domain name,
    *     username, and application password.
@@ -264,18 +264,20 @@ public class WPCacheManager {
    *
    * @param listOfLinks the list of links to fetch
    * @param retryPred the predicate to retry on in case a specific condition is expected
+   * @param fetchCacheWithoutSSL whether to fetch the cache without SSL (useful in testing)
    * @return the JSON cache as a single ArrayNode
    */
-  private ArrayNode fetchJsonCache(
+  private ArrayNode fetchCacheFromInstancePath(
       @NonNull List<String> listOfLinks,
       @Nullable Predicate<ArrayNode> retryPred,
       int retryAttempts,
       int intervalTime,
       TimeUnit intervalUnit,
-      Supplier<String> retryFailedMsg) {
+      Supplier<String> retryFailedMsg,
+      boolean fetchCacheWithoutSSL) {
     ObjectMapper mapper = JsonSupport.getMapper();
     BiFunction<HttpClient, String, CompletableFuture<ArrayNode>> procedureFunction =
-        getFetchProcedure();
+        getFetchProcedure(fetchCacheWithoutSSL);
     return HttpRequestService.linkProcessor(
         listOfLinks,
         procedureFunction,
@@ -291,16 +293,20 @@ public class WPCacheManager {
   /**
    * Applies the fetch procedure to the link list.
    *
+   * @param fetchCacheWithoutSSL whether to fetch the cache without SSL (useful in testing)
    * @return the fetch procedure BiFunction
    */
   @NonNull
   @Contract(pure = true)
-  private BiFunction<HttpClient, String, CompletableFuture<ArrayNode>> getFetchProcedure() {
+  private BiFunction<HttpClient, String, CompletableFuture<ArrayNode>> getFetchProcedure(
+      boolean fetchCacheWithoutSSL) {
+
     Function<String, HttpRequest> requestFunction =
         link -> {
-          wpSiteEngineLogger.debug("Processing link -> {} ", link);
+          String currentLink = fetchCacheWithoutSSL ? link.replaceFirst("https", "http") : link;
+          wpSiteEngineLogger.debug("Processing link -> {} ", currentLink);
           return HttpRequestService.buildWpGetRequest(
-              link, siteInfo.wpUser(), siteInfo.wpAppPass(), wpSiteEngineLogger);
+              currentLink, siteInfo.wpUser(), siteInfo.wpAppPass(), wpSiteEngineLogger);
         };
 
     return (client, link) ->
@@ -366,13 +372,16 @@ public class WPCacheManager {
    * Fetches the local cache file from the WordPress REST API.
    *
    * @param overwriteCache whether to overwrite the cache file if it exists
+   * @param ignoreSSLHandshakeException whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes only or local environments.
    * @throws IOException if an I/O error occurs
    */
-  public void fetchJsonCache(boolean overwriteCache) throws IOException {
+  public void fetchCacheFromInstancePath(
+      boolean overwriteCache, boolean ignoreSSLHandshakeException) throws IOException {
     if (cachePath == null)
       throw new UnsupportedOperationException(
-          "Unable to fetch cache without a cache path as local cache creation requires it in this class.");
-    fetchCache(cachePath, overwriteCache);
+          "Unable to fetch cache without a cache path in this instance. Provide a cache path and try again.");
+    fetchCacheInternal(cachePath, overwriteCache, ignoreSSLHandshakeException);
   }
 
   /**
@@ -380,10 +389,14 @@ public class WPCacheManager {
    *
    * @param cachePath the path to the cache file
    * @param overwriteCache whether to overwrite the cache file if it exists
+   * @param ignoreSSLHandshakeException whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes only or local environments.
    * @throws IOException if an I/O error occurs
    */
-  public void fetchJsonCache(@NonNull Path cachePath, boolean overwriteCache) throws IOException {
-    fetchCache(cachePath, overwriteCache);
+  public void fetchCache(
+      @NonNull Path cachePath, boolean overwriteCache, boolean ignoreSSLHandshakeException)
+      throws IOException {
+    fetchCacheInternal(cachePath, overwriteCache, ignoreSSLHandshakeException);
   }
 
   /**
@@ -457,10 +470,13 @@ public class WPCacheManager {
    * be taking place, and that is why this method relies heavily on sorting pipelines as the deltas
    * are meant to be limited.
    *
+   * @see #cacheSync()
+   * @param ignoreSSL whether to ignore SSL errors, useful for testing purposes or local
+   *     environments <strong>(do not use in production)<strong/>.
    * @return true if the cache was successfully synchronized, false if the cache is up-to-date.
    * @throws InterruptedException if the thread is interrupted
    */
-  public boolean cacheSync() throws InterruptedException {
+  public boolean cacheSync(boolean ignoreSSL) throws InterruptedException {
     Supplier<String> notFoundMsg = () -> "Cache file does not exist at " + cachePath;
     TypedTrigger<Exception> ioExceptionLogging =
         ex ->
@@ -543,13 +559,14 @@ public class WPCacheManager {
                 > lastId;
 
     List<JsonNode> updatedPosts =
-        fetchJsonCache(
+        fetchCacheFromInstancePath(
                 linkList,
                 testForLastElem,
                 3,
                 2,
                 TimeUnit.SECONDS,
-                () -> "Failed to fetch new cache pages. Reached maximum retry attempts")
+                () -> "Failed to fetch new cache pages. Reached maximum retry attempts",
+                ignoreSSL)
             .valueStream()
             .sorted(jsonNodeComparator.reversed())
             .limit(nodeDiff)
@@ -568,6 +585,17 @@ public class WPCacheManager {
       cacheLock.unlock();
     }
     return true;
+  }
+
+  /**
+   * Performs a cache synchronization between the local cache file and the WordPress REST API.
+   *
+   * @return {@code true} if the cache was updated, {@code false} otherwise
+   * @throws InterruptedException if the thread is interrupted while waiting to fetch new cache
+   *     pages
+   */
+  public boolean cacheSync() throws InterruptedException {
+    return cacheSync(false);
   }
 
   /**
