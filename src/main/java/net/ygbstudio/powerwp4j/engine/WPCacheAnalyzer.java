@@ -40,9 +40,11 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 import net.ygbstudio.powerwp4j.base.extension.CacheKeyEnum;
 import net.ygbstudio.powerwp4j.base.extension.CacheSubKeyEnum;
 import net.ygbstudio.powerwp4j.base.extension.ClassMarkerEnum;
-import net.ygbstudio.powerwp4j.base.extension.ClassValueEnum;
+import net.ygbstudio.powerwp4j.base.extension.ClassValueKeyEnum;
 import net.ygbstudio.powerwp4j.exceptions.CacheFileSystemException;
 import net.ygbstudio.powerwp4j.models.entities.WPCacheKeySnapshot;
+import net.ygbstudio.powerwp4j.models.entities.WPClassGroup;
+import net.ygbstudio.powerwp4j.models.entities.WPClassMapping;
 import net.ygbstudio.powerwp4j.models.schema.WPCacheKey;
 import net.ygbstudio.powerwp4j.models.schema.WPCacheSubKey;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyMarker;
@@ -129,13 +131,13 @@ public class WPCacheAnalyzer {
 
   /**
    * Returns the ArrayNodes from the in-memory local cache filtered by a specified enum that follows
-   * the {@link ClassValueEnum} interface.
+   * the {@link ClassValueKeyEnum} interface.
    *
    * @param classValues the enum representing the class value to filter by
    * @return a stream of ArrayNodes containing the filtered class values
    */
-  public Stream<ArrayNode> getClassValueStream(ClassValueEnum classValues) {
-    return getFriendlyEnumStream(classValues).map(ArrayNode.class::cast);
+  public Stream<ArrayNode> getClassValueStream(ClassValueKeyEnum classValues) {
+    return getCacheKeyValueStream(classValues).map(ArrayNode.class::cast);
   }
 
   /**
@@ -144,7 +146,7 @@ public class WPCacheAnalyzer {
    * @param classValues the enum representing the class value to count
    * @return the count of the class values
    */
-  public long getClassValueCount(ClassValueEnum classValues) {
+  public long getClassValueCount(ClassValueKeyEnum classValues) {
     return getClassValueStream(classValues)
         .flatMap(array -> array.valueStream().map(JsonNode::asLong))
         .distinct()
