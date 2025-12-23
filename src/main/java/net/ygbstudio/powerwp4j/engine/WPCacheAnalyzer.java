@@ -252,6 +252,42 @@ public class WPCacheAnalyzer {
   }
 
   /**
+   * Returns the count of unique GUIDs from the in-memory local cache.
+   *
+   * @return the count of the GUIDs
+   */
+  public long getGuidCount() {
+    return getCacheKeyCount(WPCacheKey.GUID);
+  }
+
+  /**
+   * Returns the count of unique content from the in-memory local cache.
+   *
+   * @return the count of the content
+   */
+  public long getContentCount() {
+    return getCacheKeyCount(WPCacheKey.CONTENT);
+  }
+
+  /**
+   * Returns the count of unique excerpts from the in-memory local cache.
+   *
+   * @return the count of the excerpts
+   */
+  public long getExcerptCount() {
+    return getCacheKeyCount(WPCacheKey.EXCERPT);
+  }
+
+  /**
+   * Returns the count of unique links from the in-memory local cache.
+   *
+   * @return the count of the links
+   */
+  public long getLinkCount() {
+    return getCacheKeyCount(WPCacheKey.LINK);
+  }
+
+  /**
    * Returns unique slugs from the in-memory local cache.
    *
    * @return a set of unique slugs
