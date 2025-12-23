@@ -8,35 +8,39 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.File;
-import java.time.LocalDate;
+import java.net.URL;
+import java.nio.file.Path;
+import net.ygbstudio.powerwp4j.engine.WPCacheMeta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CacheMetaTest {
+class WPCacheMetaTest {
 
-  private CacheMeta sampleCacheMeta;
+  private WPCacheMeta sampleCacheMeta;
 
   @BeforeEach
   void setUp() {
-    sampleCacheMeta = new CacheMeta(10, 20, LocalDate.now());
+    URL sampleCacheFile = WPCacheMetaTest.class.getClassLoader().getResource("wp-posts-test.json");
+    WPCacheMeta.from(Path.of(sampleCacheFile.getPath()))
+        .ifPresent(cacheMeta -> sampleCacheMeta = cacheMeta);
   }
 
   @Test
   void cacheMetaParseTest() {
     String json = toJsonString(sampleCacheMeta);
-    CacheMeta parsedCacheMeta = readValueFromJson(json, CacheMeta.class);
+    WPCacheMeta parsedCacheMeta = readValueFromJson(json, WPCacheMeta.class);
     assertEquals(sampleCacheMeta, parsedCacheMeta);
   }
 
   @Test
   void cacheMetaEqualityTest() {
-    CacheMeta anotherCacheMeta = new CacheMeta(10, 20, sampleCacheMeta.lastUpdated());
+    WPCacheMeta anotherCacheMeta = new WPCacheMeta(10, 100, sampleCacheMeta.lastUpdated());
     assertEquals(sampleCacheMeta, anotherCacheMeta);
   }
 
   @Test
   void cacheMetaInequalityTest() {
-    CacheMeta differentCacheMeta = new CacheMeta(15, 25, sampleCacheMeta.lastUpdated().plusDays(1));
+    WPCacheMeta differentCacheMeta = new WPCacheMeta(15, 25, sampleCacheMeta.lastUpdated());
     assertNotEquals(sampleCacheMeta, differentCacheMeta);
   }
 
@@ -49,7 +53,8 @@ class CacheMetaTest {
 
       throw new AssertionError("Cache meta file was not created.");
     }
-    CacheMeta writtenCacheMeta = readJsonFs(new File("sample_cache_meta.json"), CacheMeta.class);
+    WPCacheMeta writtenCacheMeta =
+        readJsonFs(new File("sample_cache_meta.json"), WPCacheMeta.class);
     assertEquals(sampleCacheMeta, writtenCacheMeta);
     assertEquals(writtenCacheMeta.totalPages(), sampleCacheMeta.totalPages());
     assertEquals(writtenCacheMeta.totalPosts(), sampleCacheMeta.totalPosts());
