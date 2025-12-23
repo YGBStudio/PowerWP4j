@@ -33,10 +33,11 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  * as a {@link ClassMarkerEnum} in a different list, such as tags or categories.
  *
  * <p>Note that not all {@link ClassMarkerEnum} are paired with numerical values that {@link
- * ClassValueEnum} is supposed to help you distinguish and aggregate.
+ * ClassValueKeyEnum} is supposed to help you distinguish and aggregate, although a value key is a
+ * cache key by default.
  *
  * <p>Example: {@code "tags": [12, 34, 56]} or {@code "categories": [2, 5]}
  *
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface ClassValueEnum extends FriendlyEnum {}
+public interface ClassValueKeyEnum extends FriendlyEnum, CacheKeyEnum {}
