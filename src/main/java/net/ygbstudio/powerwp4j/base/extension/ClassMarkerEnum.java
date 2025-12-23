@@ -33,8 +33,8 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  * status).
  *
  * <p>The value corresponding to each of these markers is represented in PowerWP4j as a {@link
- * ClassValueEnum} and can those be can be found in a different list depending on the marker as not
- * all markers are supposed to be paired with numerical values. The reason why this is the case
+ * ClassValueKeyEnum} and those can be found in a different list depending on the marker as
+ * not all markers are supposed to be paired with numerical values. The reason why this is the case
  * resides in that a {@link ClassMarkerEnum} is a categorical marker in nature, and such categories
  * could be aggregated or just used as a marker for other states or metadata concerning post
  * elements.
