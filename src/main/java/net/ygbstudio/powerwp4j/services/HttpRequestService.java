@@ -125,7 +125,8 @@ public final class HttpRequestService {
   public static <E extends QueryParamEnum> String makeRequestURL(
       String apiBasePath, @Nullable Map<E, String> queryParams, WPRestPath pathParam) {
     return apiBasePath
-        + pathParam
+        + pathParam.value()
+        + '/'
         + QueryParamEnum.joinQueryParams(Objects.requireNonNullElse(queryParams, Map.of()));
   }
 
