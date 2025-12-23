@@ -22,8 +22,6 @@ package net.ygbstudio.powerwp4j.engine;
 
 import static net.ygbstudio.powerwp4j.services.HttpRequestService.makeRequestURL;
 import static net.ygbstudio.powerwp4j.utils.JsonSupport.jsonReader;
-import static net.ygbstudio.powerwp4j.utils.JsonSupport.readJsonFs;
-import static net.ygbstudio.powerwp4j.utils.JsonSupport.writeJsonFs;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,9 +47,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -60,8 +56,6 @@ import java.util.stream.LongStream;
 import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
 import net.ygbstudio.powerwp4j.exceptions.CacheConstructionException;
 import net.ygbstudio.powerwp4j.exceptions.CacheFileSystemException;
-import net.ygbstudio.powerwp4j.exceptions.CacheMetaDataException;
-import net.ygbstudio.powerwp4j.models.entities.CacheMeta;
 import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;
 import net.ygbstudio.powerwp4j.models.schema.WPCacheKey;
 import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
@@ -92,18 +86,17 @@ public class WPCacheManager {
   private final ReentrantLock cacheLock = new ReentrantLock();
 
   private final WPSiteInfo siteInfo;
-  private CacheMeta wpCacheMeta;
-  private Path cachePath;
-  private Path cacheMetadataFilePath;
+  private WPCacheMeta wpCacheMeta;
+  private final Path cachePath;
   private File cacheFile;
   private List<String> linkList;
 
   /**
    * Initializes a new instance of the WPCacheManager class. If a local WordPress cache is found, it
    * is loaded into memory, otherwise a new cache must be created using the {@link
-   * WPCacheManager#fetchJsonCache(Path cachePath, boolean overwriteCache)} or {@link
-   * WPCacheManager#fetchJsonCache(boolean overwriteCache)} if you already provided a path in the
-   * constructor.
+   * WPCacheManager#fetchCache(Path, boolean, boolean)} or {@link
+   * WPCacheManager#fetchCacheFromInstancePath(boolean, boolean)} if you already provided a path in
+   * the constructor.
    *
    * <p>A local cache is not created automatically since the client must handle any exceptions that
    * result from the cache creation process to ensure maximum control of client-specific flows,
@@ -195,87 +188,6 @@ public class WPCacheManager {
     String url = makeRequestURL(siteInfo.apiBaseUrl(), queryParams, pathParam);
     return HttpRequestService.connectGetWP(
         url, siteInfo.wpUser(), siteInfo.wpAppPass(), wpSiteEngineLogger);
-  }
-
-  /**
-   * Updates the cache metadata fields based on the WordPress response headers {@code x-wp-total}
-   * and {@code x-wp-totalpages}.
-   *
-   * @throws IOException if an I/O error occurs
-   * @throws InterruptedException if the thread is interrupted
-   */
-  private void updateCacheMeta() throws IOException, InterruptedException {
-    Optional<HttpResponse<String>> headersRequest =
-        connectWP(
-            Map.of(
-                WPQueryParam.PAGE,
-                String.valueOf(1),
-                WPQueryParam.PER_PAGE,
-                String.valueOf(DEFAULT_PER_PAGE)),
-            WPRestPath.POSTS);
-    if (headersRequest.isPresent()) {
-      Map<String, List<String>> headers = headersRequest.get().headers().map();
-      long wpTotal = Long.parseLong(headers.get("x-wp-total").getFirst());
-      long wpTotalPages = Long.parseLong(headers.get("x-wp-totalpages").getFirst());
-      wpCacheMeta =
-          new CacheMeta(wpTotalPages, wpTotal, LocalDate.ofInstant(Instant.now(), ZoneOffset.UTC));
-    }
-  }
-
-  /**
-   * Loads the cache metadata from the local classpath/filesystem or creates a new cache metadata
-   * file in case it does not exist, or it is empty.
-   *
-   * @param cachePath the path to the cache file
-   * @param overwriteMetaFile whether to overwrite the cache metadata file if it exists
-   */
-  private void loadCacheMetaData(@NonNull Path cachePath, boolean overwriteMetaFile) {
-    cacheFile = cachePath.toFile();
-    String cacheName = cachePath.toFile().getName();
-    String cacheDir = cachePath.toFile().getParent();
-    String cacheMetadataFileName = cacheName.replaceFirst("\\.json$", "") + "_metadata.json";
-    cacheMetadataFilePath =
-        Path.of(Objects.requireNonNullElse(cacheDir, ""), cacheMetadataFileName);
-    File cacheMetadataFile = cacheMetadataFilePath.toFile();
-
-    BiConsumer<File, CacheMeta> writeCacheMetaData =
-        (file, cacheObj) -> {
-          cacheLock.lock();
-          try {
-            writeJsonFs(file, cacheObj);
-          } finally {
-            cacheLock.unlock();
-          }
-          wpCacheMeta = readJsonFs(file, CacheMeta.class);
-          wpSiteEngineLogger.info(
-              overwriteMetaFile
-                  ? "Replaced cache metadata file"
-                  : "Successfully created cache metadata.");
-        };
-
-    Consumer<File> loadCacheMetaData =
-        file -> {
-          wpCacheMeta = readJsonFs(file, CacheMeta.class);
-          wpSiteEngineLogger.info("Loading cache metadata from: {}", file.getAbsolutePath());
-        };
-
-    if (cacheMetadataFile.exists() && cacheFile.exists()) {
-      if (overwriteMetaFile) {
-        writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
-        return;
-      }
-      loadCacheMetaData.accept(cacheMetadataFile);
-    } else if (cacheMetadataFile.length() == 0 && wpCacheMeta != null) {
-      writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
-    } else if (!cacheFile.exists()) {
-      if (wpCacheMeta == null && cacheMetadataFile.exists()) {
-        loadCacheMetaData.accept(cacheMetadataFile);
-      }
-    } else if (overwriteMetaFile && wpCacheMeta != null) {
-      writeCacheMetaData.accept(cacheMetadataFile, wpCacheMeta);
-    } else {
-      throw new CacheMetaDataException("Failed to create cache metadata");
-    }
   }
 
   /**
