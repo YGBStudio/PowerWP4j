@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.databind.ObjectMapper;
 
-public class WPRestClientTest {
+class WPRestClientTest {
 
   private WPSiteInfo siteInfo;
   private final WPBasicPayloadBuilder payloadBuilder = WPBasicPayloadBuilder.builder();
