@@ -43,6 +43,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import javax.net.ssl.SSLHandshakeException;
 import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
 import net.ygbstudio.powerwp4j.exceptions.InvalidApiUrlError;
 import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
@@ -135,12 +136,31 @@ public final class HttpRequestService {
    *
    * @param request {@link HttpRequest} object that will be sent
    * @param classLogger Instance of a class logger for error logging
+   * @param ignoreSSLHandshakeException
    * @return Optional containing the response from the REST API
    */
-  public static Optional<HttpResponse<String>> clientSend(HttpRequest request, Logger classLogger) {
+  public static Optional<HttpResponse<String>> clientSend(
+      HttpRequest request, Logger classLogger, boolean ignoreSSLHandshakeException) {
     try (HttpClient client = HttpClient.newHttpClient()) {
-      return Optional.of(
-          client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)));
+      try {
+        return Optional.of(
+            client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)));
+      } catch (SSLHandshakeException sslHandshakeEx) {
+        if (!ignoreSSLHandshakeException) {
+          classLogger.debug(
+              "SSLHandshakeException while sending request - SSL Handshake Exception not handled",
+              sslHandshakeEx);
+          throw sslHandshakeEx;
+        }
+        classLogger.warn(
+            "SSLHandshakeException while sending request, retrying with HTTP", sslHandshakeEx);
+        HttpRequest newRequest =
+            HttpRequest.newBuilder(request, (name, value) -> true)
+                .uri(URI.create("http:" + request.uri().getRawSchemeSpecificPart()))
+                .build();
+        return Optional.of(
+            client.send(newRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)));
+      }
     } catch (IOException ioEx) {
       classLogger.warn("Caught IOException while sending request", ioEx);
       classLogger.debug("Request {} resulted in IOException", request);
@@ -254,7 +274,7 @@ public final class HttpRequestService {
       throws InvalidApiUrlError {
     HttpRequest requestOptional =
         buildWpGetRequest(url, username, applicationPassword, classLogger);
-    return clientSend(requestOptional, httpServiceLogger);
+    return clientSend(requestOptional, httpServiceLogger, false);
   }
 
   /**
