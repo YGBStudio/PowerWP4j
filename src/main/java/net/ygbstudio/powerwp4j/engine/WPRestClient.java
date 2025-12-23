@@ -86,7 +86,7 @@ public class WPRestClient {
    */
   public Optional<HttpResponse<String>> createPost(JsonNode payload) {
     return RestClientService.postCreate(
-        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), payload);
+        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), payload, ignoreSSL);
   }
 
   /**
@@ -98,7 +98,7 @@ public class WPRestClient {
    */
   public Optional<HttpResponse<String>> deletePost(long postId) {
     return RestClientService.postDelete(
-        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), postId);
+        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), postId, ignoreSSL);
   }
 
   /**
@@ -113,7 +113,12 @@ public class WPRestClient {
     WPBasicPayloadBuilder builder = WPBasicPayloadBuilder.builder();
     builder.status(status);
     return RestClientService.changePostStatus(
-        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), postId, builder.build());
+        siteInfo.apiBaseUrl(),
+        siteInfo.wpUser(),
+        siteInfo.wpAppPass(),
+        postId,
+        builder.build(),
+        ignoreSSL);
   }
 
   /**
@@ -125,7 +130,7 @@ public class WPRestClient {
    */
   public Optional<HttpResponse<String>> addTag(JsonNode payload) {
     return RestClientService.addTag(
-        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), payload);
+        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), payload, ignoreSSL);
   }
 
   /**
@@ -137,7 +142,7 @@ public class WPRestClient {
    */
   public Optional<HttpResponse<String>> addCategory(JsonNode payload) {
     return RestClientService.addCategory(
-        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), payload);
+        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), payload, ignoreSSL);
   }
 
   /**
@@ -150,7 +155,12 @@ public class WPRestClient {
    */
   public Optional<HttpResponse<String>> uploadMedia(Path attachmentPath) {
     return RestClientService.uploadMedia(
-        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), attachmentPath, null);
+        siteInfo.apiBaseUrl(),
+        siteInfo.wpUser(),
+        siteInfo.wpAppPass(),
+        attachmentPath,
+        null,
+        ignoreSSL);
   }
 
   /**
@@ -165,6 +175,11 @@ public class WPRestClient {
    */
   public Optional<HttpResponse<String>> uploadMedia(Path attachmentPath, JsonNode payload) {
     return RestClientService.uploadMedia(
-        siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), attachmentPath, payload);
+        siteInfo.apiBaseUrl(),
+        siteInfo.wpUser(),
+        siteInfo.wpAppPass(),
+        attachmentPath,
+        payload,
+        ignoreSSL);
   }
 }
