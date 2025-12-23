@@ -41,9 +41,15 @@ import tools.jackson.databind.JsonNode;
  */
 public class WPRestClient {
   private final WPSiteInfo siteInfo;
+  private boolean ignoreSSL;
 
   protected WPRestClient(WPSiteInfo siteInfo) {
     this.siteInfo = siteInfo;
+  }
+
+  protected WPRestClient(WPSiteInfo siteInfo, boolean ignoreSSL) {
+    this(siteInfo);
+    this.ignoreSSL = ignoreSSL;
   }
 
   /**
@@ -55,6 +61,20 @@ public class WPRestClient {
   @Contract(value = "_ -> new", pure = true)
   public static @NonNull WPRestClient of(WPSiteInfo siteInfo) {
     return new WPRestClient(siteInfo);
+  }
+
+  /**
+   * Creates a new instance of {@link WPRestClient} using the provided {@link WPSiteInfo}. This
+   * method is intended for testing purposes and can ignore SSL certificate issues for all
+   * REST API calls.
+   *
+   * @param siteInfo the site information for the WordPress site
+   * @param ignoreSSL whether to ignore SSL certificate issues. Suitable for local development only.
+   * @return the newly created {@link WPRestClient} instance
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  public static @NonNull WPRestClient testingOf(WPSiteInfo siteInfo, boolean ignoreSSL) {
+    return new WPRestClient(siteInfo, ignoreSSL);
   }
 
   /**
