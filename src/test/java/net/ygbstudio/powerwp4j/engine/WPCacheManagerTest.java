@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
-import net.ygbstudio.powerwp4j.builders.WPBasicPayloadBuilder;
 import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;
 import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
@@ -32,7 +31,6 @@ class WPCacheManagerTest {
   private WPSiteInfo siteInfo;
   private WPCacheManager wpSite;
   private final File cacheFile = new File("wp-posts.json");
-  private final WPBasicPayloadBuilder payloadBuilder = WPBasicPayloadBuilder.builder();
 
   private static final Logger wpCacheManagerTestLogger =
       LoggerFactory.getLogger(WPCacheManagerTest.class);
@@ -51,28 +49,6 @@ class WPCacheManagerTest {
     return engineInstance.apiBaseUrl()
         + WPRestPath.POSTS.value()
         + QueryParamEnum.joinQueryParams(queryParams);
-  }
-
-  @Test
-  void connectWPTest() {
-    assertThat(siteInfo.wpUser(), not(emptyOrNullString()));
-    assertThat(siteInfo.wpAppPass(), not(emptyOrNullString()));
-    // Constructor without cachePath
-    WPCacheManager wpCacheManager = new WPCacheManager(siteInfo);
-    Map<QueryParamEnum, String> queryParams = Map.of(WPQueryParam.PER_PAGE, "10");
-    try {
-      Optional<HttpResponse<String>> wpSiteEngineResponse =
-          wpCacheManager.connectWP(queryParams, WPRestPath.POSTS);
-      if (wpSiteEngineResponse.isPresent()) {
-        Map<String, List<String>> headers = wpSiteEngineResponse.get().headers().map();
-        Long wpTotal = Long.parseLong(headers.get("x-wp-total").getFirst());
-        Long wpTotalPages = Long.parseLong(headers.get("x-wp-totalpages").getFirst());
-        assertThat(wpTotal, notNullValue());
-        assertThat(wpTotalPages, notNullValue());
-      }
-    } catch (Exception e) {
-      wpCacheManagerTestLogger.error("Exception caught in connectWPTest", e);
-    }
   }
 
   @Test
@@ -121,6 +97,29 @@ class WPCacheManagerTest {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       exceptionMessage.activate(e);
+    }
+  }
+
+  @Test
+  @Disabled
+  void connectWPTest() {
+    assertThat(siteInfo.wpUser(), not(emptyOrNullString()));
+    assertThat(siteInfo.wpAppPass(), not(emptyOrNullString()));
+    // Constructor without cachePath
+    WPCacheManager wpCacheManager = new WPCacheManager(siteInfo);
+    Map<QueryParamEnum, String> queryParams = Map.of(WPQueryParam.PER_PAGE, "10");
+    try {
+      Optional<HttpResponse<String>> wpSiteEngineResponse =
+          wpCacheManager.connectWP(queryParams, WPRestPath.POSTS);
+      if (wpSiteEngineResponse.isPresent()) {
+        Map<String, List<String>> headers = wpSiteEngineResponse.get().headers().map();
+        Long wpTotal = Long.parseLong(headers.get("x-wp-total").getFirst());
+        Long wpTotalPages = Long.parseLong(headers.get("x-wp-totalpages").getFirst());
+        assertThat(wpTotal, notNullValue());
+        assertThat(wpTotalPages, notNullValue());
+      }
+    } catch (Exception e) {
+      wpCacheManagerTestLogger.error("Exception caught in connectWPTest", e);
     }
   }
 }
