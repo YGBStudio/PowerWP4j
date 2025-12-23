@@ -173,7 +173,8 @@ public class WPCacheAnalyzer {
    * map of cache subkeys and their corresponding values. The values are transformed by the
    * specified function.
    *
-   * @param subKeyTransformer the function used to transform the JsonNode to the desired type
+   * @param subKeyTransformer the function used to transform the JsonNode to the desired type {@code
+   *     V}
    * @param cacheKey the enum representing the cache key to filter by
    * @param subKeys the cache subkeys to filter by
    * @param <V> the type of the values in the cache subkey map
