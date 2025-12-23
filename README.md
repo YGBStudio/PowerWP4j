@@ -291,6 +291,28 @@ PowerWP4j can be used in production automation workflows, provided that:
 - API changes are expected until the 1.0 release
 - Cache synchronization is treated as an explicit, controlled operation
 
+### Can I use PowerWP4j in my local testing environment?
+
+Yes. PowerWP4j can be used in local WordPress environments (e.g., `localhost`, Docker, or self-signed SSL setups).
+
+The REST client supports ignoring SSL certificate issues, which are a common roadblock when working with local WordPress installations. As long as:
+- the environment is configured as local, and
+- a WordPress Application Password can be generated,
+
+you can:
+- create and sync a local cache,
+- make REST API calls against your local site,
+- perform the same offline analysis workflows used in production.
+
+PowerWP4j is a lightweight library that:
+- does **not** require a database,
+- has no external runtime dependencies beyond the JDK,
+- supports fully offline analysis once the cache is created.
+
+In practice, PowerWP4j is intended to support the design and iteration of analysis or automation workflows built on top of WordPress content, without requiring a live connection once the data has been cached.
+
+*Note: SSL certificate relaxation is intended for local development and testing only.*
+
 
 ## Cache design notes
 - **Source of truth**: analysis is strictly against the local cache; keep it fresh with `cacheSync()`.
