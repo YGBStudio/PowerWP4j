@@ -75,11 +75,11 @@ class WPCacheManagerTest {
    */
   @Test
   @Disabled
-  void fetchJsonCacheTest() {
+  void fetchCacheFromInstancePathTest() {
     TypedTrigger<Exception> exceptionMessage =
         ex -> wpCacheManagerTestLogger.error("Exception caught in fetchJsonCacheTest", ex);
     try {
-      wpSite.fetchJsonCache(true);
+      wpSite.fetchCacheFromInstancePath(true, false);
       boolean updatePerformed = wpSite.cacheSync();
       // No update took place
       assertThat(updatePerformed, is(false));
