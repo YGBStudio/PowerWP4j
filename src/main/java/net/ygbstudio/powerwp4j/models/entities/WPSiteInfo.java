@@ -26,14 +26,13 @@ import java.util.Optional;
 import java.util.Properties;
 import net.ygbstudio.powerwp4j.base.EnvironmentScope;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * A record that represents basic site information required to interact with a WordPress site.
  *
  * @param fullyQualifiedDomainName the fully qualified domain name of the WordPress site
- * @param wpUser the user name for the WordPress site
+ * @param wpUser the username for the WordPress site
  * @param wpAppPass the application password for the WordPress site
  */
 @NullMarked
@@ -45,7 +44,7 @@ public record WPSiteInfo(String fullyQualifiedDomainName, String wpUser, String 
    * @return the base URL of the WordPress REST API
    */
   @Contract(pure = true)
-  public @NonNull String apiBaseUrl() {
+  public String apiBaseUrl() {
     return String.format("https://%s/wp-json/wp/v2", this.fullyQualifiedDomainName);
   }
 
