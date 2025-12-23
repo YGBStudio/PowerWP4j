@@ -58,16 +58,23 @@ public final class RestClientService {
    * @param username The username for authentication.
    * @param applicationPassword The application password for authentication.
    * @param postPayload The JSON payload representing the post to be created.
+   * @param ignoreSSLHandshakeException Whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes or local environments.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
    */
   public static Optional<HttpResponse<String>> postCreate(
-      String apiBasePath, String username, String applicationPassword, JsonNode postPayload) {
+      String apiBasePath,
+      String username,
+      String applicationPassword,
+      JsonNode postPayload,
+      boolean ignoreSSLHandshakeException) {
     String url = HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.POSTS);
     HttpRequest request =
         HttpRequestService.buildWpPostRequest(
             postPayload, url, username, applicationPassword, restClientServiceLogger);
-    return HttpRequestService.clientSend(request, restClientServiceLogger);
+    return HttpRequestService.clientSend(
+        request, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 
   /**
@@ -77,17 +84,23 @@ public final class RestClientService {
    * @param username The username for authentication.
    * @param applicationPassword The application password for authentication.
    * @param postId The ID of the post to be deleted.
+   * @param ignoreSSLHandshakeException
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
    */
   public static Optional<HttpResponse<String>> postDelete(
-      String apiBasePath, String username, String applicationPassword, long postId) {
+      String apiBasePath,
+      String username,
+      String applicationPassword,
+      long postId,
+      boolean ignoreSSLHandshakeException) {
     String url =
         HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.POSTS) + "/" + postId;
     HttpRequest deleteRequest =
         HttpRequestService.buildWpDeleteRequest(
             url, username, applicationPassword, restClientServiceLogger);
-    return HttpRequestService.clientSend(deleteRequest, restClientServiceLogger);
+    return HttpRequestService.clientSend(
+        deleteRequest, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 
   /**
@@ -98,6 +111,8 @@ public final class RestClientService {
    * @param applicationPassword The application password for authentication.
    * @param postId The ID of the post to have its status changed.
    * @param payload The JSON payload representing the new status of the post.
+   * @param ignoreSSLHandshakeException Whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes or local environments.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
    */
@@ -106,13 +121,15 @@ public final class RestClientService {
       String username,
       String applicationPassword,
       long postId,
-      JsonNode payload) {
+      JsonNode payload,
+      boolean ignoreSSLHandshakeException) {
     String url =
         HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.POSTS) + "/" + postId;
     HttpRequest changeStatusRequest =
         HttpRequestService.buildWpPostRequest(
             payload, url, username, applicationPassword, restClientServiceLogger);
-    return HttpRequestService.clientSend(changeStatusRequest, restClientServiceLogger);
+    return HttpRequestService.clientSend(
+        changeStatusRequest, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 
   /**
@@ -122,16 +139,23 @@ public final class RestClientService {
    * @param username The username for authentication.
    * @param applicationPassword The application password for authentication.
    * @param payload The JSON payload representing the new tag.
+   * @param ignoreSSLHandshakeException Whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes or local environments.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
    */
   public static Optional<HttpResponse<String>> addTag(
-      String apiBasePath, String username, String applicationPassword, JsonNode payload) {
+      String apiBasePath,
+      String username,
+      String applicationPassword,
+      JsonNode payload,
+      boolean ignoreSSLHandshakeException) {
     String url = HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.TAGS);
     HttpRequest addTagRequest =
         HttpRequestService.buildWpPostRequest(
             payload, url, username, applicationPassword, restClientServiceLogger);
-    return HttpRequestService.clientSend(addTagRequest, restClientServiceLogger);
+    return HttpRequestService.clientSend(
+        addTagRequest, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 
   /**
@@ -141,16 +165,22 @@ public final class RestClientService {
    * @param username The username for authentication.
    * @param applicationPassword The application password for authentication.
    * @param payload The JSON payload representing the new category.
+   * @param ignoreSSLHandshakeException Whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes or local environments.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
    */
   public static Optional<HttpResponse<String>> addCategory(
-      String apiBasePath, String username, String applicationPassword, JsonNode payload) {
+      String apiBasePath,
+      String username,
+      String applicationPassword,
+      JsonNode payload,
+      boolean ignoreSSLHandshakeException) {
     String url = HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.CATEGORIES);
     HttpRequest addCategoryRequest =
         HttpRequestService.buildWpPostRequest(
             payload, url, username, applicationPassword, restClientServiceLogger);
-    return HttpRequestService.clientSend(addCategoryRequest, restClientServiceLogger);
+    return HttpRequestService.clientSend(addCategoryRequest, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 
   /**
@@ -167,6 +197,8 @@ public final class RestClientService {
    * @param username The username for authentication.
    * @param applicationPassword The application password for authentication.
    * @param attachmentPath The file path of the media to be uploaded.
+   * @param ignoreSSLHandshakeException Whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes or local environments.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
    * @throws MediaUploadError if the media upload request fails.
@@ -176,7 +208,8 @@ public final class RestClientService {
       String username,
       String applicationPassword,
       Path attachmentPath,
-      @Nullable JsonNode payload) {
+      @Nullable JsonNode payload,
+      boolean ignoreSSLHandshakeException) {
 
     TypedTrigger<String> mediaUploadError =
         url -> {
@@ -192,11 +225,13 @@ public final class RestClientService {
             url, username, applicationPassword, attachmentPath, restClientServiceLogger);
     if (mediaUpload.isEmpty()) mediaUploadError.activate(url);
     if (payload == null) {
-      return HttpRequestService.clientSend(mediaUpload.get(), restClientServiceLogger);
+      return HttpRequestService.clientSend(
+          mediaUpload.get(), restClientServiceLogger, ignoreSSLHandshakeException);
     }
     ObjectMapper mapper = JsonSupport.getMapper();
     Optional<Long> mediaId =
-        HttpRequestService.clientSend(mediaUpload.get(), restClientServiceLogger)
+        HttpRequestService.clientSend(
+                mediaUpload.get(), restClientServiceLogger, ignoreSSLHandshakeException)
             .map(HttpResponse::body)
             .map(mapper::readTree)
             .map(item -> item.get("id").asLong());
@@ -205,6 +240,7 @@ public final class RestClientService {
     HttpRequest mediaUpdate =
         HttpRequestService.buildWpPostRequest(
             payload, url, username, applicationPassword, restClientServiceLogger);
-    return HttpRequestService.clientSend(mediaUpdate, restClientServiceLogger);
+    return HttpRequestService.clientSend(
+        mediaUpdate, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 }
