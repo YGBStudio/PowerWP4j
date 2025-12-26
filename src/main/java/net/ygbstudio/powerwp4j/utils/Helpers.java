@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
+import net.ygbstudio.powerwp4j.base.extension.FriendlyEnum;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
