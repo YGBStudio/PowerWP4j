@@ -23,7 +23,6 @@ package net.ygbstudio.powerwp4j.base.extension;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -34,7 +33,7 @@ import org.jspecify.annotations.NonNull;
  * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface QueryParamEnum extends FriendlyEnum {
+public non-sealed interface QueryParamEnum extends FriendlyEnum {
 
   /**
    * This method helps you join a map of query parameters into a string that can be used as a query

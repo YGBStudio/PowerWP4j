@@ -20,8 +20,6 @@
 
 package net.ygbstudio.powerwp4j.base.extension;
 
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
-
 /**
  * Unified Enum interface for the WordPress class/taxonomy value representation objects.
  *
@@ -40,4 +38,4 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  *
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface ClassValueKeyEnum extends FriendlyEnum, CacheKeyEnum {}
+public non-sealed interface ClassValueKeyEnum extends FriendlyEnum, CacheKeyEnum {}

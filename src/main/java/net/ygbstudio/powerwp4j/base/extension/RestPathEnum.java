@@ -20,8 +20,6 @@
 
 package net.ygbstudio.powerwp4j.base.extension;
 
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
-
 /**
  * RestPathEnum is an interface that promotes unified type for rest paths to ensure consistency with
  * the design practices of the project. It can be used as a means to provide your own rest paths to
@@ -30,4 +28,4 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface RestPathEnum extends FriendlyEnum {}
+public non-sealed interface RestPathEnum extends FriendlyEnum {}

@@ -18,19 +18,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base;
+package net.ygbstudio.powerwp4j.base.extension;
 
 import org.jetbrains.annotations.Contract;
 
 /**
  * This interface is designed to enforce a consistent approach to Java enums in the PowerWP4j
- * project. It's called "FriendlyEnum" because it enforces a developer-friendly {@link
- * FriendlyEnum#value()} method. By requiring all enums to extend this interface, it helps ensure
- * consistency and maintainability of the codebase.
+ * project. It provides a uniform way to access the value of enum constants, which is the actual
+ * string to be used in the API. By extending this interface, enums become more user-friendly and
+ * easier to work with. This interface is sealed because all extension enum classes implement it and
+ * no other class should implement it to avoid misuse.
  *
  * @author Yoham Gabriel @ YGB Studio
  */
-public interface FriendlyEnum {
+public sealed interface FriendlyEnum
+    permits CacheKeyEnum,
+        CacheSubKeyEnum,
+        ClassMarkerEnum,
+        ClassValueKeyEnum,
+        CommentStatusEnum,
+        EnvironmentScope,
+        PostFormatEnum,
+        PostStatusEnum,
+        PostTypeEnum,
+        QueryParamEnum,
+        RestPathEnum,
+        URLFieldsEnum {
 
   /**
    * Returns the value of the enum constant, which is the actual string to be used in the API.

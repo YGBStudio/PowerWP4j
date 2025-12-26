@@ -20,8 +20,6 @@
 
 package net.ygbstudio.powerwp4j.base.extension;
 
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
-
 /**
  * Interface for comment status enums that provide a unified type for addition of custom and
  * built-in comment statuses.
@@ -29,4 +27,4 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  * @see FriendlyEnum
  * @author Yoham Gabriel @ YGB Studio
  */
-public interface CommentStatusEnum extends FriendlyEnum {}
+public non-sealed interface CommentStatusEnum extends FriendlyEnum {}

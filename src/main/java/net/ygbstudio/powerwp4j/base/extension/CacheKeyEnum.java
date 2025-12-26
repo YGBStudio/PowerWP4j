@@ -20,8 +20,6 @@
 
 package net.ygbstudio.powerwp4j.base.extension;
 
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
-
 /**
  * This interface provides a way to create enum constants that represent keys in the JSON local
  * cache and use them with utilities in PowerWP4j. These keys represent values that can be isolated
@@ -41,4 +39,4 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  *
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface CacheKeyEnum extends FriendlyEnum {}
+public non-sealed interface CacheKeyEnum extends FriendlyEnum {}

@@ -20,8 +20,6 @@
 
 package net.ygbstudio.powerwp4j.base.extension;
 
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
-
 /**
  * CacheSubKeyEnum is an interface that extends the {@link FriendlyEnum} interface and is used to
  * represent the keys nested in the values represented by {@link CacheKeyEnum} in the local cache.
@@ -39,4 +37,4 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  *
  * @see FriendlyEnum
  */
-public interface CacheSubKeyEnum extends FriendlyEnum {}
+public non-sealed interface CacheSubKeyEnum extends FriendlyEnum {}

@@ -22,7 +22,6 @@ package net.ygbstudio.powerwp4j.base.extension;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import net.ygbstudio.powerwp4j.base.FriendlyEnum;
 
 /**
  * An interface for enum types that represent fields that can be used in a URL.
@@ -33,7 +32,7 @@ import net.ygbstudio.powerwp4j.base.FriendlyEnum;
  * @see FriendlyEnum
  * @author Yoham Gabriel B. @YGBStudio
  */
-public interface URLFieldsEnum extends FriendlyEnum {
+public non-sealed interface URLFieldsEnum extends FriendlyEnum {
   /**
    * Joins the given fields into a single string, separated by commas.
    *
