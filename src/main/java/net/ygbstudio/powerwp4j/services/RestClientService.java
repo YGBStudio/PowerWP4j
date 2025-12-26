@@ -84,7 +84,8 @@ public final class RestClientService {
    * @param username The username for authentication.
    * @param applicationPassword The application password for authentication.
    * @param postId The ID of the post to be deleted.
-   * @param ignoreSSLHandshakeException
+   * @param ignoreSSLHandshakeException Whether to ignore SSL Handshake Exception, useful for
+   *     testing purposes or local environments.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
    */
@@ -180,7 +181,8 @@ public final class RestClientService {
     HttpRequest addCategoryRequest =
         HttpRequestService.buildWpPostRequest(
             payload, url, username, applicationPassword, restClientServiceLogger);
-    return HttpRequestService.clientSend(addCategoryRequest, restClientServiceLogger, ignoreSSLHandshakeException);
+    return HttpRequestService.clientSend(
+        addCategoryRequest, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 
   /**
