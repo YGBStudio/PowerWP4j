@@ -65,8 +65,8 @@ public class WPRestClient {
 
   /**
    * Creates a new instance of {@link WPRestClient} using the provided {@link WPSiteInfo}. This
-   * method is intended for testing purposes and can ignore SSL certificate issues for all
-   * REST API calls.
+   * method is intended for testing purposes and can ignore SSL certificate issues for all REST API
+   * calls.
    *
    * @param siteInfo the site information for the WordPress site
    * @param ignoreSSL whether to ignore SSL certificate issues. Suitable for local development only.
