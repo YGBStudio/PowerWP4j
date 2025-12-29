@@ -29,16 +29,26 @@ import net.ygbstudio.powerwp4j.base.extension.CacheKeyEnum;
  * @see CacheKeyEnum
  */
 public enum WPCacheKey implements CacheKeyEnum {
-  ID("id"),
-  SLUG("slug"),
-  TITLE("title"),
-  LINK("link"),
-  GUID("guid"),
+  ALT_TEXT("alt_text"),
+  AUTHOR("author"),
+  CAPTION("caption"),
+  CLASS_LIST("class_list"),
+  CONTENT("content"),
+  COMMENT_STATUS("comment_status"),
   DATE("date"),
   DATE_GMT("date_gmt"),
-  CONTENT("content"),
-  CLASS_LIST("class_list"),
-  EXCERPT("excerpt");
+  DESCRIPTION("description"),
+  EXCERPT("excerpt"),
+  FEATURED_MEDIA("featured_media"),
+  FORMAT("format"),
+  GUID("guid"),
+  ID("id"),
+  LINK("link"),
+  SLUG("slug"),
+  STATUS("status"),
+  STICKY("sticky"),
+  TITLE("title"),
+  TYPE("type");
 
   private final String value;
 
