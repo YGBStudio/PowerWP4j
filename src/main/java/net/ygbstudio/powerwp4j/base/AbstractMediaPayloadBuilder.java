@@ -33,6 +33,15 @@ public abstract class AbstractMediaPayloadBuilder<T extends AbstractMediaPayload
   protected String caption;
   protected String description;
 
+  /**
+   * Returns the current instance of the payload builder. This is a protected method used for
+   * chaining method calls.
+   *
+   * <p>The cast to type T is safe because the method is only called within the class hierarchy and
+   * this class is parameterized with the type of the subclass.
+   *
+   * @return the current instance of the payload builder
+   */
   @SuppressWarnings("unchecked")
   protected T self() {
     return (T) this;
