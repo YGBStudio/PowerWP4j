@@ -51,7 +51,7 @@ import tools.jackson.databind.JsonNode;
 @JsonInclude(Include.NON_NULL)
 public class WPBasicPayloadBuilder extends AbstractPayloadBuilder<WPBasicPayloadBuilder> {
 
-  WPBasicPayloadBuilder() {}
+  private WPBasicPayloadBuilder() {}
 
   @Override
   protected WPBasicPayloadBuilder self() {
