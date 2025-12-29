@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.builders;
 
-import net.ygbstudio.powerwp4j.base.AbstractPayloadNodeBuilder;
+import net.ygbstudio.powerwp4j.base.extension.builders.AbstractPayloadNodeBuilder;
 import net.ygbstudio.powerwp4j.models.schema.WPCacheKey;
 
 /**

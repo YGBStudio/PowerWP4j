@@ -25,7 +25,7 @@ import static net.ygbstudio.powerwp4j.utils.Helpers.enumFromValue;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
-import net.ygbstudio.powerwp4j.base.AbstractPayloadBuilder;
+import net.ygbstudio.powerwp4j.base.extension.builders.AbstractPayloadBuilder;
 import net.ygbstudio.powerwp4j.base.extension.enums.CommentStatusEnum;
 import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;
 import net.ygbstudio.powerwp4j.models.schema.WPCommentStatus;

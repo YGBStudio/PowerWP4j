@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base;
+package net.ygbstudio.powerwp4j.base.extension.builders;
 
 import tools.jackson.databind.JsonNode;
 

@@ -22,7 +22,7 @@ package net.ygbstudio.powerwp4j.builders;
 
 import java.util.List;
 import java.util.Set;
-import net.ygbstudio.powerwp4j.base.AbstractPayloadNodeBuilder;
+import net.ygbstudio.powerwp4j.base.extension.builders.AbstractPayloadNodeBuilder;
 import net.ygbstudio.powerwp4j.base.extension.enums.CommentStatusEnum;
 import net.ygbstudio.powerwp4j.base.extension.enums.PostFormatEnum;
 import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;

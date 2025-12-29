@@ -22,7 +22,7 @@ package net.ygbstudio.powerwp4j.builders;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import net.ygbstudio.powerwp4j.base.AbstractMediaPayloadBuilder;
+import net.ygbstudio.powerwp4j.base.extension.builders.AbstractMediaPayloadBuilder;
 import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
