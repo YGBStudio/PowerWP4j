@@ -44,7 +44,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import javax.net.ssl.SSLHandshakeException;
-import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.QueryParamEnum;
 import net.ygbstudio.powerwp4j.exceptions.InvalidApiUrlError;
 import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;

@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.URLFieldsEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.URLFieldsEnum;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked

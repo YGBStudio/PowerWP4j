@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.PostStatusEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;
 
 /**
  * Enum class that represents statuses in WordPress.

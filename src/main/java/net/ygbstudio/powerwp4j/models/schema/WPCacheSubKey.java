@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.CacheSubKeyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.CacheSubKeyEnum;
 
 public enum WPCacheSubKey implements CacheSubKeyEnum {
   RENDERED("rendered"),

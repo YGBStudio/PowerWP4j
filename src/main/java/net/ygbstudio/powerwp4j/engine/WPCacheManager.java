@@ -53,7 +53,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.LongStream;
-import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.QueryParamEnum;
 import net.ygbstudio.powerwp4j.exceptions.CacheConstructionException;
 import net.ygbstudio.powerwp4j.exceptions.CacheFileSystemException;
 import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;

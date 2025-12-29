@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base.extension;
+package net.ygbstudio.powerwp4j.base.extension.enums;
 
 import java.util.Comparator;
 import java.util.List;

@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.QueryParamEnum;
 import org.jspecify.annotations.NullMarked;
 
 /**

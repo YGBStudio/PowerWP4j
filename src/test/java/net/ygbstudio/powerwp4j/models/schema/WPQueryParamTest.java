@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import net.ygbstudio.powerwp4j.base.extension.QueryParamEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.QueryParamEnum;
 import org.hamcrest.core.StringRegularExpression;
 import org.junit.jupiter.api.Test;
 

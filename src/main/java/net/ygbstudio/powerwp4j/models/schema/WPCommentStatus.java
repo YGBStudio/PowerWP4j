@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.CommentStatusEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.CommentStatusEnum;
 
 public enum WPCommentStatus implements CommentStatusEnum {
   OPEN("open"),

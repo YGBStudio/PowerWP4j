@@ -22,8 +22,8 @@ package net.ygbstudio.powerwp4j.base;
 
 import java.util.Collection;
 import java.util.function.Supplier;
-import net.ygbstudio.powerwp4j.base.extension.CacheKeyEnum;
-import net.ygbstudio.powerwp4j.base.extension.FriendlyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.CacheKeyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.FriendlyEnum;
 import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import org.jspecify.annotations.NonNull;
 import tools.jackson.databind.JsonNode;

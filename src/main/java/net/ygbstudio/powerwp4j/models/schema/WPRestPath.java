@@ -21,7 +21,7 @@
 package net.ygbstudio.powerwp4j.models.schema;
 
 import java.time.YearMonth;
-import net.ygbstudio.powerwp4j.base.extension.RestPathEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.RestPathEnum;
 import org.jspecify.annotations.NullMarked;
 
 /**

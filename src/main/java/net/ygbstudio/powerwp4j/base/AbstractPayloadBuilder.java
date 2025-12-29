@@ -22,11 +22,11 @@ package net.ygbstudio.powerwp4j.base;
 
 import java.util.Collections;
 import java.util.List;
-import net.ygbstudio.powerwp4j.base.extension.CommentStatusEnum;
-import net.ygbstudio.powerwp4j.base.extension.FriendlyEnum;
-import net.ygbstudio.powerwp4j.base.extension.PostFormatEnum;
-import net.ygbstudio.powerwp4j.base.extension.PostStatusEnum;
-import net.ygbstudio.powerwp4j.base.extension.PostTypeEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.CommentStatusEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.FriendlyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.PostFormatEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.PostTypeEnum;
 import net.ygbstudio.powerwp4j.services.HttpRequestService;
 import org.jspecify.annotations.NonNull;
 import tools.jackson.databind.JsonNode;

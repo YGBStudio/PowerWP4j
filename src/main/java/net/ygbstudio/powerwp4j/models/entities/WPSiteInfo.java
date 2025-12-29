@@ -24,7 +24,7 @@ import static net.ygbstudio.powerwp4j.utils.Helpers.getPropertiesFromResources;
 
 import java.util.Optional;
 import java.util.Properties;
-import net.ygbstudio.powerwp4j.base.extension.EnvironmentScope;
+import net.ygbstudio.powerwp4j.base.extension.enums.EnvironmentScope;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 

@@ -1,7 +1,7 @@
 /*
  * PowerWP4j - Power WP for Java
  *
- * Copyright 2025 Yoham Gabriel Barboza B. (YGBStudio)
+ * Copyright 2025-2026 Yoham Gabriel Barboza B. (YGBStudio)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base.extension;
+package net.ygbstudio.powerwp4j.base.extension.enums;
 
 /**
  * CacheSubKeyEnum is an interface that extends the {@link FriendlyEnum} interface and is used to

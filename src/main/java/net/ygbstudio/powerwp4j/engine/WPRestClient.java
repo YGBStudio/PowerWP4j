@@ -23,7 +23,7 @@ package net.ygbstudio.powerwp4j.engine;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.util.Optional;
-import net.ygbstudio.powerwp4j.base.extension.PostStatusEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;
 import net.ygbstudio.powerwp4j.builders.WPBasicPayloadBuilder;
 import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
 import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;

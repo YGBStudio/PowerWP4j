@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.PostFormatEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.PostFormatEnum;
 
 /**
  * Enum class that represents formats in WordPress.

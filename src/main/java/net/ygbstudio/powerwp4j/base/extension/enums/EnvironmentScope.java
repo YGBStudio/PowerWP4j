@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base.extension;
+package net.ygbstudio.powerwp4j.base.extension.enums;
 
 /**
  * Enumeration that represents the keys for the environment variables required to connect to a

@@ -18,13 +18,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base.extension;
+package net.ygbstudio.powerwp4j.base.extension.enums;
 
 /**
- * Interface for post format enums that provide a unified type for addition of custom and built-in
- * formats.
+ * Interface for post status enums that provide a unified type for addition of custom post statuses.
  *
  * @see FriendlyEnum
  * @author Yoham Gabriel @ YGB Studio
  */
-public non-sealed interface PostFormatEnum extends FriendlyEnum {}
+public non-sealed interface PostStatusEnum extends FriendlyEnum {}

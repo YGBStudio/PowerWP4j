@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.PostTypeEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.PostTypeEnum;
 
 /**
  * Enum representing different types of WordPress posts.

@@ -21,8 +21,8 @@
 package net.ygbstudio.powerwp4j.models.entities;
 
 import java.util.Map;
-import net.ygbstudio.powerwp4j.base.extension.CacheKeyEnum;
-import net.ygbstudio.powerwp4j.base.extension.CacheSubKeyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.CacheKeyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.CacheSubKeyEnum;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -18,12 +18,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base.extension;
+package net.ygbstudio.powerwp4j.base.extension.enums;
 
 /**
- * Interface for post status enums that provide a unified type for addition of custom post statuses.
+ * RestPathEnum is an interface that promotes unified type for rest paths to ensure consistency with
+ * the design practices of the project. It can be used as a means to provide your own rest paths to
+ * the WPCacheManager safely.
  *
  * @see FriendlyEnum
- * @author Yoham Gabriel @ YGB Studio
+ * @author Yoham Gabriel B. @YGBStudio
  */
-public non-sealed interface PostStatusEnum extends FriendlyEnum {}
+public non-sealed interface RestPathEnum extends FriendlyEnum {}

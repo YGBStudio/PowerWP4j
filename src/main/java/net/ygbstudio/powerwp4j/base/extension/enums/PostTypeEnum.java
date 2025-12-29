@@ -18,13 +18,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.base.extension;
+package net.ygbstudio.powerwp4j.base.extension.enums;
 
 /**
- * Interface for comment status enums that provide a unified type for addition of custom and
- * built-in comment statuses.
+ * Interface for post type enums that provide a unified type for addition of custom and built-in
+ * types.
  *
  * @see FriendlyEnum
  * @author Yoham Gabriel @ YGB Studio
  */
-public non-sealed interface CommentStatusEnum extends FriendlyEnum {}
+public non-sealed interface PostTypeEnum extends FriendlyEnum {}

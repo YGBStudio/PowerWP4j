@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.schema;
 
-import net.ygbstudio.powerwp4j.base.extension.CacheKeyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.CacheKeyEnum;
 
 /**
  * Enumeration of possible cache keys for the WordPress REST API cache. It is the default

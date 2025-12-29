@@ -20,7 +20,7 @@
 
 package net.ygbstudio.powerwp4j.models.taxonomies;
 
-import net.ygbstudio.powerwp4j.base.extension.ClassValueKeyEnum;
+import net.ygbstudio.powerwp4j.base.extension.enums.ClassValueKeyEnum;
 
 /**
  * Enum class for the WordPress cache taxonomy value representation.
