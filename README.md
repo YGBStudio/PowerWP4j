@@ -10,16 +10,15 @@ A modern Java toolkit for WordPress automation and offline content analysis. Bui
 
 ## Table of Contents
 1. [Features](#features)
-2. [Workflows](#workflows)
-3. [Requirements](#requirements)
-4. [Installation](#installation)
-5. [Quickstart](#quickstart)
-6. [Use Cases](#use-cases)
-7. [Key Modules](#key-modules)
-8. [Extensibility](#extensibility)
-9. [FAQs](#faqs)
-10. [Development](#development)
-11. [License](#license)
+2. [Requirements](#requirements)
+3. [Installation](#installation)
+4. [Quickstart](#quickstart)
+5. [Use Cases](#use-cases)
+6. [Key Modules](#key-modules)
+7. [Extensibility](#extensibility)
+8. [FAQs](#faqs)
+9. [Development](#development)
+10. [License](#license)
 
 ## Features
 
@@ -31,23 +30,6 @@ A modern Java toolkit for WordPress automation and offline content analysis. Bui
 | **Taxonomy Extraction** | Extract and aggregate taxonomy data for automation, reporting, or ML workflows |
 
 **Design philosophy**: Expressive, declarative modern Java (records, `Optional`, streams, immutability-first) with documented nullability. Alpha status—API may evolve.
-
-## Workflows
-
-### REST Client
-- Configure site connection via `WPSiteInfo` (properties file or environment variables)
-- Create, update, delete posts with `WPBasicPayloadBuilder`
-- Manage taxonomies (categories, tags) and upload media with optional metadata
-
-### Cache Management
-- Fetch posts into a local JSON cache (`fetchJsonCache`)
-- Sync incrementally using WordPress `x-wp-total` / `x-wp-totalpages` headers (`cacheSync`)
-- Metadata stored in companion `<cacheName>_metadata.json` file
-
-### Cache Analysis
-- Load cache in-memory—no network calls during analysis
-- Extract sets/snapshots: IDs, slugs, links, categories, tags, excerpts, GUIDs
-- Map taxonomy data with custom transformations for automation or ML workflows
 
 ## Requirements
 
@@ -63,14 +45,28 @@ A modern Java toolkit for WordPress automation and offline content analysis. Bui
 mvn clean install
 ```
 
-### Maven dependency
+### Dependency Management
+
+> `[VERSION]` refers to the current stable release.
+
+#### Maven
 ```xml
 <dependency>
   <groupId>net.ygbstudio</groupId>
   <artifactId>powerwp4j</artifactId>
-  <version><!-- version --></version>
+  <version>[VERSION]</version>
 </dependency>
 ```
+
+#### Gradle
+```gradle
+dependencies {
+    implementation 'net.ygbstudio:powerwp4j:[VERSION]'
+}
+```
+
+#### JitPack (Alternative)
+You can also fetch the project via [JitPack](https://jitpack.io/#YGBStudio/PowerWP4j). 
 
 ### Runtime dependencies (minimal)
 - **Jackson 3.x** — JSON processing
