@@ -43,8 +43,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import net.ygbstudio.powerwp4j.base.extension.enums.FriendlyEnum;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class for reusable logic in the project.
@@ -55,7 +55,6 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Yoham Gabriel @ YGB Studio
  */
-@NullMarked
 public final class Helpers {
 
   private Helpers() {
@@ -165,7 +164,7 @@ public final class Helpers {
    * @return true if any transformed value matches the condition, false otherwise.
    */
   public static <T extends Enum<T>, R> boolean isInEnum(
-      Class<T> enumType,
+      @NotNull Class<T> enumType,
       Function<? super T, ? extends R> transformer,
       Predicate<? super R> condition) {
     return Arrays.stream(enumType.getEnumConstants()).map(transformer).anyMatch(condition);

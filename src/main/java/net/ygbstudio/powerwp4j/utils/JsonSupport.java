@@ -22,7 +22,10 @@ package net.ygbstudio.powerwp4j.utils;
 
 import java.io.File;
 import java.io.Reader;
-import org.jspecify.annotations.NullMarked;
+import java.net.http.HttpResponse;
+import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -41,7 +44,6 @@ import tools.jackson.databind.json.JsonMapper;
  *
  * @author Yoham Gabriel @ YGB Studio
  */
-@NullMarked
 public final class JsonSupport {
 
   private static final ObjectMapper jsonMapper = configureMapper();
@@ -161,5 +163,47 @@ public final class JsonSupport {
    */
   public static JsonNode getTreeNode(File jsonFile) {
     return jsonMapper.readTree(jsonFile);
+  }
+
+  /**
+   * Deserializes a generic response from an HttpResponse.
+   *
+   * @param response the HttpResponse to deserialize
+   * @param clazz the class of the object to deserialize into
+   * @param <T> the type of the object to deserialize into
+   * @return an Optional containing the deserialized object, or empty if status >= 400 or generic
+   *     error
+   */
+  public static <T> Optional<T> deserialize(
+      @NotNull HttpResponse<String> response, Class<T> clazz) {
+    if (response.statusCode() >= 400) {
+      return Optional.empty();
+    }
+    try {
+      return Optional.ofNullable(jsonMapper.readValue(response.body(), clazz));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Deserializes a generic list response from an HttpResponse.
+   *
+   * @param response the HttpResponse to deserialize
+   * @param typeRef the TypeReference of the object to deserialize into
+   * @param <T> the type of the object to deserialize into
+   * @return an Optional containing the deserialized object, or empty if status >= 400 or generic
+   *     error
+   */
+  public static <T> Optional<T> deserialize(
+      @NotNull HttpResponse<String> response, TypeReference<T> typeRef) {
+    if (response.statusCode() >= 400) {
+      return Optional.empty();
+    }
+    try {
+      return Optional.ofNullable(jsonMapper.readValue(response.body(), typeRef));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 }
