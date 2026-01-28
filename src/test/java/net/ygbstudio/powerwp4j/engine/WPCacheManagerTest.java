@@ -1,6 +1,5 @@
 package net.ygbstudio.powerwp4j.engine;
 
-import static org.assertj.core.api.Assertions.assertThatException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
@@ -38,7 +37,10 @@ class WPCacheManagerTest {
   @BeforeEach
   void setUp() {
     // Create this file in the resources folder
-    WPSiteInfo.fromConfigResource("appConfig.properties").ifPresent(site -> siteInfo = site);
+    WPSiteInfo.fromConfigResource("appConfig.properties")
+        .ifPresentOrElse(
+            site -> siteInfo = site,
+            () -> siteInfo = new WPSiteInfo("example.com", "admin", "abc def ghi jkl"));
     wpSite = new WPCacheManager(siteInfo, cacheFile.toPath());
   }
 
@@ -53,9 +55,9 @@ class WPCacheManagerTest {
 
   @Test
   void makeRequestNoLeadingParameterTest() {
-    assertThatException()
-        .isThrownBy(() -> makeSiteUrl(wpSite, 0))
-        .isInstanceOf(IllegalArgumentException.class);
+    String baseUrl =
+        wpSite.apiBaseUrl() + WPRestPath.POSTS.value() + "?" + WPQueryParam.PER_PAGE.value() + "10";
+    assertThat(makeSiteUrl(wpSite, 0), is(baseUrl));
   }
 
   @Test

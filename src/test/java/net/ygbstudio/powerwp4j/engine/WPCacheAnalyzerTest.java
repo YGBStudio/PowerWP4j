@@ -90,14 +90,14 @@ class WPCacheAnalyzerTest {
 
   @Test
   void testGetCategorySetVsCount() {
-    Set<String> categories = analyzer.getCategories();
+    Set<String> categories = analyzer.getCleanCategories();
     long categoryCount = analyzer.getCategoryCount();
     assertThat(categories.size(), is(Math.toIntExact(categoryCount)));
   }
 
   @Test
   void testGetTagSetVsCount() {
-    Set<String> tags = analyzer.getTags();
+    Set<String> tags = analyzer.getCleanTags();
     long tagCount = analyzer.getTagCount();
     assertThat(tags.size(), is(Math.toIntExact(tagCount)));
   }
