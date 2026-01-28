@@ -21,10 +21,12 @@
 package net.ygbstudio.powerwp4j.base.extension.enums;
 
 /**
- * Interface for post type enums that provide a unified type for addition of custom and built-in
+ * Interface for post type enums that provide a unified type for addition of
+ * custom and built-in
  * types.
  *
  * @see FriendlyEnum
- * @author Yoham Gabriel @ YGB Studio
+ * 
  */
-public non-sealed interface PostTypeEnum extends FriendlyEnum {}
+public non-sealed interface PostTypeEnum extends FriendlyEnum {
+}
