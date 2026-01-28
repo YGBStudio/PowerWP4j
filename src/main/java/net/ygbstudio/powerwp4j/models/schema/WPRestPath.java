@@ -24,12 +24,10 @@ import java.time.YearMonth;
 import net.ygbstudio.powerwp4j.base.extension.enums.RestPathEnum;
 
 /**
- * Enum representing various API endpoints and query parameters for WordPress
- * REST API.
+ * Enum representing various API endpoints and query parameters for WordPress REST API.
  *
- * <p>
- * This enum includes common endpoints and parameters used to interact with
- * WordPress data, such as users, posts, categories, media, and tags.
+ * <p>This enum includes common endpoints and parameters used to interact with WordPress data, such
+ * as users, posts, categories, media, and tags.
  *
  * @author Yoham Gabriel @ YGBStudio
  */
