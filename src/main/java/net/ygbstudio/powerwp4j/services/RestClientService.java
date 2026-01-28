@@ -24,7 +24,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.util.Optional;
-import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
+import net.ygbstudio.powerwp4j.exceptions.MediaUploadException;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import net.ygbstudio.powerwp4j.utils.functional.TypedTrigger;
@@ -226,7 +226,7 @@ public final class RestClientService {
    *     testing purposes or local environments.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
-   * @throws MediaUploadError if the media upload request fails.
+   * @throws MediaUploadException if the media upload request fails.
    */
   public static Optional<HttpResponse<String>> uploadMedia(
       String apiBasePath,
@@ -236,9 +236,9 @@ public final class RestClientService {
       @Nullable JsonNode payload,
       boolean ignoreSSLHandshakeException) {
 
-    TypedTrigger<String> mediaUploadError =
+    TypedTrigger<String> MediaUploadException =
         url -> {
-          throw new MediaUploadError(
+          throw new MediaUploadException(
               () ->
                   String.format(
                       "Media Upload to %s failed. Check your connection or site options and try again",
@@ -248,7 +248,7 @@ public final class RestClientService {
     Optional<HttpRequest> mediaUpload =
         HttpRequestService.buildWpPostRequest(
             url, username, applicationPassword, attachmentPath, restClientServiceLogger);
-    if (mediaUpload.isEmpty()) mediaUploadError.activate(url);
+    if (mediaUpload.isEmpty()) MediaUploadException.activate(url);
     if (payload == null) {
       return HttpRequestService.clientSend(
           mediaUpload.get(), restClientServiceLogger, ignoreSSLHandshakeException);
@@ -260,7 +260,7 @@ public final class RestClientService {
             .map(HttpResponse::body)
             .map(mapper::readTree)
             .map(item -> item.get("id").asLong());
-    if (mediaId.isEmpty()) mediaUploadError.activate(url);
+    if (mediaId.isEmpty()) MediaUploadException.activate(url);
     url = url + "/" + mediaId.get();
     HttpRequest mediaUpdate =
         HttpRequestService.buildWpPostRequest(

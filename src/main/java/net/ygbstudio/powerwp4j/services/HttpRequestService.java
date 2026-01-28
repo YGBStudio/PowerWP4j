@@ -45,8 +45,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import javax.net.ssl.SSLHandshakeException;
 import net.ygbstudio.powerwp4j.base.extension.enums.QueryParamEnum;
-import net.ygbstudio.powerwp4j.exceptions.InvalidApiUrlError;
-import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
+import net.ygbstudio.powerwp4j.exceptions.InvalidApiUrlException;
+import net.ygbstudio.powerwp4j.exceptions.MediaUploadException;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.utils.functional.TriggerCallable;
 import org.apache.tika.Tika;
@@ -109,7 +109,7 @@ public final class HttpRequestService {
       Supplier<String> errorMessageUri =
           () -> "Unable to process this request. URL: " + url + " seems malformed";
       if (classLogger != null) classLogger.warn(errorMessageUri.get(), uriSyntaxEx);
-      throw new InvalidApiUrlError(errorMessageUri.get(), uriSyntaxEx);
+      throw new InvalidApiUrlException(errorMessageUri.get(), uriSyntaxEx);
     }
   }
 
@@ -227,7 +227,7 @@ public final class HttpRequestService {
       @Nullable Logger classLogger) {
     String fileName = attachmentPath.getFileName().toString();
     if (!attachmentPath.toFile().exists())
-      throw new MediaUploadError(
+      throw new MediaUploadException(
           () -> "Attachment path " + attachmentPath.toAbsolutePath() + " does not exist");
     Tika tika = new Tika();
     try {
@@ -268,11 +268,11 @@ public final class HttpRequestService {
    * @param applicationPassword the application password for the WordPress site
    * @param classLogger the logger to use for logging
    * @return an Optional containing the response from the WordPress REST API
-   * @throws InvalidApiUrlError if the URL is invalid
+   * @throws InvalidApiUrlException if the URL is invalid
    */
   public static Optional<HttpResponse<String>> connectGetWP(
       String url, String username, String applicationPassword, @Nullable Logger classLogger)
-      throws InvalidApiUrlError {
+      throws InvalidApiUrlException {
     HttpRequest requestOptional =
         buildWpGetRequest(url, username, applicationPassword, classLogger);
     return clientSend(requestOptional, httpServiceLogger, false);
