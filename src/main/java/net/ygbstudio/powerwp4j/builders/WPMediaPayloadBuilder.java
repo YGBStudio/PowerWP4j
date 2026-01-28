@@ -29,18 +29,23 @@ import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 
 /**
- * Builder for WordPress media attachment payloads. Inherits all methods from its abstract
- * superclass to provide a chainable pattern for building media attachment payloads.
+ * Builder for WordPress media attachment payloads. Inherits all methods from
+ * its abstract
+ * superclass to provide a chainable pattern for building media attachment
+ * payloads.
  *
- * <p>If you need to use a builder for posts or taxonomies, use {@link WPBasicPayloadBuilder}.
+ * <p>
+ * If you need to use a builder for posts or taxonomies, use
+ * {@link WPBasicPayloadBuilder}.
  *
  * @see AbstractMediaPayloadBuilder
- * @author Yoham Gabriel @ YGB Studio
+ * 
  */
 @JsonInclude(Include.NON_EMPTY)
 public class WPMediaPayloadBuilder extends AbstractMediaPayloadBuilder<WPMediaPayloadBuilder> {
 
-  private WPMediaPayloadBuilder() {}
+  private WPMediaPayloadBuilder() {
+  }
 
   /**
    * Creates a new instance of {@link WPMediaPayloadBuilder}.

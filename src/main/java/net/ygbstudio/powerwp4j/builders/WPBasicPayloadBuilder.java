@@ -36,22 +36,29 @@ import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 
 /**
- * Basic payload builder for WordPress REST Payloads. It can be used for posts and taxonomy
+ * Basic payload builder for WordPress REST Payloads. It can be used for posts
+ * and taxonomy
  * creation.
  *
- * <p>Inherits all methods from {@link AbstractPayloadBuilder} to provide a chainable pattern for
- * building payloads for the WordPress REST API. The payload is built using a {@link JsonNode}
+ * <p>
+ * Inherits all methods from {@link AbstractPayloadBuilder} to provide a
+ * chainable pattern for
+ * building payloads for the WordPress REST API. The payload is built using a
+ * {@link JsonNode}
  * object.
  *
- * <p>In case you need to attach a payload to a media file, use {@link WPMediaPayloadBuilder}.
+ * <p>
+ * In case you need to attach a payload to a media file, use
+ * {@link WPMediaPayloadBuilder}.
  *
  * @see AbstractPayloadBuilder
- * @author Yoham Gabriel @ YGB Studio
+ * 
  */
 @JsonInclude(Include.NON_NULL)
 public class WPBasicPayloadBuilder extends AbstractPayloadBuilder<WPBasicPayloadBuilder> {
 
-  private WPBasicPayloadBuilder() {}
+  private WPBasicPayloadBuilder() {
+  }
 
   @Override
   protected WPBasicPayloadBuilder self() {
