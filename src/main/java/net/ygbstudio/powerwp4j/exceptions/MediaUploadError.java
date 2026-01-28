@@ -21,7 +21,7 @@
 package net.ygbstudio.powerwp4j.exceptions;
 
 import java.util.function.Supplier;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Exception thrown when there is an error during or before a media upload procedure.
@@ -33,7 +33,7 @@ public class MediaUploadError extends Error {
     super(message);
   }
 
-  public MediaUploadError(@NonNull Supplier<String> message) {
+  public MediaUploadError(@NotNull Supplier<String> message) {
     super(message.get());
   }
 }

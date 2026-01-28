@@ -21,7 +21,7 @@
 package net.ygbstudio.powerwp4j.exceptions;
 
 import java.util.function.Supplier;
-import org.jspecify.annotations.NullMarked;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * CacheMetaDataException is an exception that is thrown when there is an error with the cache
@@ -29,13 +29,12 @@ import org.jspecify.annotations.NullMarked;
  *
  * @author Yoham Gabriel B. @ YGBStudio
  */
-@NullMarked
 public class CacheMetaDataException extends RuntimeException {
   public CacheMetaDataException(String message) {
     super(message);
   }
 
-  public CacheMetaDataException(Supplier<String> message) {
+  public CacheMetaDataException(@NotNull Supplier<String> message) {
     super(message.get());
   }
 }

@@ -21,6 +21,7 @@
 package net.ygbstudio.powerwp4j.exceptions;
 
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * CacheConstructionException is an exception that is thrown when there is an error constructing the
@@ -33,7 +34,7 @@ public class CacheConstructionException extends RuntimeException {
     super(message);
   }
 
-  public CacheConstructionException(Supplier<String> message) {
+  public CacheConstructionException(@NotNull Supplier<String> message) {
     super(message.get());
   }
 }

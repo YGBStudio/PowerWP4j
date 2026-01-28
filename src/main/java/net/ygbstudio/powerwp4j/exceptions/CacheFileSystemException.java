@@ -21,6 +21,7 @@
 package net.ygbstudio.powerwp4j.exceptions;
 
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Exception thrown when a file system error occurs while working with the local cache file.
@@ -32,7 +33,7 @@ public class CacheFileSystemException extends RuntimeException {
     super(message);
   }
 
-  public CacheFileSystemException(Supplier<String> message) {
+  public CacheFileSystemException(@NotNull Supplier<String> message) {
     super(message.get());
   }
 }
