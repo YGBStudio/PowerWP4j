@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;
 import net.ygbstudio.powerwp4j.builders.WPBasicPayloadBuilder;
-import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
+import net.ygbstudio.powerwp4j.exceptions.MediaUploadException;
 import net.ygbstudio.powerwp4j.models.entities.WPPost;
 import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;
 import net.ygbstudio.powerwp4j.services.RestClientService;
@@ -153,7 +153,7 @@ public class WPRestClient {
    * @param attachmentPath The file path of the media to be uploaded.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
-   * @throws MediaUploadError if the media upload request fails.
+   * @throws MediaUploadException if the media upload request fails.
    */
   public Optional<HttpResponse<String>> uploadMedia(Path attachmentPath) {
     return RestClientService.uploadMedia(
@@ -173,7 +173,7 @@ public class WPRestClient {
    * @param payload The JSON payload representing the media.
    * @return An Optional containing the JSON response from the server if the request was successful,
    *     or an empty Optional if the request failed.
-   * @throws MediaUploadError if the media upload request fails.
+   * @throws MediaUploadException if the media upload request fails.
    */
   public Optional<HttpResponse<String>> uploadMedia(Path attachmentPath, JsonNode payload) {
     return RestClientService.uploadMedia(
