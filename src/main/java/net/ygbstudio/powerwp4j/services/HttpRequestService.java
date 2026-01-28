@@ -51,8 +51,8 @@ import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.utils.functional.TriggerCallable;
 import org.apache.tika.Tika;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
@@ -63,7 +63,6 @@ import tools.jackson.databind.JsonNode;
  *
  * @author Yoham Gabriel B.
  */
-@NullMarked
 public final class HttpRequestService {
 
   private static final int TASK_TERMINATION_TIMEOUT_MINS = 5;
@@ -80,7 +79,7 @@ public final class HttpRequestService {
    * @return a BinaryOperator that encodes a username and application password into a base64 string.
    */
   @Contract(pure = true)
-  private static BinaryOperator<String> basicAuthEncode() {
+  private static @NotNull BinaryOperator<String> basicAuthEncode() {
     return (username, appPassword) -> {
       String authStr = username + ":" + appPassword;
       return "Basic "
@@ -122,8 +121,8 @@ public final class HttpRequestService {
    * @param pathParam the path parameter to be used in the request
    * @return the request URL
    */
-  public static <E extends QueryParamEnum> String makeRequestURL(
-      String apiBasePath, @Nullable Map<E, String> queryParams, WPRestPath pathParam) {
+  public static <E extends QueryParamEnum> @NotNull String makeRequestURL(
+      String apiBasePath, @Nullable Map<E, String> queryParams, @NotNull WPRestPath pathParam) {
     return apiBasePath
         + pathParam.value()
         + '/'
@@ -137,7 +136,8 @@ public final class HttpRequestService {
    *
    * @param request {@link HttpRequest} object that will be sent
    * @param classLogger Instance of a class logger for error logging
-   * @param ignoreSSLHandshakeException
+   * @param ignoreSSLHandshakeException if set to true, SSLHandshakeExceptions will be ignored and
+   *     the method will return an empty Optional
    * @return Optional containing the response from the REST API
    */
   public static Optional<HttpResponse<String>> clientSend(
@@ -198,7 +198,7 @@ public final class HttpRequestService {
    * @return an HttpRequest object representing the POST request
    */
   public static HttpRequest buildWpPostRequest(
-      JsonNode body,
+      @NotNull JsonNode body,
       String url,
       String username,
       String applicationPassword,
@@ -223,7 +223,7 @@ public final class HttpRequestService {
       String url,
       String username,
       String applicationPassword,
-      Path attachmentPath,
+      @NotNull Path attachmentPath,
       @Nullable Logger classLogger) {
     String fileName = attachmentPath.getFileName().toString();
     if (!attachmentPath.toFile().exists())
@@ -289,7 +289,7 @@ public final class HttpRequestService {
    * @return the result of the processing
    */
   public static <R> R linkProcessor(
-      List<String> linkList,
+      @NotNull List<String> linkList,
       BiFunction<HttpClient, String, CompletableFuture<R>> clientProcedure,
       Predicate<? super R> filterPred,
       Collector<? super R, R, R> collector) {
@@ -351,7 +351,7 @@ public final class HttpRequestService {
     R resultType = processLinks.get();
     while (retryPred != null
         && !retryPred.test(resultType)
-        && retryAttempts >= retryCount
+        && retryCount < retryAttempts
         && intervalUnit != null) {
       ++retryCount;
       httpServiceLogger.info(

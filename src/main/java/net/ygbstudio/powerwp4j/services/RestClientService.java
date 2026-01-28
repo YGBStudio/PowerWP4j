@@ -28,8 +28,7 @@ import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import net.ygbstudio.powerwp4j.utils.functional.TypedTrigger;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
@@ -44,7 +43,6 @@ import tools.jackson.databind.ObjectMapper;
  *
  * @author Yoham Gabriel B.
  */
-@NullMarked
 public final class RestClientService {
   private static final Logger restClientServiceLogger =
       LoggerFactory.getLogger(RestClientService.class);
@@ -183,6 +181,31 @@ public final class RestClientService {
             payload, url, username, applicationPassword, restClientServiceLogger);
     return HttpRequestService.clientSend(
         addCategoryRequest, restClientServiceLogger, ignoreSSLHandshakeException);
+  }
+
+  /**
+   * Fetches a single post by its ID from the WordPress site using the REST API.
+   *
+   * @param apiBasePath The base path of the WordPress REST API.
+   * @param username The username for authentication.
+   * @param applicationPassword The application password for authentication.
+   * @param postId The ID of the post to fetch.
+   * @param ignoreSSLHandshakeException Whether to ignore SSL Handshake Exception.
+   * @return An Optional containing the JSON response from the server if the request was successful.
+   */
+  public static Optional<HttpResponse<String>> postGet(
+      String apiBasePath,
+      String username,
+      String applicationPassword,
+      long postId,
+      boolean ignoreSSLHandshakeException) {
+    String url =
+        HttpRequestService.makeRequestURL(apiBasePath, null, WPRestPath.POSTS) + "/" + postId;
+    HttpRequest getRequest =
+        HttpRequestService.buildWpGetRequest(
+            url, username, applicationPassword, restClientServiceLogger);
+    return HttpRequestService.clientSend(
+        getRequest, restClientServiceLogger, ignoreSSLHandshakeException);
   }
 
   /**
