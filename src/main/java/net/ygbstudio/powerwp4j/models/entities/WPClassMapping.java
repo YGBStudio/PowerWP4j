@@ -23,17 +23,17 @@ package net.ygbstudio.powerwp4j.models.entities;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
- * A record that represents a 1-to-1 mapping between a key and a value.
+ * Represents a mapping between a WordPress API class ID and a taxonomy value.
  *
- * <p>This class is immutable and cannot be modified once created.
- *
- * @param <K> the type of the key
- * @param <V> the type of the value
+ * @param key The key of the class (category or tag).
+ * @param value The value of the taxonomy marker.
+ * @param <V> The type of the taxonomy value.
  */
-public record WPClassMapping<K, V>(@NonNull K key, @NonNull V value) {
+public record WPClassMapping<K, V>(@NotNull K key, @NotNull V value) {
 
   /**
    * Converts a set of {@link WPClassMapping} with numeric values to a set of the same numeric type.
@@ -44,7 +44,7 @@ public record WPClassMapping<K, V>(@NonNull K key, @NonNull V value) {
    * @return a set of the numeric type {@code U}
    */
   public static <T, U extends Number> Set<U> toNumberSet(
-      @NonNull Set<WPClassMapping<T, U>> classMappingSet) {
+      @NotNull Set<WPClassMapping<T, U>> classMappingSet) {
     return classMappingSet.stream().map(WPClassMapping::value).collect(Collectors.toSet());
   }
 
@@ -57,8 +57,8 @@ public record WPClassMapping<K, V>(@NonNull K key, @NonNull V value) {
    * @param <U> the numeric type of the values in the input list and the output set
    * @return a list of the numeric type {@code U}
    */
-  public static <T, U extends Number> List<U> toNumberList(
-      @NonNull List<WPClassMapping<T, U>> classMappingList) {
+  public static <T, U extends Number> @Unmodifiable @NotNull List<U> toNumberList(
+      @NotNull List<WPClassMapping<T, U>> classMappingList) {
     return classMappingList.stream().map(WPClassMapping::value).toList();
   }
 }

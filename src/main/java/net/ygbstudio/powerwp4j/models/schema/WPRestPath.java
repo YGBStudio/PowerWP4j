@@ -22,21 +22,15 @@ package net.ygbstudio.powerwp4j.models.schema;
 
 import java.time.YearMonth;
 import net.ygbstudio.powerwp4j.base.extension.enums.RestPathEnum;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Enum representing various API endpoints and query parameters for WordPress REST API.
  *
  * <p>This enum includes common endpoints and parameters used to interact with WordPress data, such
- * as users, posts, media, and categories. Each enum constant is associated with its corresponding
- * string representation used in the API URLs.
+ * Enumeration of standard WordPress REST API paths.
  *
- * <p><strong>Assume the endpoint is provided with a leading slash and the implementation will add
- * any trailing slashes if needed.
- *
- * @author Yoham Gabriel @ YGB Studio
+ * @author Yoham Gabriel @ YGBStudio
  */
-@NullMarked
 public enum WPRestPath implements RestPathEnum {
   USERS("/users"),
   POSTS("/posts"),

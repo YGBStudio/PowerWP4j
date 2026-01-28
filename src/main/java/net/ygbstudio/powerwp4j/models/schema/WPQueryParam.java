@@ -21,17 +21,15 @@
 package net.ygbstudio.powerwp4j.models.schema;
 
 import net.ygbstudio.powerwp4j.base.extension.enums.QueryParamEnum;
-import org.jspecify.annotations.NullMarked;
 
 /**
- * WPQueryParam is an enum that represents the query parameters for the WordPress REST API.
+ * Enumeration of standard WordPress query parameters.
  *
- * @author Yoham Gabriel B. @ YGBStudio
+ * @author Yoham Gabriel @ YGBStudio
  */
-@NullMarked
 public enum WPQueryParam implements QueryParamEnum {
   PER_PAGE("per_page="),
-  PAGE("?page="),
+  PAGE("page="),
   TIMESTAMP("_t=");
 
   private final String value;

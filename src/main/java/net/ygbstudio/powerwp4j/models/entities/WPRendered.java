@@ -1,5 +1,5 @@
 /*
- * PowerWP4j - Power WP for Java
+ * JBrave
  *
  * Copyright 2025-2026 Yoham Gabriel Barboza B. (YGBStudio)
  *
@@ -18,26 +18,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.ygbstudio.powerwp4j.models.schema;
+package net.ygbstudio.powerwp4j.models.entities;
 
-import net.ygbstudio.powerwp4j.base.extension.enums.URLFieldsEnum;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public enum WPPathField implements URLFieldsEnum {
-  // fields are comma-separated in the URL after the fields_base value.
-  FIELDS_BASE("?_fields="),
-  FIELD_AUTHOR("author"),
-  FIELD_ID("id"),
-  FIELD_EXCERPT("excerpt"),
-  FIELD_TITLE("title"),
-  FIELD_LINK("link");
-
-  private final String value;
-
-  WPPathField(String value) {
-    this.value = value;
-  }
-
-  public String value() {
-    return value;
-  }
-}
+/**
+ * A record representing a rendered WordPress field (e.g. title, content, excerpt).
+ *
+ * @param rendered the rendered HTML content
+ * @param protectedContent whether the content is protected (optional)
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record WPRendered(@NotNull String rendered, @Nullable Boolean protectedContent) {}

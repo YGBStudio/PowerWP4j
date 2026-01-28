@@ -23,7 +23,7 @@ package net.ygbstudio.powerwp4j.models.entities;
 import java.util.Map;
 import net.ygbstudio.powerwp4j.base.extension.enums.CacheKeyEnum;
 import net.ygbstudio.powerwp4j.base.extension.enums.CacheSubKeyEnum;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * WPCacheKeySnapshot is a record that represents a snapshot of a cache key and its subkeys. Use
