@@ -236,7 +236,7 @@ public final class RestClientService {
       @Nullable JsonNode payload,
       boolean ignoreSSLHandshakeException) {
 
-    TypedTrigger<String> MediaUploadException =
+    TypedTrigger<String> mediaUploadFailure =
         url -> {
           throw new MediaUploadException(
               () ->
@@ -248,7 +248,7 @@ public final class RestClientService {
     Optional<HttpRequest> mediaUpload =
         HttpRequestService.buildWpPostRequest(
             url, username, applicationPassword, attachmentPath, restClientServiceLogger);
-    if (mediaUpload.isEmpty()) MediaUploadException.activate(url);
+    if (mediaUpload.isEmpty()) mediaUploadFailure.activate(url);
     if (payload == null) {
       return HttpRequestService.clientSend(
           mediaUpload.get(), restClientServiceLogger, ignoreSSLHandshakeException);
@@ -260,7 +260,7 @@ public final class RestClientService {
             .map(HttpResponse::body)
             .map(mapper::readTree)
             .map(item -> item.get("id").asLong());
-    if (mediaId.isEmpty()) MediaUploadException.activate(url);
+    if (mediaId.isEmpty()) mediaUploadFailure.activate(url);
     url = url + "/" + mediaId.get();
     HttpRequest mediaUpdate =
         HttpRequestService.buildWpPostRequest(
