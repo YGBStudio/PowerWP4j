@@ -36,32 +36,40 @@ import tools.jackson.databind.cfg.EnumFeature;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * JsonSupport provides JSON serialization and deserialization support using Jackson.
+ * JsonSupport provides JSON serialization and deserialization support using
+ * Jackson.
  *
- * <p>This class exists to reuse common JSON operations across different classes without code
- * duplication. It also provides a pre-configured ObjectMapper instance for reuse, consistency and
+ * <p>
+ * This class exists to reuse common JSON operations across different classes
+ * without code
+ * duplication. It also provides a pre-configured ObjectMapper instance for
+ * reuse, consistency and
  * maximum performance gain.
  *
- * @author Yoham Gabriel @ YGB Studio
+ * 
  */
 public final class JsonSupport {
 
   private static final ObjectMapper jsonMapper = configureMapper();
 
-  private JsonSupport() {}
+  private JsonSupport() {
+  }
 
   /**
    * Configures and returns a pre-configured ObjectMapper instance.
    *
-   * <p>This instance is configured to:
+   * <p>
+   * This instance is configured to:
    * <li>Indent output for better readability.
    * <li>Fail on empty beans during serialization.
    * <li>Write dates as timestamps.
    * <li>Ignore unknown properties during deserialization.
    * <li>Accept empty strings as null objects during deserialization.
    *
-   *     <p>The configured ObjectMapper is intended for reuse across different classes to ensure
-   *     consistency and performance.
+   * <p>
+   * The configured ObjectMapper is intended for reuse across different classes to
+   * ensure
+   * consistency and performance.
    *
    * @return a configured ObjectMapper instance
    */
@@ -79,7 +87,8 @@ public final class JsonSupport {
   }
 
   /**
-   * Returns the configured ObjectMapper instance that is reused throughout the application.
+   * Returns the configured ObjectMapper instance that is reused throughout the
+   * application.
    *
    * @return the configured ObjectMapper instance
    */
@@ -90,9 +99,9 @@ public final class JsonSupport {
   /**
    * Deserializes a JSON string into an object of the specified class.
    *
-   * @param json the JSON string to deserialize
+   * @param json  the JSON string to deserialize
    * @param clazz the class of the object to deserialize into
-   * @param <T> the type of the object to deserialize into
+   * @param <T>   the type of the object to deserialize into
    * @return the deserialized object
    */
   public static <T> T readValueFromJson(String json, Class<T> clazz) {
@@ -110,12 +119,13 @@ public final class JsonSupport {
   }
 
   /**
-   * Reads a JSON file from the filesystem and deserializes it into an object of the specified
+   * Reads a JSON file from the filesystem and deserializes it into an object of
+   * the specified
    * class.
    *
    * @param jsonFile the JSON file to read
-   * @param clazz the class of the object to deserialize into
-   * @param <T> the type of the object to deserialize into
+   * @param clazz    the class of the object to deserialize into
+   * @param <T>      the type of the object to deserialize into
    * @return the deserialized object
    */
   public static <T> T readJsonFs(File jsonFile, Class<T> clazz) {
@@ -123,10 +133,11 @@ public final class JsonSupport {
   }
 
   /**
-   * Reads a JSON string from a Reader and deserializes it into an object of the specified class.
+   * Reads a JSON string from a Reader and deserializes it into an object of the
+   * specified class.
    *
    * @param source Reader instance for the JSON string to read from
-   * @param clazz the class of the object to deserialize into
+   * @param clazz  the class of the object to deserialize into
    * @return the deserialized object
    * @param <T> the type of the object to deserialize into
    */
@@ -138,8 +149,8 @@ public final class JsonSupport {
    * Serializes an object and writes it to a JSON file on the filesystem.
    *
    * @param jsonFile the JSON file to write to
-   * @param obj the object to serialize
-   * @param <T> the type of the object to serialize
+   * @param obj      the object to serialize
+   * @param <T>      the type of the object to serialize
    */
   public static <T> void writeJsonFs(File jsonFile, T obj) {
     jsonMapper.writeValue(jsonFile, obj);
@@ -169,10 +180,11 @@ public final class JsonSupport {
    * Deserializes a generic response from an HttpResponse.
    *
    * @param response the HttpResponse to deserialize
-   * @param clazz the class of the object to deserialize into
-   * @param <T> the type of the object to deserialize into
-   * @return an Optional containing the deserialized object, or empty if status >= 400 or generic
-   *     error
+   * @param clazz    the class of the object to deserialize into
+   * @param <T>      the type of the object to deserialize into
+   * @return an Optional containing the deserialized object, or empty if status >=
+   *         400 or generic
+   *         error
    */
   public static <T> Optional<T> deserialize(
       @NotNull HttpResponse<String> response, Class<T> clazz) {
@@ -190,10 +202,11 @@ public final class JsonSupport {
    * Deserializes a generic list response from an HttpResponse.
    *
    * @param response the HttpResponse to deserialize
-   * @param typeRef the TypeReference of the object to deserialize into
-   * @param <T> the type of the object to deserialize into
-   * @return an Optional containing the deserialized object, or empty if status >= 400 or generic
-   *     error
+   * @param typeRef  the TypeReference of the object to deserialize into
+   * @param <T>      the type of the object to deserialize into
+   * @return an Optional containing the deserialized object, or empty if status >=
+   *         400 or generic
+   *         error
    */
   public static <T> Optional<T> deserialize(
       @NotNull HttpResponse<String> response, TypeReference<T> typeRef) {

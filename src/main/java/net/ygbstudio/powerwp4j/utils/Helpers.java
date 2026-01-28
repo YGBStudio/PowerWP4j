@@ -49,11 +49,15 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Utility class for reusable logic in the project.
  *
- * <p>This class contains methods that can be used throughout the application to perform common
- * tasks, such as retrieving JSON-B property values from annotated classes or other utility
- * functions. It is designed to be a utility class, so it should not be instantiated.
+ * <p>
+ * This class contains methods that can be used throughout the application to
+ * perform common
+ * tasks, such as retrieving JSON-B property values from annotated classes or
+ * other utility
+ * functions. It is designed to be a utility class, so it should not be
+ * instantiated.
  *
- * @author Yoham Gabriel @ YGB Studio
+ * 
  */
 public final class Helpers {
 
@@ -62,7 +66,8 @@ public final class Helpers {
   }
 
   /**
-   * Loads properties from a specified property file located in the resources' directory.
+   * Loads properties from a specified property file located in the resources'
+   * directory.
    *
    * @param propertyFileName The name of the property file to load.
    * @return A {@link Properties} object containing the loaded properties.
@@ -82,11 +87,10 @@ public final class Helpers {
       properties.load(in);
     } catch (IOException ioex) {
       propertiesLogger.warning(
-          () ->
-              "Error while loading property file. "
-                  + ioex.getMessage()
-                  + " "
-                  + Arrays.toString(ioex.getStackTrace()));
+          () -> "Error while loading property file. "
+              + ioex.getMessage()
+              + " "
+              + Arrays.toString(ioex.getStackTrace()));
       return Optional.empty();
     }
 
@@ -94,17 +98,21 @@ public final class Helpers {
   }
 
   /**
-   * Writes properties to a specified property file located in the resources directory, updating
+   * Writes properties to a specified property file located in the resources
+   * directory, updating
    * existing properties or adding new ones.
    *
-   * <p>Exceptions are relayed to the caller for handling.
+   * <p>
+   * Exceptions are relayed to the caller for handling.
    *
    * @param propertyFileName The name of the property file to write to.
-   * @param properties An array of property names to write.
-   * @param fileComment A comment to include in the property file.
-   * @param values An array of values corresponding to the properties.
-   * @throws IOException if an error occurs while writing to the property file.
-   * @throws URISyntaxException if the URI of the property file cannot be resolved.
+   * @param properties       An array of property names to write.
+   * @param fileComment      A comment to include in the property file.
+   * @param values           An array of values corresponding to the properties.
+   * @throws IOException        if an error occurs while writing to the property
+   *                            file.
+   * @throws URISyntaxException if the URI of the property file cannot be
+   *                            resolved.
    */
   public static void writePropertyFile(
       String propertyFileName, List<String> properties, List<String> values, String fileComment)
@@ -114,7 +122,8 @@ public final class Helpers {
     File propsFile = new File(resourceURI);
     if (propsFile.exists()) {
       try (FileInputStream in = new FileInputStream(propsFile.toString())) {
-        if (propsFromResources.isPresent()) propsFromResources.get().load(in);
+        if (propsFromResources.isPresent())
+          propsFromResources.get().load(in);
       }
     }
 
@@ -131,21 +140,28 @@ public final class Helpers {
   }
 
   /**
-   * Zips two lists into a stream of map entries, pairing elements from both lists by their indices.
-   * Contents are returned as a stream to allow for further processing or collection strategies.
+   * Zips two lists into a stream of map entries, pairing elements from both lists
+   * by their indices.
+   * Contents are returned as a stream to allow for further processing or
+   * collection strategies.
    *
-   * <p>The resulting stream will contain entries where the key is from the first list and the value
+   * <p>
+   * The resulting stream will contain entries where the key is from the first
+   * list and the value
    * is from the second list.
    *
-   * <p>if the lists are of different lengths, the resulting stream will only contain entries up to
+   * <p>
+   * if the lists are of different lengths, the resulting stream will only contain
+   * entries up to
    * the length of the shorter list.
    *
-   * @param <K> type parameter for the key element
-   * @param <V> type parameter for the value element
+   * @param <K>        type parameter for the key element
+   * @param <V>        type parameter for the value element
    * @param elementOne A list of elements to be used as keys in the map entries.
    * @param elementTwo A list of elements to be used as values in the map entries.
-   * @return A stream of map entries where each entry pairs an element from the first list with an
-   *     element from the second list.
+   * @return A stream of map entries where each entry pairs an element from the
+   *         first list with an
+   *         element from the second list.
    */
   public static <K, V> Stream<Map.Entry<K, V>> zip(
       List<? extends K> elementOne, List<? extends V> elementTwo) {
@@ -156,11 +172,12 @@ public final class Helpers {
   /**
    * Checks if any enum constant's transformed value matches a given condition.
    *
-   * @param <T> The type of the enum.
-   * @param <R> The type of the transformed value.
-   * @param enumType The class of the enum to check.
-   * @param transformer A function that transforms an enum constant to a value of type R.
-   * @param condition A predicate that tests the transformed value.
+   * @param <T>         The type of the enum.
+   * @param <R>         The type of the transformed value.
+   * @param enumType    The class of the enum to check.
+   * @param transformer A function that transforms an enum constant to a value of
+   *                    type R.
+   * @param condition   A predicate that tests the transformed value.
    * @return true if any transformed value matches the condition, false otherwise.
    */
   public static <T extends Enum<T>, R> boolean isInEnum(
@@ -171,40 +188,51 @@ public final class Helpers {
   }
 
   /**
-   * Retrieves an enum constant from a string value, with an option to match irrespectively of case.
-   * This method uses a regex pattern to match the string representation of enum constants.
+   * Retrieves an enum constant from a string value, with an option to match
+   * irrespectively of case.
+   * This method uses a regex pattern to match the string representation of enum
+   * constants.
    *
-   * <p>It can be used as validator for enums in a similar way as {@link Helpers#isInEnum}, however,
-   * this helper not only checks for existence but also returns the enum constant and provides more
+   * <p>
+   * It can be used as validator for enums in a similar way as
+   * {@link Helpers#isInEnum}, however,
+   * this helper not only checks for existence but also returns the enum constant
+   * and provides more
    * handling opportunities available for Optional values.
    *
    * @see Helpers#isInEnum
-   * @param <T> The type of the enum.
-   * @param enumType The class of the enum to search.
+   * @param <T>        The type of the enum.
+   * @param enumType   The class of the enum to search.
    * @param strEnumKey The string value to match against the enum constants.
-   * @param ignoreCase If true, the match is case-insensitive; otherwise, it is case-sensitive.
-   * @return An Optional containing the matching enum constant, or empty if no match is found.
+   * @param ignoreCase If true, the match is case-insensitive; otherwise, it is
+   *                   case-sensitive.
+   * @return An Optional containing the matching enum constant, or empty if no
+   *         match is found.
    */
   public static <T extends FriendlyEnum> Optional<T> enumFromValue(
       Class<T> enumType, @Nullable String strEnumKey, boolean ignoreCase) {
-    if (strEnumKey == null || strEnumKey.isBlank()) return Optional.empty();
+    if (strEnumKey == null || strEnumKey.isBlank())
+      return Optional.empty();
 
-    Predicate<String> valuePattern =
-        Pattern.compile(strEnumKey, ignoreCase ? Pattern.CASE_INSENSITIVE : 0).asPredicate();
+    Predicate<String> valuePattern = Pattern.compile(strEnumKey, ignoreCase ? Pattern.CASE_INSENSITIVE : 0)
+        .asPredicate();
     return Arrays.stream(enumType.getEnumConstants())
         .filter(key -> valuePattern.test(key.value()))
         .findFirst();
   }
 
   /**
-   * Cleans a string by removing special characters and underscores and joining the remaining words
+   * Cleans a string by removing special characters and underscores and joining
+   * the remaining words
    * with a delimiter.
    *
-   * <p>As part of the process, excess whitespace is removed and each word is trimmed. Useful for
+   * <p>
+   * As part of the process, excess whitespace is removed and each word is
+   * trimmed. Useful for
    * tag cleaning and slug generation.
    *
    * @param toBeCleaned the string of text to be inspected and cleaned
-   * @param delimiter the delimiter to use for joining the remaining words
+   * @param delimiter   the delimiter to use for joining the remaining words
    * @return the cleaned string joined by your delimiter
    */
   public static String specialCharCleanJoin(String toBeCleaned, String delimiter) {
