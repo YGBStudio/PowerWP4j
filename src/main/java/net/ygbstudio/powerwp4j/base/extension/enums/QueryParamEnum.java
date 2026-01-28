@@ -21,9 +21,8 @@
 package net.ygbstudio.powerwp4j.base.extension.enums;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * QueryParamEnum is an interface that promotes a unified type for query parameters and a {@code
@@ -39,41 +38,31 @@ public non-sealed interface QueryParamEnum extends FriendlyEnum {
    * This method helps you join a map of query parameters into a string that can be used as a query
    * string.
    *
-   * <p>You need to have at least one "leading" (starting with '?') or main query parameter in your
-   * map. This is the parameter that will be used to separate the query parameters from the rest of
-   * the URL and avoid malformed requests.
-   *
    * <p>It is up to you to create a separate class that contains such "leading" parameters or use
    * the same for all as long as both implement {@link QueryParamEnum}. In either case this method
-   * will help you and throw an {@link IllegalArgumentException} if you do not provide a single
-   * query parameter that starts with '?' with its value pair.
+   * will help you and throw an {@link IllegalArgumentException} if you do not provide any query
+   * parameters.
    *
    * @param wpRestQueriesMap
    *     <p>Map of query parameters and their values.
    * @return
    *     <p>String that can be used as a query string.
    */
-  static <E extends QueryParamEnum> @NonNull String joinQueryParams(
-      @NonNull Map<E, String> wpRestQueriesMap) {
-    if (wpRestQueriesMap.isEmpty()) return "";
-    if (wpRestQueriesMap.keySet().stream().filter(param -> param.value().startsWith("?")).count()
-        != 1) {
-      throw new IllegalArgumentException(
-          "You need to include at least, and only one, leading query parameter or a query string start key.");
+  static <E extends QueryParamEnum> @NotNull String joinQueryParams(
+      @NotNull Map<E, String> wpRestQueriesMap) {
+    if (wpRestQueriesMap.isEmpty()) {
+      throw new IllegalArgumentException("You need to include at least one query parameter.");
     }
-    Comparator<E> leadingParam = Comparator.comparing(param -> param.value().startsWith("?"));
-    List<E> sortedParams = wpRestQueriesMap.keySet().stream().sorted(leadingParam).toList();
-
-    StringBuilder pathString = new StringBuilder();
-    sortedParams
-        .reversed()
+    StringBuilder pathString = new StringBuilder("?");
+    wpRestQueriesMap.keySet().stream()
+        .sorted(Comparator.comparing(FriendlyEnum::value))
         .forEach(
             param -> {
-              if (!pathString.isEmpty() && !param.value().startsWith("?")) pathString.append("&");
               pathString.append(param.value());
               pathString.append(wpRestQueriesMap.get(param));
+              pathString.append("&");
             });
-
+    pathString.deleteCharAt(pathString.length() - 1);
     return pathString.toString();
   }
 }

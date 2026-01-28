@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 import net.ygbstudio.powerwp4j.base.extension.enums.CacheKeyEnum;
 import net.ygbstudio.powerwp4j.base.extension.enums.FriendlyEnum;
 import net.ygbstudio.powerwp4j.utils.JsonSupport;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
@@ -155,7 +155,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
    * @param value the value of the property
    * @return the current instance of the payload builder
    */
-  protected <E extends CacheKeyEnum> T add(@NonNull E propertyEnum, String value) {
+  protected <E extends CacheKeyEnum> T add(@NotNull E propertyEnum, String value) {
     payloadNode.put(propertyEnum.value(), value);
     return self();
   }
@@ -168,7 +168,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
    * @param value the value enum of the property
    * @return the current instance of the payload builder
    */
-  protected <E extends FriendlyEnum> T add(@NonNull CacheKeyEnum propertyEnum, @NonNull E value) {
+  protected <E extends FriendlyEnum> T add(@NotNull CacheKeyEnum propertyEnum, @NotNull E value) {
     return add(propertyEnum, value.value());
   }
 
@@ -180,7 +180,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
    * @param value the value of the property (int)
    * @return the current instance of the payload builder
    */
-  protected <E extends FriendlyEnum> T add(@NonNull E propertyEnum, int value) {
+  protected <E extends FriendlyEnum> T add(@NotNull E propertyEnum, int value) {
     payloadNode.put(propertyEnum.value(), value);
     return self();
   }
@@ -193,7 +193,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
    * @param value the value of the property (long)
    * @return the current instance of the payload builder
    */
-  protected <E extends FriendlyEnum> T add(@NonNull E propertyEnum, long value) {
+  protected <E extends FriendlyEnum> T add(@NotNull E propertyEnum, long value) {
     payloadNode.put(propertyEnum.value(), value);
     return self();
   }
@@ -206,7 +206,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
    * @param value the value of the property (short)
    * @return the current instance of the payload builder
    */
-  protected <E extends FriendlyEnum> T add(@NonNull E propertyEnum, short value) {
+  protected <E extends FriendlyEnum> T add(@NotNull E propertyEnum, short value) {
     payloadNode.put(propertyEnum.value(), value);
     return self();
   }
@@ -219,7 +219,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
    * @param value the value of the property (boolean)
    * @return the current instance of the payload builder
    */
-  protected <E extends FriendlyEnum> T add(@NonNull E propertyEnum, boolean value) {
+  protected <E extends FriendlyEnum> T add(@NotNull E propertyEnum, boolean value) {
     return add(propertyEnum.value(), value);
   }
 
@@ -235,7 +235,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
    * @return the current instance of the payload builder
    */
   protected T add(
-      @NonNull FriendlyEnum propertyEnum, @NonNull Collection<? extends Number> valueArray) {
+      @NotNull FriendlyEnum propertyEnum, @NotNull Collection<? extends Number> valueArray) {
     ArrayNode propertyArray = payloadNode.putArray(propertyEnum.value());
     valueArray.forEach(
         value -> {
@@ -244,7 +244,7 @@ public abstract class AbstractPayloadNodeBuilder<T extends AbstractPayloadNodeBu
           } else if (value instanceof Long) {
             propertyArray.add((Long) value);
           } else if (value instanceof Short) {
-            propertyArray.add((Short) value);
+            propertyArray.add((short) value);
           } else {
             Supplier<String> errorMessage =
                 () -> "Unable to take Collection with numbers of type: " + value.getClass();

@@ -31,10 +31,10 @@ package net.ygbstudio.powerwp4j.base.extension.enums;
 public enum EnvironmentScope implements FriendlyEnum {
   WP_USER_PROP("wp.user"),
   WP_APPLICATION_PASS_PROP("wp.appPass"),
-  WP_FULLY_QUALIFIED_DOMAIN_NAME_PROP("wp.fqdm"),
+  WP_FULLY_QUALIFIED_DOMAIN_NAME_PROP("wp.fqdn"),
   WP_USER_ENV("WP_USER"),
   WP_APPLICATION_PASS_ENV("WP_APP_PASS"),
-  WP_FULLY_QUALIFIED_DOMAIN_NAME_ENV("WP_FQDM");
+  WP_FULLY_QUALIFIED_DOMAIN_NAME_ENV("WP_FQDN");
 
   private final String value;
 

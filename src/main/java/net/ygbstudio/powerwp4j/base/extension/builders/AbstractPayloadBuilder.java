@@ -28,7 +28,7 @@ import net.ygbstudio.powerwp4j.base.extension.enums.PostFormatEnum;
 import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;
 import net.ygbstudio.powerwp4j.base.extension.enums.PostTypeEnum;
 import net.ygbstudio.powerwp4j.services.HttpRequestService;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 
 /**
@@ -85,7 +85,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param postStatus the post status to set
    * @return the payload builder
    */
-  public T status(@NonNull PostStatusEnum postStatus) {
+  public T status(@NotNull PostStatusEnum postStatus) {
     this.status = postStatus.value();
     return self();
   }
@@ -96,7 +96,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param postType the post type to set
    * @return the payload builder
    */
-  public T type(@NonNull PostTypeEnum postType) {
+  public T type(@NotNull PostTypeEnum postType) {
     this.type = postType.value();
     return self();
   }
@@ -107,7 +107,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param postFormat the post format to set
    * @return the payload builder
    */
-  public T format(@NonNull PostFormatEnum postFormat) {
+  public T format(@NotNull PostFormatEnum postFormat) {
     this.format = postFormat.value();
     return self();
   }
@@ -118,7 +118,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param categories the categories to set
    * @return the payload builder
    */
-  public T categories(@NonNull List<Integer> categories) {
+  public T categories(@NotNull List<Integer> categories) {
     this.categories = categories;
     return self();
   }
@@ -129,7 +129,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param tags the tags to set
    * @return the payload builder
    */
-  public T tags(@NonNull List<Integer> tags) {
+  public T tags(@NotNull List<Integer> tags) {
     this.tags = tags;
     return self();
   }
@@ -140,7 +140,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param slug the slug to set
    * @return the payload builder
    */
-  public T slug(@NonNull String slug) {
+  public T slug(@NotNull String slug) {
     this.slug = slug;
     return self();
   }
@@ -151,7 +151,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param name the name to set
    * @return the payload builder
    */
-  public T name(@NonNull String name) {
+  public T name(@NotNull String name) {
     this.name = name;
     return self();
   }
@@ -162,7 +162,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param description the description to set
    * @return the payload builder
    */
-  public T description(@NonNull String description) {
+  public T description(@NotNull String description) {
     this.description = description;
     return self();
   }
@@ -173,7 +173,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param title the title to set
    * @return the payload builder
    */
-  public T title(@NonNull String title) {
+  public T title(@NotNull String title) {
     this.title = title;
     return self();
   }
@@ -184,7 +184,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param content the content to set
    * @return the payload builder
    */
-  public T content(@NonNull String content) {
+  public T content(@NotNull String content) {
     this.content = content;
     return self();
   }
@@ -195,7 +195,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param excerpt the excerpt to set
    * @return the payload builder
    */
-  public T excerpt(@NonNull String excerpt) {
+  public T excerpt(@NotNull String excerpt) {
     this.excerpt = excerpt;
     return self();
   }
@@ -206,7 +206,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param author the author to set
    * @return the payload builder
    */
-  public T author(@NonNull Integer author) {
+  public T author(@NotNull Integer author) {
     this.author = author;
     return self();
   }
@@ -217,7 +217,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param password the password to set
    * @return the payload builder
    */
-  public T password(@NonNull String password) {
+  public T password(@NotNull String password) {
     this.password = password;
     return self();
   }
@@ -228,7 +228,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param status the comment status to set
    * @return the payload builder
    */
-  public T commentStatus(@NonNull CommentStatusEnum status) {
+  public T commentStatus(@NotNull CommentStatusEnum status) {
     this.commentStatus = status.value();
     return self();
   }
@@ -239,7 +239,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param sticky the sticky status to set
    * @return the payload builder
    */
-  public T sticky(@NonNull Boolean sticky) {
+  public T sticky(@NotNull Boolean sticky) {
     this.sticky = sticky;
     return self();
   }
@@ -250,7 +250,7 @@ public abstract class AbstractPayloadBuilder<T extends AbstractPayloadBuilder<T>
    * @param featuredMedia the featured media to set
    * @return the payload builder
    */
-  public T featuredMedia(@NonNull Integer featuredMedia) {
+  public T featuredMedia(@NotNull Integer featuredMedia) {
     this.featuredMedia = featuredMedia;
     return self();
   }

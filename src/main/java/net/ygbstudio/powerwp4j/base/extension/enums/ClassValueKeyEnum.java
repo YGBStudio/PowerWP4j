@@ -30,9 +30,9 @@ package net.ygbstudio.powerwp4j.base.extension.enums;
  * a given taxonomy/class, typically paired with a respective class marker that PowerWP4j represents
  * as a {@link ClassMarkerEnum} in a different list, such as tags or categories.
  *
- * <p>Note that not all {@link ClassMarkerEnum} are paired with numerical values that {@link
- * ClassValueKeyEnum} is supposed to help you distinguish and aggregate, although a value key is a
- * cache key by default.
+ * <p>Note that not all {@link ClassMarkerEnum} are paired with numerical values <br>
+ * that {@link ClassValueKeyEnum} is supposed to help you distinguish and aggregate, although a
+ * value key is a cache key by default.
  *
  * <p>Example: {@code "tags": [12, 34, 56]} or {@code "categories": [2, 5]}
  *
