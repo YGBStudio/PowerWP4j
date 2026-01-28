@@ -23,10 +23,11 @@ package net.ygbstudio.powerwp4j.exceptions;
 import java.net.URISyntaxException;
 
 /**
- * Exception thrown when an invalid API URL is provided and any of the internal methods of PowerWP4j
+ * Exception thrown when an invalid API URL is provided and any of the internal
+ * methods of PowerWP4j
  * detect a {@link URISyntaxException}.
  *
- * @author Yoham Gabriel @ YGB Studio
+ * 
  */
 public class InvalidApiUrlException extends RuntimeException {
   public InvalidApiUrlException(String message) {
