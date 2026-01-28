@@ -366,7 +366,7 @@ public final class HttpRequestService {
     }
     if (retryCount >= retryAttempts && retryPred != null && !retryPred.test(resultType)) {
       Supplier<String> errorMessage =
-          () -> Objects.requireNonNullElse(retryFailedMessage.get(), "Retries exceeded");
+          () -> Objects.requireNonNullElse(retryFailedMessage != null ? retryFailedMessage.get() : null, "Retries exceeded");
       httpServiceLogger.error(errorMessage.get());
     }
     return resultType;
