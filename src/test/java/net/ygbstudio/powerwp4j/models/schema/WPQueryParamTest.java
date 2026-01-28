@@ -1,7 +1,7 @@
 package net.ygbstudio.powerwp4j.models.schema;
 
+import static org.assertj.core.api.Assertions.assertThatException;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -48,7 +48,8 @@ class WPQueryParamTest {
 
   @Test
   void joinQueryParamEmptyMapTest() {
-    String resultingPath = QueryParamEnum.joinQueryParams(Collections.emptyMap());
-    assertThat(resultingPath, is(""));
+    assertThatException()
+        .isThrownBy(() -> QueryParamEnum.joinQueryParams(Collections.emptyMap()))
+        .isInstanceOf(IllegalArgumentException.class);
   }
 }
