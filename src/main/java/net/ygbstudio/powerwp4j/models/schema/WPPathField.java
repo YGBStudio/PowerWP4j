@@ -22,6 +22,11 @@ package net.ygbstudio.powerwp4j.models.schema;
 
 import net.ygbstudio.powerwp4j.base.extension.enums.URLFieldsEnum;
 
+/**
+ * Enum representing the fields that can be requested in a WordPress REST API path.
+ *
+ * <p>By default, these field values do not include a trailing slash.
+ */
 public enum WPPathField implements URLFieldsEnum {
   // fields are comma-separated in the URL after the fields_base value.
   FIELDS_BASE("?_fields="),
