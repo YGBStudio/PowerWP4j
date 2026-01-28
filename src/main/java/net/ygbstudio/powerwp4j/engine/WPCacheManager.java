@@ -65,9 +65,9 @@ import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import net.ygbstudio.powerwp4j.utils.functional.Trigger;
 import net.ygbstudio.powerwp4j.utils.functional.TypedTrigger;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
@@ -108,9 +108,9 @@ public class WPCacheManager {
    * @param cachePath the path to the cache file
    */
   public WPCacheManager(
-      @NonNull String fullyQualifiedDomainName,
-      @NonNull String username,
-      @NonNull String applicationPassword,
+      @NotNull String fullyQualifiedDomainName,
+      @NotNull String username,
+      @NotNull String applicationPassword,
       @Nullable Path cachePath) {
     this.siteInfo =
         new WPSiteInfo(
@@ -140,9 +140,9 @@ public class WPCacheManager {
    * @param applicationPassword the application password for the WordPress site
    */
   public WPCacheManager(
-      @NonNull String fullyQualifiedDomainName,
-      @NonNull String username,
-      @NonNull String applicationPassword) {
+      @NotNull String fullyQualifiedDomainName,
+      @NotNull String username,
+      @NotNull String applicationPassword) {
     this(fullyQualifiedDomainName, username, applicationPassword, null);
   }
 
@@ -156,7 +156,7 @@ public class WPCacheManager {
    *     username, and application password.
    * @param cachePath an optional path to the cache file.
    */
-  public WPCacheManager(@NonNull WPSiteInfo siteInfo, Path cachePath) {
+  public WPCacheManager(@NotNull WPSiteInfo siteInfo, Path cachePath) {
     this(siteInfo.fullyQualifiedDomainName(), siteInfo.wpUser(), siteInfo.wpAppPass(), cachePath);
   }
 
@@ -172,7 +172,7 @@ public class WPCacheManager {
    * @param siteInfo the site information object containing the fully qualified domain name,
    *     username, and application password.
    */
-  public WPCacheManager(@NonNull WPSiteInfo siteInfo) {
+  public WPCacheManager(@NotNull WPSiteInfo siteInfo) {
     this(siteInfo.fullyQualifiedDomainName(), siteInfo.wpUser(), siteInfo.wpAppPass(), null);
   }
 
@@ -185,9 +185,9 @@ public class WPCacheManager {
    * @param pathParam the path parameter to be used in the request
    * @return an Optional containing the response from the WordPress REST API
    */
-  @NonNull
+  @NotNull
   public Optional<HttpResponse<String>> connectWP(
-      @NonNull Map<QueryParamEnum, String> queryParams, @NonNull WPRestPath pathParam) {
+      @NotNull Map<QueryParamEnum, String> queryParams, @NotNull WPRestPath pathParam) {
     String url = makeRequestURL(siteInfo.apiBaseUrl(), queryParams, pathParam);
     return HttpRequestService.connectGetWP(
         url, siteInfo.wpUser(), siteInfo.wpAppPass(), wpSiteEngineLogger);
@@ -201,7 +201,7 @@ public class WPCacheManager {
    * @return a list of links to the WordPress REST API
    */
   @Unmodifiable
-  @NonNull
+  @NotNull
   private List<String> linkListCreator(long totalPages, int perPage) {
     Map<WPQueryParam, String> queryParams = new EnumMap<>(WPQueryParam.class);
     return LongStream.range(1, totalPages + 1)
@@ -224,7 +224,7 @@ public class WPCacheManager {
    * @throws IOException if an I/O error occurs
    */
   private void fetchCacheInternal(
-      @NonNull Path cachePath, boolean overwriteCache, boolean ignoreSSLHandshakeException)
+      @NotNull Path cachePath, boolean overwriteCache, boolean ignoreSSLHandshakeException)
       throws IOException {
 
     if (Objects.isNull(linkList) || linkList.isEmpty()) {
@@ -268,7 +268,7 @@ public class WPCacheManager {
    * @return the JSON cache as a single ArrayNode
    */
   private ArrayNode fetchCacheFromInstancePath(
-      @NonNull List<String> listOfLinks,
+      @NotNull List<String> listOfLinks,
       @Nullable Predicate<ArrayNode> retryPred,
       int retryAttempts,
       int intervalTime,
@@ -296,7 +296,7 @@ public class WPCacheManager {
    * @param fetchCacheWithoutSSL whether to fetch the cache without SSL (useful in testing)
    * @return the fetch procedure BiFunction
    */
-  @NonNull
+  @NotNull
   @Contract(pure = true)
   private BiFunction<HttpClient, String, CompletableFuture<ArrayNode>> getFetchProcedure(
       boolean fetchCacheWithoutSSL) {
@@ -350,8 +350,8 @@ public class WPCacheManager {
    * @throws IOException if an I/O error occurs
    */
   private void writeCacheFs(
-      @NonNull Path cachePath,
-      @NonNull ArrayNode wpJsonArray,
+      @NotNull Path cachePath,
+      @NotNull ArrayNode wpJsonArray,
       boolean overwriteCache,
       boolean isUpdate)
       throws IOException {
@@ -394,7 +394,7 @@ public class WPCacheManager {
    * @throws IOException if an I/O error occurs
    */
   public void fetchCache(
-      @NonNull Path cachePath, boolean overwriteCache, boolean ignoreSSLHandshakeException)
+      @NotNull Path cachePath, boolean overwriteCache, boolean ignoreSSLHandshakeException)
       throws IOException {
     fetchCacheInternal(cachePath, overwriteCache, ignoreSSLHandshakeException);
   }
@@ -407,7 +407,7 @@ public class WPCacheManager {
    * @param cachePath the path to the cache file
    * @param overwriteCache whether to overwrite the cache file if it exists
    */
-  private void createCacheFile(@NonNull Path cachePath, boolean overwriteCache) {
+  private void createCacheFile(@NotNull Path cachePath, boolean overwriteCache) {
     TypedTrigger<Exception> exceptionLogging =
         ex ->
             wpSiteEngineLogger.debug(
@@ -472,7 +472,7 @@ public class WPCacheManager {
    *
    * @see #cacheSync()
    * @param ignoreSSL whether to ignore SSL errors, useful for testing purposes or local
-   *     environments <strong>(do not use in production)<strong/>.
+   *     environments <strong>(do not use in production)</strong>.
    * @return true if the cache was successfully synchronized, false if the cache is up-to-date.
    * @throws InterruptedException if the thread is interrupted
    */

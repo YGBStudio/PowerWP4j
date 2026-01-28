@@ -50,7 +50,7 @@ import net.ygbstudio.powerwp4j.models.schema.WPCacheSubKey;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyMarker;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyValues;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ArrayNode;
 
@@ -71,7 +71,7 @@ public class WPCacheAnalyzer {
 
   public WPCacheAnalyzer() {}
 
-  public WPCacheAnalyzer(@NonNull Path cachePath) {
+  public WPCacheAnalyzer(@NotNull Path cachePath) {
     this.loadLocalCache(cachePath);
   }
 
@@ -81,7 +81,7 @@ public class WPCacheAnalyzer {
    * @param cachePath the path to the cache file
    * @throws CacheFileSystemException if the provided path does not point to an existing file
    */
-  public void loadLocalCache(@NonNull Path cachePath) {
+  public void loadLocalCache(@NotNull Path cachePath) {
     File cacheFile;
     cacheFile = cachePath.toFile();
     if (!cacheFile.exists())
@@ -163,7 +163,7 @@ public class WPCacheAnalyzer {
    * @return a set of values extracted from the cache filtered by the specified cache key
    */
   public <V> Set<V> getCacheKeyValueSet(
-      CacheKeyEnum cacheKey, @NonNull Function<? super JsonNode, ? extends V> transformer) {
+      CacheKeyEnum cacheKey, @NotNull Function<? super JsonNode, ? extends V> transformer) {
     return getCacheKeyValueStream(cacheKey).map(transformer).collect(Collectors.toSet());
   }
 
@@ -182,7 +182,7 @@ public class WPCacheAnalyzer {
    *     the specified cache key
    */
   public <V> Stream<WPCacheKeySnapshot<V>> getCacheSubKeySnapshotStream(
-      @NonNull Function<? super JsonNode, ? extends V> subKeyTransformer,
+      @NotNull Function<? super JsonNode, ? extends V> subKeyTransformer,
       CacheKeyEnum cacheKey,
       CacheSubKeyEnum... subKeys) {
     Set<CacheSubKeyEnum> subKeySet = new HashSet<>(Arrays.asList(subKeys));
@@ -334,18 +334,29 @@ public class WPCacheAnalyzer {
    * <p>The categories are filtered by the {@link TaxonomyMarker#CATEGORY} enum and their prefix is
    * removed. Additionally, any non-alphanumeric characters are replaced with spaces.
    *
-   * <p>If you need custom processing for your categories, you can use the {@link
-   * #getClassListStream(Predicate)} method to apply a function and collect the results based on
-   * your needs.
+   * <p>If you need custom processing for your categories, <br>
+   * you can use the {@link #getClassListStream(Predicate)} method to apply a function and collect
+   * the results based on your needs.
    *
    * @return a set of unique categories
    */
-  public Set<String> getCategories() {
+  public Set<String> getCleanCategories() {
     return getClassListStream(TaxonomyMarker.CATEGORY)
         .map(
             category ->
                 category.replaceFirst("^category-", "").replaceAll("[^a-zA-Z0-9]", " ").trim())
         .collect(Collectors.toSet());
+  }
+
+  /**
+   * Returns unique categories as found in the in-memory local cache.
+   *
+   * <p>The categories are filtered by the {@link TaxonomyMarker#CATEGORY} enum.
+   *
+   * @return a set of unique categories
+   */
+  public Set<String> getRawCategories() {
+    return getClassListStream(TaxonomyMarker.CATEGORY).collect(Collectors.toSet());
   }
 
   /**
@@ -360,10 +371,21 @@ public class WPCacheAnalyzer {
    *
    * @return a set of unique tags
    */
-  public Set<String> getTags() {
+  public Set<String> getCleanTags() {
     return getClassListStream(TaxonomyMarker.TAG)
         .map(tag -> tag.replaceFirst("^tag-", "").replaceAll("[^a-zA-Z0-9]", " ").trim())
         .collect(Collectors.toSet());
+  }
+
+  /**
+   * Returns unique tags as found in the in-memory local cache.
+   *
+   * <p>The tags are filtered by the {@link TaxonomyMarker#TAG} enum and their prefix is removed.
+   *
+   * @return a set of unique tags
+   */
+  public Set<String> getRawTags() {
+    return getClassListStream(TaxonomyMarker.TAG).collect(Collectors.toSet());
   }
 
   /**
@@ -423,7 +445,7 @@ public class WPCacheAnalyzer {
    * WordPress backend.
    *
    * <p><em>Tip: If you do not wish to transform/clean your taxonomy (class) strings, you can pass
-   * the {@link UnaryOperator#identity()} to ignore the transformation step.
+   * the {@link UnaryOperator#identity()} to ignore the transformation step.</em>
    *
    * @return a stream of instances extracted from the cache filtered by the specified cache key
    */

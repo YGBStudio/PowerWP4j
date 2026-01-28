@@ -44,17 +44,19 @@ import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;
 import net.ygbstudio.powerwp4j.models.schema.WPQueryParam;
 import net.ygbstudio.powerwp4j.models.schema.WPRestPath;
 import net.ygbstudio.powerwp4j.services.HttpRequestService;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * WPCacheMeta is a record that represents the metadata of the cache.
+ * Metadata for the cache file.
  *
- * @author Yoham Gabriel B. @ YGBStudio
+ * @param lastUpdated the last updated timestamp
+ * @param totalPosts the total posts
+ * @param totalPages the total pages
+ * @author Yoham Gabriel @ YGBStudio
  */
-@NullMarked
 public record WPCacheMeta(long totalPages, long totalPosts, @Nullable LocalDate lastUpdated) {
 
   private static final Logger wpCacheMetaLogger = LoggerFactory.getLogger(WPCacheMeta.class);
@@ -65,7 +67,7 @@ public record WPCacheMeta(long totalPages, long totalPosts, @Nullable LocalDate 
    * @param cachePath the path to the cache file
    * @return the metadata file path
    */
-  private static Path getMetaPath(Path cachePath) {
+  private static @NotNull Path getMetaPath(@NotNull Path cachePath) {
     String cacheName = cachePath.toFile().getName();
     String cacheDir = cachePath.toFile().getParent();
     String cacheMetadataFileName = cacheName.replaceFirst("\\.json$", "") + "_metadata.json";
@@ -147,7 +149,7 @@ public record WPCacheMeta(long totalPages, long totalPosts, @Nullable LocalDate 
    * @return an optional WPCacheMeta object
    */
   public static Optional<WPCacheMeta> updateCacheMeta(
-      WPSiteInfo siteInfo, Path cachePath, boolean ignoreSSLHandshakeException) {
+      @NotNull WPSiteInfo siteInfo, Path cachePath, boolean ignoreSSLHandshakeException) {
     int defaultPerPage = 10;
     String requestUrl =
         HttpRequestService.makeRequestURL(

@@ -26,10 +26,12 @@ import java.util.Optional;
 import net.ygbstudio.powerwp4j.base.extension.enums.PostStatusEnum;
 import net.ygbstudio.powerwp4j.builders.WPBasicPayloadBuilder;
 import net.ygbstudio.powerwp4j.exceptions.MediaUploadError;
+import net.ygbstudio.powerwp4j.models.entities.WPPost;
 import net.ygbstudio.powerwp4j.models.entities.WPSiteInfo;
 import net.ygbstudio.powerwp4j.services.RestClientService;
+import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 
 /**
@@ -59,7 +61,7 @@ public class WPRestClient {
    * @return the newly created {@link WPRestClient} instance
    */
   @Contract(value = "_ -> new", pure = true)
-  public static @NonNull WPRestClient of(WPSiteInfo siteInfo) {
+  public static @NotNull WPRestClient of(WPSiteInfo siteInfo) {
     return new WPRestClient(siteInfo);
   }
 
@@ -73,7 +75,7 @@ public class WPRestClient {
    * @return the newly created {@link WPRestClient} instance
    */
   @Contract(value = "_, _ -> new", pure = true)
-  public static @NonNull WPRestClient testingOf(WPSiteInfo siteInfo, boolean ignoreSSL) {
+  public static @NotNull WPRestClient testingOf(WPSiteInfo siteInfo, boolean ignoreSSL) {
     return new WPRestClient(siteInfo, ignoreSSL);
   }
 
@@ -181,5 +183,17 @@ public class WPRestClient {
         attachmentPath,
         payload,
         ignoreSSL);
+  }
+
+  /**
+   * Fetches a single post by its ID.
+   *
+   * @param id The ID of the post to fetch.
+   * @return An Optional containing the {@link WPPost} if found, or empty if not found or on error.
+   */
+  public Optional<WPPost> getPost(long id) {
+    return RestClientService.postGet(
+            siteInfo.apiBaseUrl(), siteInfo.wpUser(), siteInfo.wpAppPass(), id, ignoreSSL)
+        .flatMap(res -> JsonSupport.deserialize(res, WPPost.class));
   }
 }
