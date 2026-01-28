@@ -24,17 +24,16 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Exception thrown when there is an error during or before a media upload
- * procedure.
+ * Exception thrown when there is an error during or before a media upload procedure.
  *
  * @author Yoham Gabriel B. @ YGBStudio
  */
-public class MediaUploadError extends RuntimeException {
-  public MediaUploadError(String message) {
+public class MediaUploadException extends RuntimeException {
+  public MediaUploadException(String message) {
     super(message);
   }
 
-  public MediaUploadError(@NotNull Supplier<String> message) {
+  public MediaUploadException(@NotNull Supplier<String> message) {
     super(message.get());
   }
 }
