@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import net.ygbstudio.powerwp4j.base.extension.builders.AbstractMediaPayloadBuilder;
 import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 
 /**
@@ -48,7 +48,7 @@ public class WPMediaPayloadBuilder extends AbstractMediaPayloadBuilder<WPMediaPa
    * @return A new instance of {@link WPMediaPayloadBuilder}.
    */
   @Contract(" -> new")
-  public static @NonNull WPMediaPayloadBuilder builder() {
+  public static @NotNull WPMediaPayloadBuilder builder() {
     return new WPMediaPayloadBuilder();
   }
 

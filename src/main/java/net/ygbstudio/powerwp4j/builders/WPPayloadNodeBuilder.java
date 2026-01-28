@@ -31,7 +31,7 @@ import net.ygbstudio.powerwp4j.models.entities.WPClassMapping;
 import net.ygbstudio.powerwp4j.models.schema.WPCacheKey;
 import net.ygbstudio.powerwp4j.models.taxonomies.TaxonomyValues;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class is a specialized builder for constructing JSON payloads in the format used by the
@@ -55,8 +55,9 @@ public class WPPayloadNodeBuilder extends AbstractPayloadNodeBuilder<WPPayloadNo
    * @return a new instance of the payload node builder
    */
   @Contract(" -> new")
-  public static @NonNull WPPayloadNodeBuilder builder() {
-    // .clear() Initialises the internal ObjectNode that will be used for construction
+  public static @NotNull WPPayloadNodeBuilder builder() {
+    // .clear() Initialises the internal ObjectNode that will be used for
+    // construction
     return new WPPayloadNodeBuilder().clear();
   }
 
@@ -117,7 +118,7 @@ public class WPPayloadNodeBuilder extends AbstractPayloadNodeBuilder<WPPayloadNo
    * @param <T> the numeric type of the categories
    * @return the payload node builder
    */
-  public <T extends Number> WPPayloadNodeBuilder categories(@NonNull List<T> categories) {
+  public <T extends Number> WPPayloadNodeBuilder categories(@NotNull List<T> categories) {
     return add(TaxonomyValues.CATEGORIES, categories);
   }
 
@@ -128,7 +129,7 @@ public class WPPayloadNodeBuilder extends AbstractPayloadNodeBuilder<WPPayloadNo
    * @param <T> the numeric type of the tags
    * @return the payload node builder
    */
-  public <T extends Number> WPPayloadNodeBuilder tags(@NonNull List<T> tags) {
+  public <T extends Number> WPPayloadNodeBuilder tags(@NotNull List<T> tags) {
     return add(TaxonomyValues.TAGS, tags);
   }
 
@@ -142,7 +143,7 @@ public class WPPayloadNodeBuilder extends AbstractPayloadNodeBuilder<WPPayloadNo
    * @return the payload node builder
    */
   public <T, U extends Number> WPPayloadNodeBuilder categories(
-      @NonNull Set<WPClassMapping<T, U>> categoriesMappingSet) {
+      @NotNull Set<WPClassMapping<T, U>> categoriesMappingSet) {
     return add(TaxonomyValues.CATEGORIES, WPClassMapping.toNumberSet(categoriesMappingSet));
   }
 
@@ -155,7 +156,7 @@ public class WPPayloadNodeBuilder extends AbstractPayloadNodeBuilder<WPPayloadNo
    * @return the payload node builder
    */
   public <T, U extends Number> WPPayloadNodeBuilder tags(
-      @NonNull Set<WPClassMapping<T, U>> tagsMappingSet) {
+      @NotNull Set<WPClassMapping<T, U>> tagsMappingSet) {
     return add(TaxonomyValues.TAGS, WPClassMapping.toNumberSet(tagsMappingSet));
   }
 

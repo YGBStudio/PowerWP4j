@@ -32,7 +32,7 @@ import net.ygbstudio.powerwp4j.models.schema.WPCommentStatus;
 import net.ygbstudio.powerwp4j.models.schema.WPStatus;
 import net.ygbstudio.powerwp4j.utils.JsonSupport;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import tools.jackson.databind.JsonNode;
 
 /**
@@ -64,7 +64,7 @@ public class WPBasicPayloadBuilder extends AbstractPayloadBuilder<WPBasicPayload
    * @return A new instance of {@link WPBasicPayloadBuilder}.
    */
   @Contract(" -> new")
-  public static @NonNull WPBasicPayloadBuilder builder() {
+  public static @NotNull WPBasicPayloadBuilder builder() {
     return new WPBasicPayloadBuilder();
   }
 
