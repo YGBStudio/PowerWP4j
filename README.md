@@ -78,7 +78,7 @@ You can also fetch the project via [JitPack](https://jitpack.io/#YGBStudio/Power
 
 ### 1. Configure site info
 
-**Properties file** (`appConfig.properties` on classpath):
+**Properties file** (`<your-config-file>.properties` on classpath):
 ```properties
 wp.fqdn=example.com
 wp.user=my_username
@@ -86,16 +86,23 @@ wp.appPass=xxxx xxxx xxxx xxxx
 ```
 
 ```java
-WPSiteInfo siteInfo = WPSiteInfo.fromConfigResource("appConfig.properties")
-    .orElseThrow(() -> new IllegalStateException("Missing config"));
+WPSiteInfo siteInfo = WPSiteInfo
+    .fromConfigResource("my-config-file.properties")
+    .orElseThrow(() ->
+        new IllegalStateException("Missing config")
+    );
 ```
 
 **Environment variables**:
 ```bash
-export WP_FQDN=example.com WP_USER=my_username WP_APP_PASS='xxxx xxxx xxxx'
+export WP_FQDN=example.com \
+       WP_USER=my_username \
+       WP_APP_PASS='xxxx xxxx xxxx'
 ```
 ```java
-WPSiteInfo siteInfo = WPSiteInfo.fromEnv().orElseThrow();
+WPSiteInfo siteInfo = WPSiteInfo
+    .fromEnvironment()
+    .orElseThrow(IllegalStateException::new);
 ```
 
 ### 2. Create a post
@@ -108,41 +115,67 @@ var payload = WPBasicPayloadBuilder.builder()
     .content("Created via WP REST API")
     .build();
 
-WPRestClient client = WPRestClient.of(siteInfo);
-Optional<HttpResponse<String>> response = client.createPost(payload);
+WPRestClient client = WPRestClient
+    .of(siteInfo);
+
+Optional<HttpResponse<String>> response =
+    client.createPost(payload);
 ```
 
 ### 3. Upload media
 ```java
 // Optional: pass WPMediaPayloadBuilder to update alt text, caption, description
-client.uploadMedia(Path.of("/path/to/image.jpg"));
+client.uploadMedia(
+    Path.of("/path/to/image.jpg")
+);
 ```
 
 ### 4. Create and sync cache
 ```java
-Path cachePath = Path.of("wp-posts.json");
-WPCacheManager cacheManager = new WPCacheManager(siteInfo, cachePath);
+Path cachePath =
+    Path.of("wp-posts.json");
 
-cacheManager.fetchJsonCache(true);      // Initial fetch (overwrites if true)
-boolean updated = cacheManager.cacheSync(); // Incremental sync
+WPCacheManager cacheManager =
+    new WPCacheManager(
+        siteInfo,
+        cachePath
+    );
+
+cacheManager
+    .fetchJsonCache(true);        // Initial fetch (overwrite if true)
+
+boolean updated =
+    cacheManager.cacheSync();     // Incremental sync
 ```
 
 ### 5. Analyze cache offline
 ```java
-WPCacheAnalyzer analyzer = new WPCacheAnalyzer(Path.of("wp-posts.json"));
+WPCacheAnalyzer analyzer = 
+        new WPCacheAnalyzer(Path.of("wp-posts.json"));
 
 long count = analyzer.getPostCount();
+
 var slugs = analyzer.getSlugs();
+
 var categories = analyzer.getCleanCategories();
+
 var tags = analyzer.getCleanTags();
 ```
 
 ### 6. Extract taxonomies
 ```java
-UnaryOperator<String> cleanOp = tag ->
-    tag.replaceFirst("^tag-", "").replaceAll("[^a-zA-Z0-9]", " ").trim();
+UnaryOperator<String> cleanOp =
+    tag ->
+        tag.replaceFirst("^tag-", "")
+           .replaceAll("[^a-zA-Z0-9]", " ")
+           .trim();
 
-var mappedTags = analyzer.mapWPClassId(cleanOp, TaxonomyMarker.TAG, TaxonomyValues.TAGS);
+var mappedTags =
+    analyzer.mapWPClassId(
+        cleanOp,
+        TaxonomyMarker.TAG,
+        TaxonomyValues.TAGS
+    );
 ```
 
 ## Use Cases
@@ -206,15 +239,21 @@ PowerWP4j supports custom post types and taxonomies via extension interfaces:
 **Example implementation:**
 ```java
 public enum MyCacheKeys implements CacheKeyEnum {
+
     SEO_SCORE("seo_score");
 
     private final String key;
 
-    MyCacheKeys(String key) { this.key = key; }
+    MyCacheKeys(String key) {
+        this.key = key;
+    }
 
     @Override
-    public String value() { return key; }
+    public String value() {
+        return key;
+    }
 }
+
 ```
 
 > **Note**: Extension interfaces use `value()` for serialization/REST mapping. `toString()` may be overridden for debugging but isn't used internally.
