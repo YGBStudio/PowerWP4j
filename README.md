@@ -295,7 +295,7 @@ src/main/java/net/ygbstudio/powerwp4j/
 ## Security
 
 - Never commit credentials (application passwords, usernames, site info)
-- Ensure `appConfig.properties` is in `.gitignore`
+- Ensure the `your-config-file.properties` you create is in `.gitignore`
 
 ## License
 
